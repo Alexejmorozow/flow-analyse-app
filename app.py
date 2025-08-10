@@ -36,6 +36,8 @@ DB_NAME = "flow_data.db"
 # ===== INITIALISIERUNG =====
 if 'data' not in st.session_state:
     st.session_state.data = []
+if 'confirmed' not in st.session_state:
+    st.session_state.confirmed = False
 
 # ===== FUNKTIONEN =====
 def init_db():
@@ -97,43 +99,60 @@ st.markdown("""
     - **Fähigkeiten** (1-7)  
     - **Herausforderung** (1-7)  
     - **Zeitempfinden** (-3 bis +3)  
+    *Default-Werte sind bewusst gewählte Mittelwerte.*
 """)
 
+# Neue Erhebung
 name = st.text_input("Name (optional)", key="name")
 current_data = {"Name": name}
 
-all_filled = True
+# Domänen-Abfrage
 for domain, config in DOMAINS.items():
     st.subheader(f"**{domain}**")
     st.caption(config["examples"])
     
     cols = st.columns(3)
     with cols[0]:
-        skill = st.slider("Fähigkeit (1-7)", 1, 7, 4, key=f"skill_{domain}")
+        skill = st.slider(
+            "Fähigkeit (1-7)", 1, 7, 4,
+            key=f"skill_{domain}"
+        )
     with cols[1]:
-        challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}")
+        challenge = st.slider(
+            "Herausforderung (1-7)", 1, 7, 4,
+            key=f"challenge_{domain}"
+        )
     with cols[2]:
-        time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}")
+        time_perception = st.slider(
+            "Zeitempfinden (-3 bis +3)", -3, 3, 0,
+            key=f"time_{domain}",
+            help="-3 = Zeit zieht sich extrem\n0 = Normal\n+3 = Zeit vergeht extrem schnell"
+        )
     
     current_data.update({
         f"Skill_{domain}": skill,
         f"Challenge_{domain}": challenge,
         f"Time_{domain}": time_perception
     })
+
+# Bestätigungs-Checkbox
+st.divider()
+confirmed = st.checkbox(
+    "✅ Ich bestätige, dass alle Bewertungen bewusst gewählt sind (auch Default-Werte)",
+    key="global_confirm"
+)
+
+# Auswertung
+if st.button("🚀 Analyse starten", disabled=not confirmed):
+    save_to_db(current_data)
+    st.session_state.data.append(current_data)
     
-    if skill == 4 or challenge == 4 or time_perception == 0:
-        all_filled = False
+    # Visualisierung (wie im Originalcode)
+    # ... (Hier deine Plot-Logik einfügen)
+    
+    st.success("Analyse erfolgreich!")
 
-if st.button("🚀 Analyse starten", disabled=not all_filled):
-    if not all_filled:
-        st.warning("Bitte alle Werte anpassen – keine Default-Werte lassen!")
-    else:
-        save_to_db(current_data)
-        st.session_state.data.append(current_data)
-        
-        # Visualisierung und Auswertung (wie im Originalcode)
-        # ... (Hier folgt der Rest deines Codes für die Grafiken und Tabellen)
-
+# Datenexport
 if st.session_state.data:
     st.download_button(
         "💾 Alle Daten exportieren (CSV)",
