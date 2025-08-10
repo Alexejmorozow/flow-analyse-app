@@ -96,10 +96,10 @@ init_db()
 st.title("🌊 Flow-Analyse Pro mit Zeiterfassung")
 st.markdown("""
     *Bewerten Sie für jede Domäne:*  
-    - **Fähigkeiten** (1-7)  
-    - **Herausforderung** (1-7)  
-    - **Zeitempfinden** (-3 bis +3)  
-    *Default-Werte sind bewusst gewählte Mittelwerte.*
+    - **Fähigkeiten** (1-7) – Default: 4  
+    - **Herausforderung** (1-7) – Default: 4  
+    - **Zeitempfinden** (-3 bis +3) – Default: 0  
+    *Default-Werte sind bewusst gesetzt und können übernommen werden.*
 """)
 
 # Neue Erhebung
@@ -138,7 +138,7 @@ for domain, config in DOMAINS.items():
 # Bestätigungs-Checkbox
 st.divider()
 confirmed = st.checkbox(
-    "✅ Ich bestätige, dass alle Bewertungen bewusst gewählt sind (auch Default-Werte)",
+    "✅ Ich bestätige, dass alle Bewertungen (inkl. Default-Werte) bewusst gewählt sind.",
     key="global_confirm"
 )
 
@@ -146,11 +146,78 @@ confirmed = st.checkbox(
 if st.button("🚀 Analyse starten", disabled=not confirmed):
     save_to_db(current_data)
     st.session_state.data.append(current_data)
+    df = pd.DataFrame(st.session_state.data)
     
-    # Visualisierung (wie im Originalcode)
-    # ... (Hier deine Plot-Logik einfügen)
+    # 1. Flow-Matrix (Heatmap)
+    st.subheader("📊 Flow-Matrix mit Zeitempfinden")
+    fig, ax = plt.subplots(figsize=(12, 8))
     
-    st.success("Analyse erfolgreich!")
+    # Theorie-Hintergrund
+    try:
+        theory_img = Image.open(THEORY_IMAGE)
+        ax.imshow(theory_img, extent=[1,7,1,7], aspect='auto', alpha=0.3)
+    except:
+        ax.plot([1,7], [1,7], 'g--', alpha=0.3)
+    
+    # Heatmap mit Zeitdaten
+    x = [current_data[f"Skill_{d}"] for d in DOMAINS]
+    y = [current_data[f"Challenge_{d}"] for d in DOMAINS]
+    time = [current_data[f"Time_{d}"] for d in DOMAINS]
+    
+    scatter = ax.scatter(
+        x, y, c=time, cmap='coolwarm', vmin=-3, vmax=3,
+        s=150, edgecolors='white', alpha=0.8
+    )
+    cbar = plt.colorbar(scatter, ax=ax)
+    cbar.set_label('Zeitempfinden (-3 bis +3)')
+    ax.set_xlabel("Fähigkeit (1-7)"); ax.set_ylabel("Herausforderung (1-7)")
+    ax.set_xlim(0.5, 7.5); ax.set_ylim(0.5, 7.5)
+    ax.grid(True)
+    st.pyplot(fig)
+    
+    # 2. Detailtabelle
+    st.subheader("📋 Detailauswertung pro Domäne")
+    results = []
+    for domain in DOMAINS:
+        skill = current_data[f"Skill_{domain}"]
+        challenge = current_data[f"Challenge_{domain}"]
+        time = current_data[f"Time_{domain}"]
+        
+        flow, zone = calculate_flow(skill, challenge)
+        
+        results.append({
+            "Domäne": domain,
+            "Flow-Index": f"{flow:.2f}",
+            "Zone": zone,
+            "Zeitempfinden": time,
+            "Interpretation": "Stress" if time > 1 else ("Langeweile" if time < -1 else "Normal")
+        })
+    
+    st.dataframe(
+        pd.DataFrame(results),
+        column_config={
+            "Flow-Index": st.column_config.ProgressColumn(min_value=0, max_value=1),
+            "Zeitempfinden": st.column_config.NumberColumn(format="%d")
+        },
+        hide_index=True,
+        use_container_width=True
+    )
+    
+    # 3. Team-Statistiken (falls Daten vorhanden)
+    if len(st.session_state.data) > 1:
+        st.subheader("👥 Team-Statistiken")
+        team_df = pd.DataFrame(st.session_state.data)
+        stats = []
+        for domain in DOMAINS:
+            stats.append({
+                "Domäne": domain,
+                "Ø Fähigkeit": team_df[f"Skill_{domain}"].mean(),
+                "Ø Herausforderung": team_df[f"Challenge_{domain}"].mean(),
+                "Ø Zeitempfinden": team_df[f"Time_{domain}"].mean()
+            })
+        st.dataframe(pd.DataFrame(stats), hide_index=True)
+    
+    st.success("Analyse erfolgreich gespeichert und angezeigt!")
 
 # Datenexport
 if st.session_state.data:
