@@ -168,6 +168,18 @@ def create_flow_plot(data, domain_colors):
     plt.tight_layout()
     return fig
 
+def generate_recommendation(skill, challenge, time, domain):
+    diff = skill - challenge
+    
+    if diff < -2:  # Überlastung
+        return f"Reduzieren Sie die Herausforderungen in {domain} oder erhöhen Sie Ihre Kompetenzen durch Training und Unterstützung."
+    elif diff > 2:  # Langeweile
+        return f"Erhöhen Sie die Herausforderungen in {domain} oder suchen Sie nach neuen Aufgabenstellungen."
+    elif abs(diff) <= 1 and (skill + challenge)/2 >= 5:  # Flow
+        return f"Behalten Sie die aktuelle Balance in {domain} bei - idealer Zustand!"
+    else:  # Apathie oder mittlere Aktivierung
+        return f"Arbeiten Sie an beiden Dimensionen: Steigern Sie sowohl Fähigkeiten als auch Herausforderungen in {domain}."
+
 def create_text_report(data):
     """Erstellt einen Text-Report mit den Flow-Analyse-Daten"""
     # Überschrift
@@ -456,4 +468,22 @@ if st.button("🚀 Theoriegestützte Analyse starten", disabled=not confirmed):
             - **Csikszentmihalyi**: {DOMAINS[domain]['flow']}
             
             **Handlungsempfehlung**:
-            {
+            {generate_recommendation(skill, challenge, time, domain)}
+            """)
+    
+    # 4. Text-Report anzeigen
+    st.subheader("📄 Vollständiger Text-Report")
+    text_report = create_text_report(current_data)
+    st.text_area("Report", text_report, height=400)
+    
+    # 5. Download-Button für Report
+    st.download_button(
+        label="📥 Report als Text herunterladen",
+        data=text_report,
+        file_name=f"flow_analyse_report_{name if name else 'anonymous'}.txt",
+        mime="text/plain"
+    )
+
+# Footer
+st.divider()
+st.caption("© Flow-Analyse Pro - Integrierte psychologische Diagnostik für Veränderungsprozesse")
