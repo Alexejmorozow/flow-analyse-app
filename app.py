@@ -114,20 +114,18 @@ def create_flow_plot(data, domain_colors):
     for zone in [apathy_zone, boredom_zone, anxiety_zone, flow_zone]:
         ax.add_patch(zone)
     
-    # Erstelle Scatter Plot mit Farbverlauf basierend auf der Zeitwahrnehmung
-    if not data.empty:
-        # Extrahiere Datenpunkte
-        x = [data[f"Skill_{d}"] for d in DOMAINS]
-        y = [data[f"Challenge_{d}"] for d in DOMAINS]
-        time = [data[f"Time_{d}"] for d in DOMAINS]
-        colors = [domain_colors[d] for d in DOMAINS]
-        labels = list(DOMAINS.keys())
-        
-        # Zeichne Punkte mit domänenspezifischen Farben
-        for i, (xi, yi, ti, color, label) in enumerate(zip(x, y, time, colors, labels)):
-            ax.scatter(xi, yi, c=color, s=200, alpha=0.8, edgecolors='white', label=label if i == 0 else "")
-            # Zeichne Zeitwert als Text neben dem Punkt
-            ax.annotate(f"{ti}", (xi+0.1, yi+0.1), fontsize=9, fontweight='bold')
+    # Extrahiere Datenpunkte
+    x = [data[f"Skill_{d}"] for d in DOMAINS]
+    y = [data[f"Challenge_{d}"] for d in DOMAINS]
+    time = [data[f"Time_{d}"] for d in DOMAINS]
+    colors = [domain_colors[d] for d in DOMAINS]
+    labels = list(DOMAINS.keys())
+    
+    # Zeichne Punkte mit domänenspezifischen Farben
+    for i, (xi, yi, ti, color, label) in enumerate(zip(x, y, time, colors, labels)):
+        ax.scatter(xi, yi, c=color, s=200, alpha=0.8, edgecolors='white', label=label if i == 0 else "")
+        # Zeichne Zeitwert als Text neben dem Punkt
+        ax.annotate(f"{ti}", (xi+0.1, yi+0.1), fontsize=9, fontweight='bold')
     
     # Plot-Einstellungen
     ax.set_xlim(0.5, 7.5)
