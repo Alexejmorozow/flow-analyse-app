@@ -152,12 +152,13 @@ if st.button("🚀 Analyse starten", disabled=not confirmed):
     st.subheader("📊 Flow-Matrix mit Zeitempfinden")
     fig, ax = plt.subplots(figsize=(12, 8))
     
-    # Theorie-Hintergrund
-    try:
-        theory_img = Image.open(THEORY_IMAGE)
-        ax.imshow(theory_img, extent=[1,7,1,7], aspect='auto', alpha=0.3)
-    except:
-        ax.plot([1,7], [1,7], 'g--', alpha=0.3)
+# Flow-Kanal nach Csikszentmihalyi
+x = np.linspace(1, 7, 100)
+lower = x - 1   # Untergrenze des Flow-Kanals
+upper = x + 1   # Obergrenze des Flow-Kanals
+
+ax.fill_between(x, lower, upper, color="green", alpha=0.2, label="Flow-Kanal")
+
     
     # Heatmap mit Zeitdaten
     x = [current_data[f"Skill_{d}"] for d in DOMAINS]
