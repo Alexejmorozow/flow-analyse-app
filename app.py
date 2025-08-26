@@ -1,3 +1,8 @@
+# Analyse und Optimierung der Flow-Analyse App für Ihre Arbeit
+
+Vielen Dank für die Übersicht Ihrer Arbeit! Basierend auf den theoretischen Grundlagen (Bischof, Grawe, Csikszentmihalyi) habe ich eine optimierte Version der App erstellt, die den theoretischen Bezug stärker berücksichtigt.
+
+```python
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,24 +18,39 @@ import os
 # ===== KONFIGURATION =====
 DOMAINS = {
     "Team-Veränderungen": {
-        "examples": "z. B. Personalwechsel, Ausfälle, Rollenänderungen",
-        "color": "#FF6B6B"
+        "examples": "Personalwechsel, Ausfälle, Rollenänderungen, neue Teammitglieder",
+        "color": "#FF6B6B",
+        "bischof": "Bindungssystem - Bedürfnis nach Vertrautheit und Sicherheit",
+        "grawe": "Bedürfnisse: Bindung, Orientierung/Kontrolle, Selbstwertschutz",
+        "flow": "Balance zwischen Vertrautheit (Fähigkeit) und Neuem (Herausforderung)"
     },
     "Veränderungen im Betreuungsbedarf der Klient:innen": {
-        "examples": "z. B. steigender Pflegebedarf, neue pädagogische Anforderungen",
-        "color": "#4ECDC4"
+        "examples": "steigender Pflegebedarf, neue pädagogische Anforderungen, komplexere Cases",
+        "color": "#4ECDC4",
+        "bischof": "Explorationssystem - Umgang mit veränderten Anforderungen",
+        "grawe": "Bedürfnisse: Kompetenzerleben, Kontrolle, Lustgewinn/Unlustvermeidung",
+        "flow": "Passung zwischen professionellen Kompetenzen und Anforderungen"
     },
     "Prozess- oder Verfahrensänderungen": {
-        "examples": "z. B. Anpassung bei Dienstübergaben, Dokumentation, interne Abläufe",
-        "color": "#FFD166"
+        "examples": "Anpassung bei Dienstübergaben, Dokumentation, interne Abläufe, neue Software",
+        "color": "#FFD166",
+        "bischof": "Orientierungssystem - Umgang mit veränderter Struktur",
+        "grawe": "Bedürfnisse: Orientierung, Kontrolle, Selbstwert (durch Routine)",
+        "flow": "Balance zwischen Routinesicherheit und Lernherausforderungen"
     },
     "Kompetenzanforderungen / Weiterbildung": {
-        "examples": "z. B. neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen",
-        "color": "#06D6A0"
+        "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierungen",
+        "color": "#06D6A0",
+        "bischof": "Explorationssystem - Kompetenzerweiterung und Wachstum",
+        "grawe": "Bedürfnisse: Selbstwerterhöhung, Kompetenzerleben, Kontrolle",
+        "flow": "Optimale Lernherausforderung ohne Überforderung"
     },
     "Interpersonelle Veränderungen": {
-        "examples": "z. B. Konflikte, Rollenverschiebungen, neue Kolleg:innen",
-        "color": "#A78AFF"
+        "examples": "Konflikte, Rollenverschiebungen, neue Kolleg:innen, Veränderung in Führung",
+        "color": "#A78AFF",
+        "bischof": "Bindungssystem - Sicherheit in sozialen Beziehungen",
+        "grawe": "Bedürfnisse: Bindung, Selbstwertschutz, Unlustvermeidung",
+        "flow": "Soziale Kompetenz im Umgang mit zwischenmenschlichen Herausforderungen"
     }
 }
 
@@ -79,18 +99,23 @@ def calculate_flow(skill, challenge):
     
     if mean_level < 3:
         zone = "Apathie"
+        explanation = "Geringe Motivation durch mangelnde Passung zwischen Fähigkeiten und Herausforderungen"
     elif abs(diff) <= 1 and mean_level >= 5:
         zone = "Flow"
+        explanation = "Optimale Passung - hohe Motivation und produktives Arbeiten"
     elif diff < -2:
         zone = "Angst/Überlastung"
+        explanation = "Herausforderungen übersteigen die Fähigkeiten - Stresserleben"
     elif diff > 2:
         zone = "Langeweile"
+        explanation = "Fähigkeiten übersteigen die Herausforderungen - Unterforderung"
     else:
         zone = "Mittlere Aktivierung"
+        explanation = "Grundlegende Passung mit Entwicklungspotential"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
-    return flow_index, zone
+    return flow_index, zone, explanation
 
 def create_flow_plot(data, domain_colors):
     fig, ax = plt.subplots(figsize=(12, 8))
@@ -98,19 +123,19 @@ def create_flow_plot(data, domain_colors):
     # Definiere die Flow-Zonen als Polygone
     # Apathiezone (unten links)
     apathy_zone = Polygon([[1, 1], [4, 1], [4, 2], [2.5, 2], [1, 1]], 
-                         closed=True, color='lightgray', alpha=0.3, label='Apathie')
+                         closed=True, color='lightgray', alpha=0.3, label='Apathie (Grawe: Bedürfnisfrustration)')
     
     # Langeweile-Zone (unten rechts)
     boredom_zone = Polygon([[4, 1], [7, 1], [7, 4], [4, 4], [4, 1]], 
-                          closed=True, color='lightblue', alpha=0.3, label='Langeweile')
+                          closed=True, color='lightblue', alpha=0.3, label='Langeweile (Bischof: Explorationsblockade)')
     
     # Angst-Zone (oben links)
     anxiety_zone = Polygon([[1, 4], [4, 4], [4, 7], [1, 7], [1, 4]], 
-                          closed=True, color='lightcoral', alpha=0.3, label='Angst/Überlastung')
+                          closed=True, color='lightcoral', alpha=0.3, label='Angst/Überlastung (Csikszentmihalyi: Disflow)')
     
     # Flow-Zone (Mitte)
     flow_zone = Polygon([[4, 4], [7, 4], [7, 7], [4, 7], [4, 4]], 
-                       closed=True, color='lightgreen', alpha=0.3, label='Flow')
+                       closed=True, color='lightgreen', alpha=0.3, label='Flow (Konsistenz nach Grawe)')
     
     # Füge die Zonen zum Plot hinzu
     for zone in [apathy_zone, boredom_zone, anxiety_zone, flow_zone]:
@@ -132,12 +157,12 @@ def create_flow_plot(data, domain_colors):
     # Plot-Einstellungen
     ax.set_xlim(0.5, 7.5)
     ax.set_ylim(0.5, 7.5)
-    ax.set_xlabel('Fähigkeiten (1-7)', fontsize=12)
-    ax.set_ylabel('Herausforderungen (1-7)', fontsize=12)
-    ax.set_title('Flow-Analyse mit Zeitempfinden', fontsize=14, fontweight='bold')
+    ax.set_xlabel('Fähigkeiten (1-7) - Vertrautheit nach Bischof', fontsize=12)
+    ax.set_ylabel('Herausforderungen (1-7) - Exploration nach Bischof', fontsize=12)
+    ax.set_title('Flow-Analyse mit Zeitempfinden - Theoretische Integration', fontsize=14, fontweight='bold')
     
     # Füge diagonale Linie für ideales Flow-Verhältnis hinzu
-    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis')
+    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis (Csikszentmihalyi)')
     
     # Füge Legende hinzu
     ax.legend(loc='upper left')
@@ -150,73 +175,206 @@ def create_flow_plot(data, domain_colors):
 
 def create_text_report(data):
     """Erstellt einen Text-Report mit den Flow-Analyse-Daten"""
-    report = f"🌊 Flow-Analyse Pro - Report\n\n"
-    report += f"Name: {data['Name'] if data['Name'] else 'Unbenannt'}\n"
-    report += f"Erstellt am: {datetime.now().strftime('%d.%m.%Y %H:%M')}\n\n"
+    # Überschrift
+    report = "=" * 80 + "\n"
+    report += "🌊 FLOW-ANALYSE PRO - REPORT (Theorieintegriert)\n"
+    report += "=" * 80 + "\n\n"
     
-    report += "Zusammenfassung der Bewertungen:\n\n"
-    report += f"{'Domäne':<40} {'Fähigkeit':<10} {'Herausforderung':<15} {'Zeitempfinden':<15} {'Flow-Zone':<20}\n"
-    report += "-" * 100 + "\n"
+    # Kopfbereich
+    report += f"Name:           {data['Name'] if data['Name'] else 'Unbenannt'}\n"
+    report += f"Erstellt am:    {datetime.now().strftime('%d.%m.%Y %H:%M')}\n"
+    report += "-" * 80 + "\n\n"
+    
+    # Theoretische Einordnung
+    report += "THEORETISCHE EINORDNUNG:\n"
+    report += "-" * 80 + "\n"
+    report += "Diese Analyse integriert:\n"
+    report += "• Bischofs Zürcher Modell (Bindung/Exploration)\n"
+    report += "• Graves Konsistenztheorie (psychologische Grundbedürfnisse)\n"
+    report += "• Csikszentmihalyis Flow-Theorie (Fähigkeiten-Herausforderungs-Balance)\n"
+    report += "• Subjektives Zeiterleben als Indikator für motivationale Passung\n\n"
+    
+    # Zusammenfassende Bewertung
+    report += "ZUSAMMENFASSENDE BEWERTUNG:\n"
+    report += "-" * 80 + "\n"
+    
+    # Berechne Gesamtwerte
+    total_flow = 0
+    domain_count = len(DOMAINS)
+    
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        flow_index, zone, explanation = calculate_flow(skill, challenge)
+        total_flow += flow_index
+    
+    avg_flow = total_flow / domain_count
+    
+    report += f"Durchschnittlicher Flow-Index: {avg_flow:.2f}/1.0\n"
+    
+    if avg_flow >= 0.7:
+        report += "Gesamtbewertung:       HOHES FLOW-ERLEBEN (Konsistenz nach Grawe) 🎯\n"
+    elif avg_flow >= 0.4:
+        report += "Gesamtbewertung:       MODERATES FLOW-ERLEBEN (Teilkonsistenz) 🔄\n"
+    else:
+        report += "Gesamtbewertung:       GERINGES FLOW-ERLEBEN (Inkonsistenz) ⚠️\n"
+    
+    report += "\n"
+    
+    # Detailtabelle
+    report += "DETAILAUSWERTUNG PRO DOMÄNE:\n"
+    report += "-" * 80 + "\n"
+    report += f"{'Domäne':<35} {'Fähig':<6} {'Herausf':<8} {'Zeit':<6} {'Flow':<6} {'Zone':<20} {'Theoriebezug':<30}\n"
+    report += "-" * 80 + "\n"
     
     for domain in DOMAINS:
         skill = data[f"Skill_{domain}"]
         challenge = data[f"Challenge_{domain}"]
         time_perception = data[f"Time_{domain}"]
-        flow_index, zone = calculate_flow(skill, challenge)
+        flow_index, zone, explanation = calculate_flow(skill, challenge)
         
-        report += f"{domain:<40} {skill:<10} {challenge:<15} {time_perception:<15} {zone:<20}\n"
+        # Emoji für bessere Visualisierung
+        zone_emoji = ""
+        if "Flow" in zone:
+            zone_emoji = "🎯"
+        elif "Apathie" in zone:
+            zone_emoji = "😑"
+        elif "Langeweile" in zone:
+            zone_emoji = "😴"
+        elif "Angst" in zone:
+            zone_emoji = "😰"
+        
+        # Kürze den Domänennamen für bessere Darstellung
+        short_domain = (domain[:32] + '...') if len(domain) > 32 else domain
+        
+        report += f"{short_domain:<35} {skill:<6} {challenge:<8} {time_perception:<6} {flow_index:.2f}  {zone[:15]:<15} {zone_emoji} {DOMAINS[domain]['bischof'][:25]:<30}\n"
     
-    report += "\nErklärung der Skalen:\n"
-    report += "Fähigkeiten (1-7): 1 = Sehr geringe Fähigkeiten, 7 = Sehr hohe Fähigkeiten\n"
-    report += "Herausforderungen (1-7): 1 = Sehr geringe Herausforderung, 7 = Sehr hohe Herausforderung\n"
-    report += "Zeitempfinden (-3 bis +3): -3 = Zeit zieht sich extrem, 0 = Normal, +3 = Zeit vergeht extrem schnell\n\n"
+    report += "\n\n"
     
-    report += "Flow-Zonen:\n"
-    report += "- Flow: Optimale Balance zwischen Fähigkeiten und Herausforderungen\n"
-    report += "- Apathie: Geringe Fähigkeiten und Herausforderungen\n"
-    report += "- Langeweile: Hohe Fähigkeiten, geringe Herausforderungen\n"
-    report += "- Angst/Überlastung: Geringe Fähigkeiten, hohe Herausforderungen\n"
+    # Handlungsempfehlungen basierend auf den Ergebnissen
+    report += "HANDLUNGSEMPFEHLUNGEN (THEORIEGESTÜTZT):\n"
+    report += "-" * 80 + "\n"
+    
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_perception = data[f"Time_{domain}"]
+        flow_index, zone, explanation = calculate_flow(skill, challenge)
+        
+        report += f"• {domain}:\n"
+        report += f"  Theorie: {DOMAINS[domain]['bischof']}\n"
+        report += f"  {explanation}\n"
+        
+        if "Angst/Überlastung" in zone:
+            report += f"  → Maßnahme: Herausforderung reduzieren (Bischof: Explorationsdruck mindern) oder Fähigkeiten durch Training verbessern (Grawe: Kompetenzerleben stärken)\n"
+        elif "Langeweile" in zone:
+            report += f"  → Maßnahme: Herausforderung erhöhen (Bischof: Exploration anregen) oder neue Aufgaben suchen (Csikszentmihalyi: Flow-Kanal nutzen)\n"
+        elif "Apathie" in zone:
+            report += f"  → Maßnahme: Sowohl Fähigkeiten als auch Herausforderungen steigern (Grawe: Konsistenz durch Bedürfniserfüllung)\n"
+        elif "Flow" in zone:
+            report += f"  → Maßnahme: Aktuelle Balance beibehalten - idealer Zustand! (Csikszentmihalyi: Flow-Zustand erhalten)\n"
+        else:
+            report += f"  → Maßnahme: Leichte Anpassungen in beide Richtungen könnten Flow verstärken (Grawe: Konsistenzoptimierung)\n"
+        
+        # Zeitempfehlungen mit Theoriebezug
+        if time_perception < -1:
+            report += f"  → Zeitgestaltung: Aufgaben interessanter gestalten (Csikszentmihalyi: Zeitdehnung durch mangelnde Passung)\n"
+        elif time_perception > 1:
+            report += f"  → Zeitgestaltung: Auf ausreichende Pausen achten (Bischof: Explorationserschöpfung vermeiden)\n"
+        
+        report += "\n"
+    
+    report += "\n"
+    
+    # Theoretische Erklärung der Skalen
+    report += "THEORETISCHE ERKLÄRUNG DER SKALEN:\n"
+    report += "-" * 80 + "\n"
+    report += "Fähigkeiten (1-7):          Vertrautheit nach Bischof - Erleben von Sicherheit und Kompetenz\n"
+    report += "Herausforderungen (1-7):    Exploration nach Bischof - Neuheitsgrad und Anforderungsniveau\n"
+    report += "Zeitempfinden (-3 bis +3):  Indikator für motivationale Passung (Csikszentmihalyi) - Zeitdehnung bei Unterforderung, Zeitraffung bei Flow\n\n"
+    
+    report += "FLOW-ZONEN (THEORIEINTEGRIERT):\n"
+    report += "- Flow (Csikszentmihalyi):                    Optimale Balance = Konsistenz (Grawe) + Explorations-Bindungs-Balance (Bischof)\n"
+    report += "- Apathie (Grawe):                            Bedürfnisfrustration in mehreren Grundbedürfnissen\n"
+    report += "- Langeweile (Bischof):                       Explorationsblockade bei ausreichender Bindungssicherheit\n"
+    report += "- Angst/Überlastung (Csikszentmihalyi):       Disflow durch mangelnde Passung zwischen Fähigkeiten und Herausforderungen\n"
+    
+    report += "\n" + "=" * 80 + "\n"
+    report += "END OF REPORT - © Flow-Analyse Pro (Theorieintegriert)"
     
     return report
 
 # ===== STREAMLIT-UI =====
-st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
+st.set_page_config(layout="wide", page_title="Flow-Analyse Pro (Theorieintegriert)")
 init_db()
 
-st.title("🌊 Flow-Analyse Pro mit Zeiterfassung")
+st.title("🌊 Flow-Analyse Pro mit Theorieintegration")
 st.markdown("""
-    *Bewerten Sie für jede Domäne:*  
-    - **Fähigkeiten** (1-7) – Default: 4  
-    - **Herausforderung** (1-7) – Default: 4  
-    - **Zeitempfinden** (-3 bis +3) – Default: 0  
-    *Default-Werte sind bewusst gesetzt und können übernommen werden.*
+**Theoretische Grundlage**: Integration von Bischof (Zürcher Modell), Grawe (Konsistenztheorie) und Csikszentmihalyi (Flow-Theorie)
+    
+*Bewerten Sie für jede Domäne:*  
+- **Fähigkeiten** (1-7) – Vertrautheit und Kompetenzerleben (Bischof/Grawe)  
+- **Herausforderung** (1-7) – Explorationsanforderung und Neuheit (Bischof)  
+- **Zeitempfinden** (-3 bis +3) – Indikator für motivationale Passung (Csikszentmihalyi)  
 """)
+
+# Theorie-Erklärung expander
+with st.expander("📚 Theoretische Grundlagen erklären"):
+    st.markdown("""
+    ### Integrierte Theorien:
+    
+    **1. Bischofs Zürcher Modell (soziale Motivation)**
+    - **Bindungssystem**: Bedürfnis nach Vertrautheit, Sicherheit und Zugehörigkeit
+    - **Explorationssystem**: Bedürfnis nach Neuem, Entwicklung und Wachstum
+    - In Veränderungsprozessen: Balance zwischen Vertrautem und Neuem erforderlich
+    
+    **2. Graves Konsistenztheorie (psychologische Grundbedürfnisse)**
+    - Vier Grundbedürfnisse: Bindung, Orientierung/Kontrolle, Selbstwerterhöhung/-schutz, Lustgewinn/Unlustvermeidung
+    - Motivation entsteht durch Passung zwischen Bedürfnissen und Umwelt
+    - Veränderungen können Bedürfnisverletzungen hervorrufen
+    
+    **3. Csikszentmihalyis Flow-Theorie**
+    - Flow entsteht bei optimaler Passung zwischen Fähigkeiten und Herausforderungen
+    - Zeiterleben als Indikator: Zeitraffung bei Flow, Zeitdehnung bei Langeweile/Überforderung
+    """)
 
 # Neue Erhebung
 name = st.text_input("Name (optional)", key="name")
 current_data = {"Name": name}
 
-# Domänen-Abfrage
+# Domänen-Abfrage mit theoretischen Erklärungen
 for domain, config in DOMAINS.items():
     st.subheader(f"**{domain}**")
-    st.caption(config["examples"])
+    
+    with st.expander("ℹ️ Theoretische Einordnung dieser Domäne"):
+        st.markdown(f"""
+        **Bischof (Zürcher Modell)**: {config['bischof']}
+        
+        **Grawe (Konsistenztheorie)**: {config['grawe']}
+        
+        **Csikszentmihalyi (Flow)**: {config['flow']}
+        """)
+    
+    st.caption(f"Beispiele: {config['examples']}")
     
     cols = st.columns(3)
     with cols[0]:
         skill = st.slider(
-            "Fähigkeit (1-7)", 1, 7, 4,
-            key=f"skill_{domain}"
+            "Fähigkeiten/Vertrautheit (1-7)", 1, 7, 4,
+            key=f"skill_{domain}",
+            help="1 = sehr geringe Fähigkeiten/Vertrautheit, 7 = sehr hohe Fähigkeiten/Vertrautheit"
         )
     with cols[1]:
         challenge = st.slider(
-            "Herausforderung (1-7)", 1, 7, 4,
-            key=f"challenge_{domain}"
+            "Herausforderung/Exploration (1-7)", 1, 7, 4,
+            key=f"challenge_{domain}",
+            help="1 = sehr geringe Herausforderung/Exploration, 7 = sehr hohe Herausforderung/Exploration"
         )
     with cols[2]:
         time_perception = st.slider(
             "Zeitempfinden (-3 bis +3)", -3, 3, 0,
             key=f"time_{domain}",
-            help="-3 = Zeit zieht sich extrem\n0 = Normal\n+3 = Zeit vergeht extrem schnell"
+            help="-3 = Zeit zieht sich extrem (Unterforderung/Überforderung), 0 = Normal, +3 = Zeit vergeht extrem schnell (Flow)"
         )
     
     current_data.update({
@@ -228,18 +386,17 @@ for domain, config in DOMAINS.items():
 # Bestätigungs-Checkbox
 st.divider()
 confirmed = st.checkbox(
-    "✅ Ich bestätige, dass alle Bewertungen (inkl. Default-Werte) bewusst gewählt sind.",
+    "✅ Ich bestätige, dass alle Bewertungen bewusst gewählt sind und die theoretischen Erklärungen gelesen wurden.",
     key="global_confirm"
 )
 
 # Auswertung
-if st.button("🚀 Analyse starten", disabled=not confirmed):
+if st.button("🚀 Theoriegestützte Analyse starten", disabled=not confirmed):
     save_to_db(current_data)
     st.session_state.data.append(current_data)
-    df = pd.DataFrame(st.session_state.data)
     
     # 1. Flow-Matrix (Heatmap)
-    st.subheader("📊 Flow-Matrix mit Zeitempfinden")
+    st.subheader("📊 Flow-Matrix mit theoretischer Integration")
     
     # Erstelle Domain-Farben Mapping
     domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
@@ -249,21 +406,22 @@ if st.button("🚀 Analyse starten", disabled=not confirmed):
     st.pyplot(fig)
     
     # 2. Detailtabelle
-    st.subheader("📋 Detailauswertung pro Domäne")
+    st.subheader("📋 Detailauswertung pro Domäne (theorieintegriert)")
     results = []
     for domain in DOMAINS:
         skill = current_data[f"Skill_{domain}"]
         challenge = current_data[f"Challenge_{domain}"]
         time = current_data[f"Time_{domain}"]
         
-        flow, zone = calculate_flow(skill, challenge)
+        flow, zone, explanation = calculate_flow(skill, challenge)
         
         results.append({
             "Domäne": domain,
             "Flow-Index": flow,
             "Zone": zone,
             "Zeitempfinden": time,
-            "Interpretation": "Stress" if time > 1 else ("Langeweile" if time < -1 else "Normal")
+            "Theoriebezug": DOMAINS[domain]["bischof"][:40] + "...",
+            "Interpretation": "Stress (Zeitraffung)" if time > 1 else ("Langeweile (Zeitdehnung)" if time < -1 else "Normal")
         })
     
     st.dataframe(
@@ -280,34 +438,27 @@ if st.button("🚀 Analyse starten", disabled=not confirmed):
         use_container_width=True
     )
     
-    # 3. Team-Statistiken (falls Daten vorhanden)
-    if len(st.session_state.data) > 1:
-        st.subheader("👥 Team-Statistiken")
-        team_df = pd.DataFrame(st.session_state.data)
-        stats = []
-        for domain in DOMAINS:
-            stats.append({
-                "Domäne": domain,
-                "Ø Fähigkeit": team_df[f"Skill_{domain}"].mean(),
-                "Ø Herausforderung": team_df[f"Challenge_{domain}"].mean(),
-                "Ø Zeitempfinden": team_df[f"Time_{domain}"].mean()
-            })
-        st.dataframe(pd.DataFrame(stats), hide_index=True)
+    # 3. Theoriebasierte Interpretation
+    st.subheader("🧠 Theoriebasierte Interpretation der Ergebnisse")
     
-    st.success("Analyse erfolgreich gespeichert und angezeigt!")
-
-# Datenexport als Text
-if st.session_state.data:
-    # Text-Report erstellen
-    report_text = create_text_report(st.session_state.data[-1])
-    
-    # Text zum Download anbieten
-    st.download_button(
-        "💾 Report als Textdatei exportieren",
-        report_text,
-        "flow_analyse_report.txt",
-        "text/plain"
-    )
-
-    # Erklärender Hinweis
-    st.info("Für PDF-Export installieren Sie bitte das fpdf-Paket mit: 'pip install fpdf'")
+    for domain in DOMAINS:
+        skill = current_data[f"Skill_{domain}"]
+        challenge = current_data[f"Challenge_{domain}"]
+        time = current_data[f"Time_{domain}"]
+        flow, zone, explanation = calculate_flow(skill, challenge)
+        
+        with st.expander(f"Interpretation: {domain}"):
+            st.markdown(f"""
+            **Bewertung**: Fähigkeiten={skill}, Herausforderung={challenge}, Zeitempfinden={time}
+            
+            **Flow-Zone**: {zone}
+            
+            **Erklärung**: {explanation}
+            
+            **Theoretische Einordnung**:
+            - **Bischof**: {DOMAINS[domain]['bischof']}
+            - **Grawe**: {DOMAINS[domain]['grawe']}
+            - **Csikszentmihalyi**: {DOMAINS[domain]['flow']}
+            
+            **Handlungsempfehlung**:
+            {
