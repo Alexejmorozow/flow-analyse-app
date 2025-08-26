@@ -5,6 +5,8 @@ import numpy as np
 from PIL import Image
 import sqlite3
 from datetime import datetime
+from matplotlib.patches import Polygon
+import matplotlib.colors as mcolors
 
 # ===== KONFIGURATION =====
 DOMAINS = {
@@ -30,7 +32,6 @@ DOMAINS = {
     }
 }
 
-THEORY_IMAGE = "grafik.png"
 DB_NAME = "flow_data.db"
 
 # ===== INITIALISIERUNG =====
@@ -88,6 +89,64 @@ def calculate_flow(skill, challenge):
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
     return flow_index, zone
+
+def create_flow_plot(data, domain_colors):
+    fig, ax = plt.subplots(figsize=(12, 8))
+    
+    # Definiere die Flow-Zonen als Polygone
+    # Apathiezone (unten links)
+    apathy_zone = Polygon([[1, 1], [4, 1], [4, 2], [2.5, 2], [1, 1]], 
+                         closed=True, color='lightgray', alpha=0.3, label='Apathie')
+    
+    # Langeweile-Zone (unten rechts)
+    boredom_zone = Polygon([[4, 1], [7, 1], [7, 4], [4, 4], [4, 1]], 
+                          closed=True, color='lightblue', alpha=0.3, label='Langeweile')
+    
+    # Angst-Zone (oben links)
+    anxiety_zone = Polygon([[1, 4], [4, 4], [4, 7], [1, 7], [1, 4]], 
+                          closed=True, color='lightcoral', alpha=0.3, label='Angst/Überlastung')
+    
+    # Flow-Zone (Mitte)
+    flow_zone = Polygon([[4, 4], [7, 4], [7, 7], [4, 7], [4, 4]], 
+                       closed=True, color='lightgreen', alpha=0.3, label='Flow')
+    
+    # Füge die Zonen zum Plot hinzu
+    for zone in [apathy_zone, boredom_zone, anxiety_zone, flow_zone]:
+        ax.add_patch(zone)
+    
+    # Erstelle Scatter Plot mit Farbverlauf basierend auf der Zeitwahrnehmung
+    if not data.empty:
+        # Extrahiere Datenpunkte
+        x = [data[f"Skill_{d}"] for d in DOMAINS]
+        y = [data[f"Challenge_{d}"] for d in DOMAINS]
+        time = [data[f"Time_{d}"] for d in DOMAINS]
+        colors = [domain_colors[d] for d in DOMAINS]
+        labels = list(DOMAINS.keys())
+        
+        # Zeichne Punkte mit domänenspezifischen Farben
+        for i, (xi, yi, ti, color, label) in enumerate(zip(x, y, time, colors, labels)):
+            ax.scatter(xi, yi, c=color, s=200, alpha=0.8, edgecolors='white', label=label if i == 0 else "")
+            # Zeichne Zeitwert als Text neben dem Punkt
+            ax.annotate(f"{ti}", (xi+0.1, yi+0.1), fontsize=9, fontweight='bold')
+    
+    # Plot-Einstellungen
+    ax.set_xlim(0.5, 7.5)
+    ax.set_ylim(0.5, 7.5)
+    ax.set_xlabel('Fähigkeiten (1-7)', fontsize=12)
+    ax.set_ylabel('Herausforderungen (1-7)', fontsize=12)
+    ax.set_title('Flow-Analyse mit Zeitempfinden', fontsize=14, fontweight='bold')
+    
+    # Füge diagonale Linie für ideales Flow-Verhältnis hinzu
+    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis')
+    
+    # Füge Legende hinzu
+    ax.legend(loc='upper left')
+    
+    # Grid hinzufügen
+    ax.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    return fig
 
 # ===== STREAMLIT-UI =====
 st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
@@ -150,30 +209,12 @@ if st.button("🚀 Analyse starten", disabled=not confirmed):
     
     # 1. Flow-Matrix (Heatmap)
     st.subheader("📊 Flow-Matrix mit Zeitempfinden")
-    fig, ax = plt.subplots(figsize=(12, 8))
     
-# Flow-Kanal nach Csikszentmihalyi
-x = np.linspace(1, 7, 100)
-lower = x - 1   # Untergrenze des Flow-Kanals
-upper = x + 1   # Obergrenze des Flow-Kanals
-
-ax.fill_between(x, lower, upper, color="green", alpha=0.2, label="Flow-Kanal")
-
+    # Erstelle Domain-Farben Mapping
+    domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
     
-    # Heatmap mit Zeitdaten
-    x = [current_data[f"Skill_{d}"] for d in DOMAINS]
-    y = [current_data[f"Challenge_{d}"] for d in DOMAINS]
-    time = [current_data[f"Time_{d}"] for d in DOMAINS]
-    
-    scatter = ax.scatter(
-        x, y, c=time, cmap='coolwarm', vmin=-3, vmax=3,
-        s=150, edgecolors='white', alpha=0.8
-    )
-    cbar = plt.colorbar(scatter, ax=ax)
-    cbar.set_label('Zeitempfinden (-3 bis +3)')
-    ax.set_xlabel("Fähigkeit (1-7)"); ax.set_ylabel("Herausforderung (1-7)")
-    ax.set_xlim(0.5, 7.5); ax.set_ylim(0.5, 7.5)
-    ax.grid(True)
+    # Erstelle den Plot
+    fig = create_flow_plot(current_data, domain_colors)
     st.pyplot(fig)
     
     # 2. Detailtabelle
