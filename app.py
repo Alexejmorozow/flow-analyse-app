@@ -17,35 +17,70 @@ DOMAINS = {
         "color": "#FF6B6B",
         "bischof": "Bindungssystem - Bedürfnis nach Vertrautheit und Sicherheit",
         "grawe": "Bedürfnisse: Bindung, Orientierung/Kontrolle, Selbstwertschutz",
-        "flow": "Balance zwischen Vertrautheit (Fähigkeit) und Neuem (Herausforderung)"
+        "flow": "Balance zwischen Vertrautheit (Fähigkeit) und Neuem (Herausforderung)",
+        "explanation": """In deinem Arbeitsalltag verändern sich Teams ständig: neue Kollegen kommen hinzu, Rollen verschieben sich, manchmal fallen Personen aus.
+        
+Beispiel: Ein Mitarbeiter sagt kurzfristig ab.
+
+Positiv erlebt: Du bleibst ruhig, weil du Erfahrung hast und vertraust, dass Aufgaben kompetent verteilt werden.
+
+Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich später herausstellt, dass alles in Ordnung ist."""
     },
     "Veränderungen im Betreuungsbedarf der Klient:innen": {
         "examples": "steigender Pflegebedarf, neue pädagogische Anforderungen, komplexere Cases",
         "color": "#4ECDC4",
         "bischof": "Explorationssystem - Umgang mit veränderten Anforderungen",
         "grawe": "Bedürfnisse: Kompetenzerleben, Kontrolle, Lustgewinn/Unlustvermeidung",
-        "flow": "Passung zwischen professionellen Kompetenzen und Anforderungen"
+        "flow": "Passung zwischen professionellen Kompetenzen und Anforderungen",
+        "explanation": """Der Betreuungsbedarf der Klienten kann sich verändern, z. B. durch gesundheitliche Verschlechterungen oder neue Anforderungen.
+
+Beispiel: Ein Klient benötigt plötzlich mehr Unterstützung im Alltag.
+
+Positiv erlebt: Du spürst, dass du die Situation gut einschätzen kannst, weil du Erfahrung mit ähnlichen Fällen hast und weißt, wie du angemessen reagieren kannst.
+
+Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränderung löst Stress aus, weil du Angst hast, etwas falsch zu machen."""
     },
     "Prozess- oder Verfahrensänderungen": {
         "examples": "Anpassung bei Dienstübergaben, Dokumentation, interne Abläufe, neue Software",
         "color": "#FFD166",
         "bischof": "Orientierungssystem - Umgang mit veränderter Struktur",
         "grawe": "Bedürfnisse: Orientierung, Kontrolle, Selbstwert (durch Routine)",
-        "flow": "Balance zwischen Routinesicherheit und Lernherausforderungen"
+        "flow": "Balance zwischen Routinesicherheit und Lernherausforderungen",
+        "explanation": """Interne Abläufe ändern sich regelmäßig, z. B. bei Dienstübergaben, Dokumentationen oder neuer Software.
+
+Beispiel: Ein neues digitales Dokumentationssystem wird eingeführt.
+
+Positiv erlebt: Du gehst die Umstellung gelassen an, weil du schon oft neue Abläufe gelernt hast und dir vertraut ist, dass Schulungen helfen.
+
+Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt."""
     },
     "Kompetenzanforderungen / Weiterbildung": {
         "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierungen",
         "color": "#06D6A0",
         "bischof": "Explorationssystem - Kompetenzerweiterung und Wachstum",
         "grawe": "Bedürfnisse: Selbstwerterhöhung, Kompetenzerleben, Kontrolle",
-        "flow": "Optimale Lernherausforderung ohne Überforderung"
+        "flow": "Optimale Lernherausforderung ohne Überforderung",
+        "explanation": """Manchmal kommen neue Aufgaben oder zusätzliche Qualifikationen auf dich zu.
+
+Beispiel: Du sollst eine neue Aufgabe übernehmen, z. B. eine Schulung für Kollegen leiten.
+
+Positiv erlebt: Du fühlst dich sicher und neugierig, weil du ähnliche Aufgaben bereits gemeistert hast und dein Wissen anwenden kannst.
+
+Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforderungen nicht gerecht zu werden, selbst wenn du später die Aufgabe gut bewältigst."""
     },
     "Interpersonelle Veränderungen": {
         "examples": "Konflikte, Rollenverschiebungen, neue Kolleg:innen, Veränderung in Führung",
         "color": "#A78AFF",
         "bischof": "Bindungssystem - Sicherheit in sozialen Beziehungen",
         "grawe": "Bedürfnisse: Bindung, Selbstwertschutz, Unlustvermeidung",
-        "flow": "Soziale Kompetenz im Umgang mit zwischenmenschlichen Herausforderungen"
+        "flow": "Soziale Kompetenz im Umgang mit zwischenmenschlichen Herausforderungen",
+        "explanation": """Beziehungen im Team verändern sich, z. B. durch Konflikte, neue Kollegen oder Führungswechsel.
+
+Beispiel: Ein Konflikt zwischen Kollegen entsteht oder eine neue Leitungskraft übernimmt.
+
+Positiv erlebt: Du spürst, dass du gut damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weißt, wie man Spannungen aushält.
+
+Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt."""
     }
 }
 
@@ -115,22 +150,22 @@ def calculate_flow(skill, challenge):
 def create_flow_plot(data, domain_colors):
     fig, ax = plt.subplots(figsize=(12, 8))
     
-    # Definiere die Flow-Zonen als Polygone
+    # Definiere die Flow-Zonen als Csikszentmihalyi's Flow-Kanal
     # Apathiezone (unten links)
     apathy_zone = Polygon([[1, 1], [4, 1], [4, 2], [2.5, 2], [1, 1]], 
-                         closed=True, color='lightgray', alpha=0.3, label='Apathie (Grawe: Bedürfnisfrustration)')
+                         closed=True, color='lightgray', alpha=0.3, label='Apathie')
     
     # Langeweile-Zone (unten rechts)
     boredom_zone = Polygon([[4, 1], [7, 1], [7, 4], [4, 4], [4, 1]], 
-                          closed=True, color='lightblue', alpha=0.3, label='Langeweile (Bischof: Explorationsblockade)')
+                          closed=True, color='lightblue', alpha=0.3, label='Langeweile')
     
     # Angst-Zone (oben links)
     anxiety_zone = Polygon([[1, 4], [4, 4], [4, 7], [1, 7], [1, 4]], 
-                          closed=True, color='lightcoral', alpha=0.3, label='Angst/Überlastung (Csikszentmihalyi: Disflow)')
+                          closed=True, color='lightcoral', alpha=0.3, label='Angst/Überlastung')
     
-    # Flow-Zone (Mitte)
+    # Flow-Kanal (diagonaler Bereich)
     flow_zone = Polygon([[4, 4], [7, 4], [7, 7], [4, 7], [4, 4]], 
-                       closed=True, color='lightgreen', alpha=0.3, label='Flow (Konsistenz nach Grawe)')
+                       closed=True, color='lightgreen', alpha=0.3, label='Flow-Kanal')
     
     # Füge die Zonen zum Plot hinzu
     for zone in [apathy_zone, boredom_zone, anxiety_zone, flow_zone]:
@@ -145,22 +180,22 @@ def create_flow_plot(data, domain_colors):
     
     # Zeichne Punkte mit domänenspezifischen Farben
     for i, (xi, yi, ti, color, label) in enumerate(zip(x, y, time, colors, labels)):
-        ax.scatter(xi, yi, c=color, s=200, alpha=0.8, edgecolors='white', label=label if i == 0 else "")
+        ax.scatter(xi, yi, c=color, s=200, alpha=0.8, edgecolors='white', label=label)
         # Zeichne Zeitwert als Text neben dem Punkt
         ax.annotate(f"{ti}", (xi+0.1, yi+0.1), fontsize=9, fontweight='bold')
     
     # Plot-Einstellungen
     ax.set_xlim(0.5, 7.5)
     ax.set_ylim(0.5, 7.5)
-    ax.set_xlabel('Fähigkeiten (1-7) - Vertrautheit nach Bischof', fontsize=12)
-    ax.set_ylabel('Herausforderungen (1-7) - Exploration nach Bischof', fontsize=12)
-    ax.set_title('Flow-Analyse mit Zeitempfinden - Theoretische Integration', fontsize=14, fontweight='bold')
+    ax.set_xlabel('Fähigkeiten (1-7)', fontsize=12)
+    ax.set_ylabel('Herausforderungen (1-7)', fontsize=12)
+    ax.set_title('Flow-Kanal nach Csikszentmihalyi mit Zeitempfinden', fontsize=14, fontweight='bold')
     
     # Füge diagonale Linie für ideales Flow-Verhältnis hinzu
-    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis (Csikszentmihalyi)')
+    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis')
     
     # Füge Legende hinzu
-    ax.legend(loc='upper left')
+    ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
     
     # Grid hinzufügen
     ax.grid(True, alpha=0.3)
@@ -349,18 +384,12 @@ with st.expander("📚 Theoretische Grundlagen erklären"):
 name = st.text_input("Name (optional)", key="name")
 current_data = {"Name": name}
 
-# Domänen-Abfrage mit theoretischen Erklärungen
+# Domänen-Abfrage mit empathischen Erklärungen
 for domain, config in DOMAINS.items():
     st.subheader(f"**{domain}**")
     
-    with st.expander("ℹ️ Theoretische Einordnung dieser Domäne"):
-        st.markdown(f"""
-        **Bischof (Zürcher Modell)**: {config['bischof']}
-        
-        **Grawe (Konsistenztheorie)**: {config['grawe']}
-        
-        **Csikszentmihalyi (Flow)**: {config['flow']}
-        """)
+    with st.expander("❓ Frage erklärt"):
+        st.markdown(config['explanation'])
     
     st.caption(f"Beispiele: {config['examples']}")
     
@@ -393,7 +422,7 @@ for domain, config in DOMAINS.items():
 # Bestätigungs-Checkbox
 st.divider()
 confirmed = st.checkbox(
-    "✅ Ich bestätige, dass alle Bewertungen bewusst gewählt sind und die theoretischen Erklärungen gelesen wurden.",
+    "✅ Ich bestätige, dass alle Bewertungen bewusst gewählt sind und die Erklärungen gelesen wurden.",
     key="global_confirm"
 )
 
@@ -403,7 +432,7 @@ if st.button("🚀 Theoriegestützte Analyse starten", disabled=not confirmed):
     st.session_state.data.append(current_data)
     
     # 1. Flow-Matrix (Heatmap)
-    st.subheader("📊 Flow-Matrix mit theoretischer Integration")
+    st.subheader("📊 Flow-Kanal nach Csikszentmihalyi")
     
     # Erstelle Domain-Farben Mapping
     domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
