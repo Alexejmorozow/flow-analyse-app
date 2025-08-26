@@ -1,8 +1,3 @@
-# Analyse und Optimierung der Flow-Analyse App für Ihre Arbeit
-
-Vielen Dank für die Übersicht Ihrer Arbeit! Basierend auf den theoretischen Grundlagen (Bischof, Grawe, Csikszentmihalyi) habe ich eine optimierte Version der App erstellt, die den theoretischen Bezug stärker berücksichtigt.
-
-```python
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
