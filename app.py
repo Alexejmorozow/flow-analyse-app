@@ -32,7 +32,7 @@ Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich spät
         "bischof": "Explorationssystem - Umgang mit veränderten Anforderungen",
         "grawe": "Bedürfnisse: Kompetenzerleben, Kontrolle, Lustgewinn/Unlustvermeidung",
         "flow": "Passung zwischen professionellen Kompetenzen und Anforderungen",
-        "explanation": """Der Betreuungsbedarf der Klienten kann sich verändern, z. B. durch gesundheitliche Verschlechterungen oder neue Anforderungen.
+        "explanation": """Der Betreuungsbedarf der Klienten kann sich verändern, z. B. durch gesundheitliche Verschlechterungen oder neue Anforderungen.
 
 Beispiel: Ein Klient benötigt plötzlich mehr Unterstützung im Alltag.
 
@@ -46,7 +46,7 @@ Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränder
         "bischof": "Orientierungssystem - Umgang mit veränderter Struktur",
         "grawe": "Bedürfnisse: Orientierung, Kontrolle, Selbstwert (durch Routine)",
         "flow": "Balance zwischen Routinesicherheit und Lernherausforderungen",
-        "explanation": """Interne Abläufe ändern sich regelmäßig, z. B. bei Dienstübergaben, Dokumentationen oder neuer Software.
+        "explanation": """Interne Abläufe ändern sich regelmäßig, z. B. bei Dienstübergaben, Dokumentationen oder neuer Software.
 
 Beispiel: Ein neues digitales Dokumentationssystem wird eingeführt.
 
@@ -62,7 +62,7 @@ Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu 
         "flow": "Optimale Lernherausforderung ohne Überforderung",
         "explanation": """Manchmal kommen neue Aufgaben oder zusätzliche Qualifikationen auf dich zu.
 
-Beispiel: Du sollst eine neue Aufgabe übernehmen, z. B. eine Schulung für Kollegen leiten.
+Beispiel: Du sollst eine neue Aufgabe übernehmen, z. B. eine Schulung für Kollegen leiten.
 
 Positiv erlebt: Du fühlst dich sicher und neugierig, weil du ähnliche Aufgaben bereits gemeistert hast und dein Wissen anwenden kannst.
 
@@ -74,7 +74,7 @@ Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforder
         "bischof": "Bindungssystem - Sicherheit in sozialen Beziehungen",
         "grawe": "Bedürfnisse: Bindung, Selbstwertschutz, Unlustvermeidung",
         "flow": "Soziale Kompetenz im Umgang mit zwischenmenschlichen Herausforderungen",
-        "explanation": """Beziehungen im Team verändern sich, z. B. durch Konflikte, neue Kollegen oder Führungswechsel.
+        "explanation": """Beziehungen im Team verändern sich, z. B. durch Konflikte, neue Kollegen oder Führungswechsel.
 
 Beispiel: Ein Konflikt zwischen Kollegen entsteht oder eine neue Leitungskraft übernimmt.
 
@@ -91,6 +91,8 @@ if 'data' not in st.session_state:
     st.session_state.data = []
 if 'confirmed' not in st.session_state:
     st.session_state.confirmed = False
+if 'submitted' not in st.session_state:
+    st.session_state.submitted = False
 
 # ===== FUNKTIONEN =====
 def init_db():
@@ -123,6 +125,17 @@ def save_to_db(data):
     conn.commit()
     conn.close()
 
+def validate_data(data):
+    """Einfache Validierung der Eingaben"""
+    for domain in DOMAINS:
+        if data[f"Skill_{domain}"] not in range(1, 8):
+            return False
+        if data[f"Challenge_{domain}"] not in range(1, 8):
+            return False
+        if data[f"Time_{domain}"] not in range(-3, 4):
+            return False
+    return True
+
 def calculate_flow(skill, challenge):
     diff = skill - challenge
     mean_level = (skill + challenge) / 2
@@ -150,59 +163,41 @@ def calculate_flow(skill, challenge):
 def create_flow_plot(data, domain_colors):
     fig, ax = plt.subplots(figsize=(12, 8))
     
-    # Definiere die Flow-Zonen nach Csikszentmihalyi
-    # Flow-Kanal (diagonaler Bereich zwischen y = x - 1 und y = x + 1)
+    # Flow-Kanal nach Csikszentmihalyi: Bereich y = x ± 1
     x_vals = np.linspace(1, 7, 100)
-    flow_channel_lower = np.maximum(x_vals - 1, 1)  # Begrenze auf den Bereich 1-7
-    flow_channel_upper = np.minimum(x_vals + 1, 7)  # Begrenze auf den Bereich 1-7
+    flow_channel_lower = np.maximum(x_vals - 1, 1)
+    flow_channel_upper = np.minimum(x_vals + 1, 7)
     
-    # Fülle den Bereich zwischen den Linien
     ax.fill_between(x_vals, flow_channel_lower, flow_channel_upper, 
                    color='lightgreen', alpha=0.3, label='Flow-Kanal')
-    
-    # Apathiezone (unterhalb des Flow-Kanals)
     ax.fill_between(x_vals, 1, flow_channel_lower, 
                    color='lightgray', alpha=0.3, label='Apathie')
-    
-    # Angst-Zone (oberhalb des Flow-Kanals)
     ax.fill_between(x_vals, flow_channel_upper, 7, 
                    color='lightcoral', alpha=0.3, label='Angst/Überlastung')
     
-    # Extrahiere Datenpunkte
     x = [data[f"Skill_{d}"] for d in DOMAINS]
     y = [data[f"Challenge_{d}"] for d in DOMAINS]
     time = [data[f"Time_{d}"] for d in DOMAINS]
     colors = [domain_colors[d] for d in DOMAINS]
     labels = list(DOMAINS.keys())
     
-    # Zeichne Punkte mit domänenspezifischen Farben
-    for i, (xi, yi, ti, color, label) in enumerate(zip(x, y, time, colors, labels)):
-        ax.scatter(xi, yi, c=color, s=200, alpha=0.8, edgecolors='white', label=label)
-        # Zeichne Zeitwert als Text neben dem Punkt
+    for (xi, yi, ti, color, label) in zip(x, y, time, colors, labels):
+        ax.scatter(xi, yi, c=color, s=200, alpha=0.9, edgecolors='white', linewidths=1.5, label=label)
         ax.annotate(f"{ti}", (xi+0.1, yi+0.1), fontsize=9, fontweight='bold')
     
-    # Plot-Einstellungen
     ax.set_xlim(0.5, 7.5)
     ax.set_ylim(0.5, 7.5)
     ax.set_xlabel('Fähigkeiten (1-7)', fontsize=12)
     ax.set_ylabel('Herausforderungen (1-7)', fontsize=12)
     ax.set_title('Flow-Kanal nach Csikszentmihalyi mit Zeitempfinden', fontsize=14, fontweight='bold')
-    
-    # Füge diagonale Linie für ideales Flow-Verhältnis hinzu
     ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis')
-    
-    # Füge Legende hinzu
     ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
-    
-    # Grid hinzufügen
     ax.grid(True, alpha=0.3)
-    
     plt.tight_layout()
     return fig
 
 def generate_recommendation(skill, challenge, time, domain):
     diff = skill - challenge
-    
     if diff < -2:  # Überlastung
         return f"Reduzieren Sie die Herausforderungen in {domain} oder erhöhen Sie Ihre Kompetenzen durch Training und Unterstützung."
     elif diff > 2:  # Langeweile
@@ -213,8 +208,7 @@ def generate_recommendation(skill, challenge, time, domain):
         return f"Arbeiten Sie an beiden Dimensionen: Steigern Sie sowohl Fähigkeiten als auch Herausforderungen in {domain}."
 
 def create_text_report(data):
-    """Erstellt einen Text-Report mit den Flow-Analyse-Daten"""
-    # Überschrift
+    """Erstellt einen optimierten Text-Report mit den Flow-Analyse-Daten"""
     report = "=" * 80 + "\n"
     report += "🌊 FLOW-ANALYSE PRO - REPORT (Theorieintegriert)\n"
     report += "=" * 80 + "\n\n"
@@ -229,7 +223,7 @@ def create_text_report(data):
     report += "-" * 80 + "\n"
     report += "Diese Analyse integriert:\n"
     report += "• Bischofs Zürcher Modell (Bindung/Exploration)\n"
-    report += "• Graves Konsistenztheorie (psychologische Grundbedürfnisse)\n"
+    report += "• Grawe Konsistenztheorie (psychologische Grundbedürfnisse)\n"
     report += "• Csikszentmihalyis Flow-Theorie (Fähigkeiten-Herausforderungs-Balance)\n"
     report += "• Subjektives Zeiterleben als Indikator für motivationale Passung\n\n"
     
@@ -237,18 +231,22 @@ def create_text_report(data):
     report += "ZUSAMMENFASSENDE BEWERTUNG:\n"
     report += "-" * 80 + "\n"
     
-    # Berechne Gesamtwerte
     total_flow = 0
     domain_count = len(DOMAINS)
+    flow_domains = []
+    development_domains = []
     
     for domain in DOMAINS:
         skill = data[f"Skill_{domain}"]
         challenge = data[f"Challenge_{domain}"]
         flow_index, zone, explanation = calculate_flow(skill, challenge)
         total_flow += flow_index
+        if "Flow" in zone:
+            flow_domains.append(domain)
+        elif "Apathie" in zone or "Angst" in zone or "Langeweile" in zone or "Mittlere" in zone:
+            development_domains.append(domain)
     
     avg_flow = total_flow / domain_count
-    
     report += f"Durchschnittlicher Flow-Index: {avg_flow:.2f}/1.0\n"
     
     if avg_flow >= 0.7:
@@ -258,12 +256,36 @@ def create_text_report(data):
     else:
         report += "Gesamtbewertung:       GERINGES FLOW-ERLEBEN (Inkonsistenz) ⚠️\n"
     
+    if flow_domains:
+        report += f"Flow-Bereiche:         {', '.join(flow_domains)} 🎯\n"
+    if development_domains:
+        report += f"Entwicklungsbereiche:  {', '.join(development_domains)} 📈\n"
     report += "\n"
+    
+    # Führungskräfte-Zusammenfassung
+    report += "ZUSAMMENFASSUNG FÜR FÜHRUNGSKRÄFTE:\n"
+    report += "-" * 80 + "\n"
+    if flow_domains:
+        report += "🎯 STÄRKEN:\n"
+        for domain in flow_domains:
+            skill = data[f"Skill_{domain}"]
+            challenge = data[f"Challenge_{domain}"]
+            flow_index, zone, explanation = calculate_flow(skill, challenge)
+            report += f"• {domain}: {explanation}\n"
+    if development_domains:
+        report += "\n📈 ENTWICKLUNGSBEREICHE:\n"
+        for domain in development_domains:
+            skill = data[f"Skill_{domain}"]
+            challenge = data[f"Challenge_{domain}"]
+            flow_index, zone, explanation = calculate_flow(skill, challenge)
+            report += f"• {domain}: {explanation}\n"
+    
+    report += "\n" + "-" * 80 + "\n\n"
     
     # Detailtabelle
     report += "DETAILAUSWERTUNG PRO DOMÄNE:\n"
     report += "-" * 80 + "\n"
-    report += f"{'Domäne':<35} {'Fähig':<6} {'Herausf':<8} {'Zeit':<6} {'Flow':<6} {'Zone':<20} {'Theoriebezug':<30}\n"
+    report += f"{'Domäne':<35} {'Fähig':<6} {'Herausf':<8} {'Zeit':<6} {'Flow':<6} {'Zone':<20}\n"
     report += "-" * 80 + "\n"
     
     for domain in DOMAINS:
@@ -272,75 +294,104 @@ def create_text_report(data):
         time_perception = data[f"Time_{domain}"]
         flow_index, zone, explanation = calculate_flow(skill, challenge)
         
-        # Emoji für bessere Visualisierung
-        zone_emoji = ""
-        if "Flow" in zone:
-            zone_emoji = "🎯"
-        elif "Apathie" in zone:
-            zone_emoji = "😑"
-        elif "Langeweile" in zone:
-            zone_emoji = "😴"
-        elif "Angst" in zone:
-            zone_emoji = "😰"
-        
-        # Kürze den Domänennamen für bessere Darstellung
-        short_domain = (domain[:32] + '...') if len(domain) > 32 else domain
-        
-        report += f"{short_domain:<35} {skill:<6} {challenge:<8} {time_perception:<6} {flow_index:.2f}  {zone[:15]:<15} {zone_emoji} {DOMAINS[domain]['bischof'][:25]:<30}\n"
-    
-    report += "\n\n"
-    
-    # Handlungsempfehlungen basierend auf den Ergebnissen
-    report += "HANDLUNGSEMPFEHLUNGEN (THEORIEGESTÜTZT):\n"
-    report += "-" * 80 + "\n"
-    
-    for domain in DOMAINS:
-        skill = data[f"Skill_{domain}"]
-        challenge = data[f"Challenge_{domain}"]
-        time_perception = data[f"Time_{domain}"]
-        flow_index, zone, explanation = calculate_flow(skill, challenge)
-        
-        report += f"• {domain}:\n"
-        report += f"  Theorie: {DOMAINS[domain]['bischof']}\n"
-        report += f"  {explanation}\n"
-        
-        if "Angst/Überlastung" in zone:
-            report += f"  → Maßnahme: Herausforderung reduzieren (Bischof: Explorationsdruck mindern) oder Fähigkeiten durch Training verbessern (Grawe: Kompetenzerleben stärken)\n"
-        elif "Langeweile" in zone:
-            report += f"  → Maßnahme: Herausforderung erhöhen (Bischof: Exploration anregen) oder neue Aufgaben suchen (Csikszentmihalyi: Flow-Kanal nutzen)\n"
-        elif "Apathie" in zone:
-            report += f"  → Maßnahme: Sowohl Fähigkeiten als auch Herausforderungen steigern (Grawe: Konsistenz durch Bedürfniserfüllung)\n"
-        elif "Flow" in zone:
-            report += f"  → Maßnahme: Aktuelle Balance beibehalten - idealer Zustand! (Csikszentmihalyi: Flow-Zustand erhalten)\n"
-        else:
-            report += f"  → Maßnahme: Leichte Anpassungen in beide Richtungen könnten Flow verstärken (Grawe: Konsistenzoptimierung)\n"
-        
-        # Zeitempfehlungen mit Theoriebezug
+        # Emojis
+        zone_emoji = "🎯" if "Flow" in zone else ("😑" if "Apathie" in zone else ("😴" if "Langeweile" in zone else ("😰" if "Angst" in zone else "➖")))
+        time_emoji = "⏱️"
         if time_perception < -1:
-            report += f"  → Zeitgestaltung: Aufgaben interessanter gestalten (Csikszentmihalyi: Zeitdehnung durch mangelnde Passung)\n"
+            time_emoji = "🐢"
         elif time_perception > 1:
-            report += f"  → Zeitgestaltung: Auf ausreichende Pausen achten (Bischof: Explorationserschöpfung vermeiden)\n"
+            time_emoji = "⚡"
         
-        report += "\n"
+        short_domain = (domain[:32] + '...') if len(domain) > 32 else domain
+        report += f"{short_domain:<35} {skill:<6} {challenge:<8} {time_perception:<4} {time_emoji}  {flow_index:.2f}  {zone[:15]:<15} {zone_emoji}\n"
     
     report += "\n"
+    report += "Zeitempfinden: 🐢 = Zeit dehnt sich (Unterforderung/Überforderung), ⏱️ = Normal, ⚡ = Zeit rafft sich (Flow/Stress)\n"
+    report += "\n"
     
-    # Theoretische Erklärung der Skalen
+    # Handlungsempfehlungen priorisiert
+    report += "HANDLUNGSEMPFEHLUNGEN (PRIORISIERT NACH ENTWICKLUNGSBEDARF):\n"
+    report += "-" * 80 + "\n"
+    domains_sorted = sorted(DOMAINS.keys(), key=lambda d: calculate_flow(data[f"Skill_{d}"], data[f"Challenge_{d}"])[0])
+    
+    for domain in domains_sorted:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_perception = data[f"Time_{domain}"]
+        flow_index, zone, explanation = calculate_flow(skill, challenge)
+        priority_emoji = "✅" if "Flow" in zone else ("⚠️" if "Mittlere" in zone else "🚩")
+        
+        report += f"{priority_emoji} {domain}:\n"
+        report += f"   Theorie: {DOMAINS[domain]['bischof']}\n"
+        report += f"   {explanation}\n"
+        
+        if "Angst/Überlastung" in zone:
+            report += f"   → Maßnahme: Herausforderung reduzieren (Bischof: Explorationsdruck mindern) oder Fähigkeiten durch Training verbessern (Grawe: Kompetenzerleben stärken)\n"
+            report += f"   💡 PRAXIS-TIPP: Nutzen Sie Supervision, bitten Sie um Entlastung oder gezieltes Training\n"
+        elif "Langeweile" in zone:
+            report += f"   → Maßnahme: Herausforderung erhöhen (Bischof: Exploration anregen) oder neue Aufgaben suchen (Csikszentmihalyi: Flow-Kanal nutzen)\n"
+            report += f"   💡 PRAXIS-TIPP: Bitten Sie um anspruchsvollere Aufgaben oder übernehmen Sie Mentoring-Rollen\n"
+        elif "Apathie" in zone:
+            report += f"   → Maßnahme: Sowohl Fähigkeiten als auch Herausforderungen steigern (Grawe: Konsistenz durch Bedürfniserfüllung)\n"
+            report += f"   💡 PRAXIS-TIPP: Setzen Sie sich kleine, erreichbare Ziele und feiern Sie Erfolge\n"
+        elif "Flow" in zone:
+            report += f"   → Maßnahme: Aktuelle Balance beibehalten - idealer Zustand! (Csikszentmihalyi: Flow-Zustand erhalten)\n"
+            report += f"   💡 PRAXIS-TIPP: Dokumentieren Sie Ihre Erfolgsstrategien für andere Bereiche\n"
+        else:
+            report += f"   → Maßnahme: Leichte Anpassungen in beide Richtungen könnten Flow verstärken (Grawe: Konsistenzoptimierung)\n"
+            report += f"   💡 PRAXIS-TIPP: Kleine Veränderungen in beiden Dimensionen ausprobieren\n"
+        
+        if time_perception < -1:
+            report += f"   → Zeitgestaltung: Aufgaben interessanter gestalten (Csikszentmihalyi: Zeitdehnung durch mangelnde Passung)\n"
+        elif time_perception > 1:
+            report += f"   → Zeitgestaltung: Auf ausreichende Pausen achten (Bischof: Explorationserschöpfung vermeiden)\n"
+        
+        report += f"   Flow-Index: {flow_index:.2f}/1.0\n\n"
+    
+    # Entwicklungsroadmap
+    report += "ENTWICKLUNGSPLAN (VORSCHLAG):\n"
+    report += "-" * 80 + "\n"
+    timeframes = {
+        "sofort": "Innerhalb von 2 Wochen",
+        "kurzfristig": "Innerhalb von 1-3 Monaten", 
+        "mittelfristig": "Innerhalb von 3-6 Monaten"
+    }
+    # Übersicht strukturieren
+    timeframe_categories = {"sofort": [], "kurzfristig": [], "mittelfristig": []}
+    for i, domain in enumerate(domains_sorted):
+        flow_index, zone, explanation = calculate_flow(data[f"Skill_{domain}"], data[f"Challenge_{domain}"])
+        if "Flow" not in zone:
+            priority_level = min(i, 2)  # 0->sofort, 1->kurzfristig, 2+->mittelfristig
+            timeframe = list(timeframe_categories.keys())[priority_level]
+            timeframe_categories[timeframe].append(domain)
+    
+    for key in ["sofort", "kurzfristig", "mittelfristig"]:
+        domains = timeframe_categories[key]
+        if domains:
+            report += f"{timeframes[key].upper()}:\n"
+            for d in domains:
+                report += f"• {d}\n"
+            report += "\n"
+    
+    report += "\n" + "-" * 80 + "\n\n"
+    
+    # Skalen-Erklärung
     report += "THEORETISCHE ERKLÄRUNG DER SKALEN:\n"
     report += "-" * 80 + "\n"
     report += "Fähigkeiten (1-7):          Vertrautheit nach Bischof - Erleben von Sicherheit und Kompetenz\n"
     report += "Herausforderungen (1-7):    Exploration nach Bischof - Neuheitsgrad und Anforderungsniveau\n"
-    report += "Zeitempfinden (-3 bis +3):  Indikator für motivationale Passung (Csikszentmihalyi) - Zeitdehnung bei Unterforderung, Zeitraffung bei Flow\n\n"
+    report += "Zeitempfinden (-3 bis +3):  Indikator für motivationale Passung (Csikszentmihalyi) - Zeitdehnung bei Unterforderung/Überforderung, Zeitraffung bei Flow/Stress\n\n"
     
     report += "FLOW-ZONEN (THEORIEINTEGRIERT):\n"
+    report += "-" * 80 + "\n"
     report += "- Flow (Csikszentmihalyi):                    Optimale Balance = Konsistenz (Grawe) + Explorations-Bindungs-Balance (Bischof)\n"
     report += "- Apathie (Grawe):                            Bedürfnisfrustration in mehreren Grundbedürfnissen\n"
     report += "- Langeweile (Bischof):                       Explorationsblockade bei ausreichender Bindungssicherheit\n"
     report += "- Angst/Überlastung (Csikszentmihalyi):       Disflow durch mangelnde Passung zwischen Fähigkeiten und Herausforderungen\n"
+    report += "- Mittlere Aktivierung:                       Grundlegende Passung mit Entwicklungspotential\n"
     
     report += "\n" + "=" * 80 + "\n"
     report += "END OF REPORT - © Flow-Analyse Pro (Theorieintegriert)"
-    
     return report
 
 # ===== STREAMLIT-UI =====
@@ -357,7 +408,6 @@ st.markdown("""
 - **Zeitempfinden** (-3 bis +3) – Indikator für motivationale Passung (Csikszentmihalyi)  
 """)
 
-# Theorie-Erklärung expander
 with st.expander("📚 Theoretische Grundlagen erklären"):
     st.markdown("""
     ### Integrierte Theorien:
@@ -367,7 +417,7 @@ with st.expander("📚 Theoretische Grundlagen erklären"):
     - **Explorationssystem**: Bedürfnis nach Neuem, Entwicklung und Wachstum
     - In Veränderungsprozessen: Balance zwischen Vertrautem und Neuem erforderlich
     
-    **2. Graves Konsistenztheorie (psychologische Grundbedürfnisse)**
+    **2. Grawe Konsistenztheorie (psychologische Grundbedürfnisse)**
     - Vier Grundbedürfnisse: Bindung, Orientierung/Kontrolle, Selbstwerterhöhung/-schutz, Lustgewinn/Unlustvermeidung
     - Motivation entsteht durch Passung zwischen Bedürfnissen und Umwelt
     - Veränderungen können Bedürfnisverletzungen hervorrufen
@@ -381,13 +431,11 @@ with st.expander("📚 Theoretische Grundlagen erklären"):
 name = st.text_input("Name (optional)", key="name")
 current_data = {"Name": name}
 
-# Domänen-Abfrage mit empathischen Erklärungen
+# Domänen-Abfrage
 for domain, config in DOMAINS.items():
     st.subheader(f"**{domain}**")
-    
     with st.expander("❓ Frage erklärt"):
         st.markdown(config['explanation'])
-    
     st.caption(f"Beispiele: {config['examples']}")
     
     cols = st.columns(3)
@@ -407,7 +455,7 @@ for domain, config in DOMAINS.items():
         time_perception = st.slider(
             "Zeitempfinden (-3 bis +3)", -3, 3, 0,
             key=f"time_{domain}",
-            help="-3 = Zeit zieht sich extrem (Unterforderung/Überforderung), 0 = Normal, +3 = Zeit vergeht extrem schnell (Flow)"
+            help="-3 = Zeit zieht sich extrem (Unterforderung/Überforderung), 0 = Normal, +3 = Zeit vergeht extrem schnell (Flow/Stress)"
         )
     
     current_data.update({
@@ -416,7 +464,6 @@ for domain, config in DOMAINS.items():
         f"Time_{domain}": time_perception
     })
 
-# Bestätigungs-Checkbox
 st.divider()
 confirmed = st.checkbox(
     "✅ Ich bestätige, dass alle Bewertungen bewusst gewählt sind und die Erklärungen gelesen wurden.",
@@ -425,90 +472,141 @@ confirmed = st.checkbox(
 
 # Auswertung
 if st.button("🚀 Theoriegestützte Analyse starten", disabled=not confirmed):
-    save_to_db(current_data)
-    st.session_state.data.append(current_data)
-    
-    # 1. Flow-Matrix (Heatmap)
-    st.subheader("📊 Flow-Kanal nach Csikszentmihalyi")
-    
-    # Erstelle Domain-Farben Mapping
-    domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
-    
-    # Erstelle den Plot
-    fig = create_flow_plot(current_data, domain_colors)
-    st.pyplot(fig)
-    
-    # 2. Detailtabelle
-    st.subheader("📋 Detailauswertung pro Domäne (theorieintegriert)")
-    results = []
-    for domain in DOMAINS:
-        skill = current_data[f"Skill_{domain}"]
-        challenge = current_data[f"Challenge_{domain}"]
-        time = current_data[f"Time_{domain}"]
+    if not validate_data(current_data):
+        st.error("Bitte prüfen Sie die Eingaben. Werte außerhalb der Skalen wurden erkannt.")
+        st.stop()
+    with st.spinner('Analysiere Daten und erstelle Report...'):
+        save_to_db(current_data)
+        st.session_state.data.append(current_data)
+        st.session_state.submitted = True
+
+        # 1. Flow-Matrix (Heatmap)
+        st.subheader("📊 Flow-Kanal nach Csikszentmihalyi")
+        domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
+        fig = create_flow_plot(current_data, domain_colors)
+        st.pyplot(fig)
         
-        flow, zone, explanation = calculate_flow(skill, challenge)
+        # 2. Detailtabelle
+        st.subheader("📋 Detailauswertung pro Domäne (theorieintegriert)")
+        results = []
+        for domain in DOMAINS:
+            skill = current_data[f"Skill_{domain}"]
+            challenge = current_data[f"Challenge_{domain}"]
+            time_val = current_data[f"Time_{domain}"]
+            flow, zone, explanation = calculate_flow(skill, challenge)
+            results.append({
+                "Domäne": domain,
+                "Flow-Index": flow,
+                "Zone": zone,
+                "Zeitempfinden": time_val,
+                "Theoriebezug": DOMAINS[domain]["bischof"][:40] + "...",
+                "Interpretation": "Stress (Zeitraffung)" if time_val > 1 else ("Langeweile (Zeitdehnung)" if time_val < -1 else "Normal")
+            })
         
-        results.append({
-            "Domäne": domain,
-            "Flow-Index": flow,
-            "Zone": zone,
-            "Zeitempfinden": time,
-            "Theoriebezug": DOMAINS[domain]["bischof"][:40] + "...",
-            "Interpretation": "Stress (Zeitraffung)" if time > 1 else ("Langeweile (Zeitdehnung)" if time < -1 else "Normal")
-        })
-    
-    st.dataframe(
-        pd.DataFrame(results),
-        column_config={
-            "Flow-Index": st.column_config.ProgressColumn(
-                min_value=0, 
-                max_value=1,
-                format="%.2f"
-            ),
-            "Zeitempfinden": st.column_config.NumberColumn(format="%d")
-        },
-        hide_index=True,
-        use_container_width=True
-    )
-    
-    # 3. Theoriebasierte Interpretation
-    st.subheader("🧠 Theoriebasierte Interpretation der Ergebnisse")
-    
-    for domain in DOMAINS:
-        skill = current_data[f"Skill_{domain}"]
-        challenge = current_data[f"Challenge_{domain}"]
-        time = current_data[f"Time_{domain}"]
-        flow, zone, explanation = calculate_flow(skill, challenge)
+        st.dataframe(
+            pd.DataFrame(results),
+            column_config={
+                "Flow-Index": st.column_config.ProgressColumn(
+                    min_value=0, 
+                    max_value=1,
+                    format="%.2f"
+                ),
+                "Zeitempfinden": st.column_config.NumberColumn(format="%d")
+            },
+            hide_index=True,
+            use_container_width=True
+        )
         
-        with st.expander(f"Interpretation: {domain}"):
-            st.markdown(f"""
-            **Bewertung**: Fähigkeiten={skill}, Herausforderung={challenge}, Zeitempfinden={time}
-            
-            **Flow-Zone**: {zone}
-            
-            **Erklärung**: {explanation}
-            
-            **Theoretische Einordnung**:
-            - **Bischof**: {DOMAINS[domain]['bischof']}
-            - **Grawe**: {DOMAINS[domain]['grawe']}
-            - **Csikszentmihalyi**: {DOMAINS[domain]['flow']}
-            
-            **Handlungsempfehlung**:
-            {generate_recommendation(skill, challenge, time, domain)}
-            """)
-    
-    # 4. Text-Report anzeigen
-    st.subheader("📄 Vollständiger Text-Report")
-    text_report = create_text_report(current_data)
-    st.text_area("Report", text_report, height=400)
-    
-    # 5. Download-Button für Report
-    st.download_button(
-        label="📥 Report als Text herunterladen",
-        data=text_report,
-        file_name=f"flow_analyse_report_{name if name else 'anonymous'}.txt",
-        mime="text/plain"
-    )
+        # 3. Theoriebasierte Interpretation
+        st.subheader("🧠 Theoriebasierte Interpretation der Ergebnisse")
+        for domain in DOMAINS:
+            skill = current_data[f"Skill_{domain}"]
+            challenge = current_data[f"Challenge_{domain}"]
+            time_val = current_data[f"Time_{domain}"]
+            flow, zone, explanation = calculate_flow(skill, challenge)
+            with st.expander(f"Interpretation: {domain}"):
+                st.markdown(f"""
+                **Bewertung**: Fähigkeiten={skill}, Herausforderung={challenge}, Zeitempfinden={time_val}
+                
+                **Flow-Zone**: {zone}
+                
+                **Erklärung**: {explanation}
+                
+                **Theoretische Einordnung**:
+                - **Bischof**: {DOMAINS[domain]['bischof']}
+                - **Grawe**: {DOMAINS[domain]['grawe']}
+                - **Csikszentmihalyi**: {DOMAINS[domain]['flow']}
+                
+                **Handlungsempfehlung**:
+                {generate_recommendation(skill, challenge, time_val, domain)}
+                """)
+        
+        # 4. Text-Report
+        st.subheader("📄 Vollständiger Text-Report")
+        text_report = create_text_report(current_data)
+        st.text_area("Report", text_report, height=400)
+        st.download_button(
+            label="📥 Report als Text herunterladen",
+            data=text_report,
+            file_name=f"flow_analyse_report_{name if name else 'anonymous'}.txt",
+            mime="text/plain"
+        )
+
+        # 5. 🎯 Persönlicher Entwicklungsplan (interaktiv)
+        st.subheader("🎯 Persönlicher Entwicklungsplan")
+        development_domains = []
+        for domain in DOMAINS:
+            skill = current_data[f"Skill_{domain}"]
+            challenge = current_data[f"Challenge_{domain}"]
+            flow_index, zone, explanation = calculate_flow(skill, challenge)
+            if "Flow" not in zone:
+                development_domains.append({"domain": domain, "skill": skill, "challenge": challenge, "flow_index": flow_index, "zone": zone})
+        
+        if development_domains:
+            development_domains.sort(key=lambda x: x["flow_index"])
+            selected_domain = st.selectbox(
+                "Wählen Sie einen Bereich für Ihren Entwicklungsplan:",
+                [d["domain"] for d in development_domains],
+                index=0
+            )
+            if selected_domain:
+                domain_data = next(d for d in development_domains if d["domain"] == selected_domain)
+                skill = domain_data["skill"]
+                challenge = domain_data["challenge"]
+                zone = domain_data["zone"]
+                
+                st.write(f"### Entwicklungsplan für: {selected_domain}")
+                
+                if skill > challenge + 1:  # Langeweile
+                    st.info("**Strategie: Herausforderung erhöhen**")
+                    st.write("""
+- Bitten Sie um anspruchsvollere Aufgaben
+- Übernehmen Sie Mentoring-Verantwortung
+- Entwickeln Sie neue Prozesse
+- Stellen Sie sich neuen Projekten
+""")
+                elif challenge > skill + 1:  # Überlastung
+                    st.warning("**Strategie: Kompetenz steigern oder Last reduzieren**")
+                    st.write("""
+- Nutzen Sie Fortbildungsangebote
+- Bitten Sie um Unterstützung im Team
+- Setzen Sie Prioritäten bei Aufgaben
+- Nutzen Sie Supervision
+""")
+                else:  # Mittlere Aktivierung
+                    st.info("**Strategie: Beide Dimensionen entwickeln**")
+                    st.write("""
+- Schrittweise beide Bereiche weiterentwickeln
+- Kleine, messbare Ziele setzen
+- Regelmäßig reflektieren und anpassen
+""")
+        else:
+            st.success("🎉 Exzellent! Sie befinden sich in allen Bereichen im Flow-Zustand.")
+
+# Optionales UI-Feedback nach Absenden
+if st.session_state.get('submitted', False):
+    st.success("✅ Analyse erfolgreich gespeichert und durchgeführt!")
+    st.balloons()
 
 # Footer
 st.divider()
