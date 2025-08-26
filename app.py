@@ -7,7 +7,6 @@ import sqlite3
 from datetime import datetime
 from matplotlib.patches import Polygon
 import matplotlib.colors as mcolors
-from fpdf import FPDF
 import tempfile
 import os
 
@@ -149,88 +148,36 @@ def create_flow_plot(data, domain_colors):
     plt.tight_layout()
     return fig
 
-def create_pdf_report(data, plot_image_path=None):
-    """Erstellt einen PDF-Report mit den Flow-Analyse-Daten"""
-    pdf = FPDF()
-    pdf.add_page()
+def create_text_report(data):
+    """Erstellt einen Text-Report mit den Flow-Analyse-Daten"""
+    report = f"🌊 Flow-Analyse Pro - Report\n\n"
+    report += f"Name: {data['Name'] if data['Name'] else 'Unbenannt'}\n"
+    report += f"Erstellt am: {datetime.now().strftime('%d.%m.%Y %H:%M')}\n\n"
     
-    # Titel
-    pdf.set_font("Arial", 'B', 20)
-    pdf.cell(0, 10, "🌊 Flow-Analyse Pro - Report", 0, 1, 'C')
-    pdf.ln(5)
+    report += "Zusammenfassung der Bewertungen:\n\n"
+    report += f"{'Domäne':<40} {'Fähigkeit':<10} {'Herausforderung':<15} {'Zeitempfinden':<15} {'Flow-Zone':<20}\n"
+    report += "-" * 100 + "\n"
     
-    # Name und Datum
-    pdf.set_font("Arial", '', 12)
-    name = data[0]["Name"] if data[0]["Name"] else "Unbenannt"
-    pdf.cell(0, 10, f"Name: {name}", 0, 1)
-    pdf.cell(0, 10, f"Erstellt am: {datetime.now().strftime('%d.%m.%Y %H:%M')}", 0, 1)
-    pdf.ln(10)
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_perception = data[f"Time_{domain}"]
+        flow_index, zone = calculate_flow(skill, challenge)
+        
+        report += f"{domain:<40} {skill:<10} {challenge:<15} {time_perception:<15} {zone:<20}\n"
     
-    # Zusammenfassungstabelle
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "Zusammenfassung der Bewertungen", 0, 1)
-    pdf.ln(5)
+    report += "\nErklärung der Skalen:\n"
+    report += "Fähigkeiten (1-7): 1 = Sehr geringe Fähigkeiten, 7 = Sehr hohe Fähigkeiten\n"
+    report += "Herausforderungen (1-7): 1 = Sehr geringe Herausforderung, 7 = Sehr hohe Herausforderung\n"
+    report += "Zeitempfinden (-3 bis +3): -3 = Zeit zieht sich extrem, 0 = Normal, +3 = Zeit vergeht extrem schnell\n\n"
     
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(60, 10, "Domäne", 1)
-    pdf.cell(30, 10, "Fähigkeit", 1)
-    pdf.cell(40, 10, "Herausforderung", 1)
-    pdf.cell(30, 10, "Zeitempfinden", 1)
-    pdf.cell(30, 10, "Flow-Zone", 1)
-    pdf.ln()
+    report += "Flow-Zonen:\n"
+    report += "- Flow: Optimale Balance zwischen Fähigkeiten und Herausforderungen\n"
+    report += "- Apathie: Geringe Fähigkeiten und Herausforderungen\n"
+    report += "- Langeweile: Hohe Fähigkeiten, geringe Herausforderungen\n"
+    report += "- Angst/Überlastung: Geringe Fähigkeiten, hohe Herausforderungen\n"
     
-    pdf.set_font("Arial", '', 10)
-    for entry in data:
-        for domain in DOMAINS:
-            skill = entry[f"Skill_{domain}"]
-            challenge = entry[f"Challenge_{domain}"]
-            time_perception = entry[f"Time_{domain}"]
-            flow_index, zone = calculate_flow(skill, challenge)
-            
-            pdf.cell(60, 8, domain, 1)
-            pdf.cell(30, 8, str(skill), 1)
-            pdf.cell(40, 8, str(challenge), 1)
-            pdf.cell(30, 8, str(time_perception), 1)
-            pdf.cell(30, 8, zone, 1)
-            pdf.ln()
-    
-    # Diagramm einfügen falls vorhanden
-    if plot_image_path and os.path.exists(plot_image_path):
-        pdf.add_page()
-        pdf.set_font("Arial", 'B', 16)
-        pdf.cell(0, 10, "Flow-Matrix Visualisierung", 0, 1)
-        pdf.ln(5)
-        pdf.image(plot_image_path, x=10, y=40, w=180)
-    
-    # Erklärung der Skalen
-    pdf.add_page()
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "Erklärung der Skalen", 0, 1)
-    pdf.ln(5)
-    
-    pdf.set_font("Arial", '', 12)
-    pdf.multi_cell(0, 8, "Fähigkeiten (1-7):")
-    pdf.multi_cell(0, 6, "1 = Sehr geringe Fähigkeiten, 7 = Sehr hohe Fähigkeiten")
-    pdf.ln(5)
-    
-    pdf.multi_cell(0, 8, "Herausforderungen (1-7):")
-    pdf.multi_cell(0, 6, "1 = Sehr geringe Herausforderung, 7 = Sehr hohe Herausforderung")
-    pdf.ln(5)
-    
-    pdf.multi_cell(0, 8, "Zeitempfinden (-3 bis +3):")
-    pdf.multi_cell(0, 6, "-3 = Zeit zieht sich extrem, 0 = Normal, +3 = Zeit vergeht extrem schnell")
-    pdf.ln(5)
-    
-    pdf.multi_cell(0, 8, "Flow-Zonen:")
-    pdf.multi_cell(0, 6, "- Flow: Optimale Balance zwischen Fähigkeiten und Herausforderungen")
-    pdf.multi_cell(0, 6, "- Apathie: Geringe Fähigkeiten und Herausforderungen")
-    pdf.multi_cell(0, 6, "- Langeweile: Hohe Fähigkeiten, geringe Herausforderungen")
-    pdf.multi_cell(0, 6, "- Angst/Überlastung: Geringe Fähigkeiten, hohe Herausforderungen")
-    
-    # PDF speichern
-    pdf_path = tempfile.mktemp(suffix=".pdf")
-    pdf.output(pdf_path)
-    return pdf_path
+    return report
 
 # ===== STREAMLIT-UI =====
 st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
@@ -313,7 +260,7 @@ if st.button("🚀 Analyse starten", disabled=not confirmed):
         
         results.append({
             "Domäne": domain,
-            "Flow-Index": f"{flow:.2f}",
+            "Flow-Index": flow,
             "Zone": zone,
             "Zeitempfinden": time,
             "Interpretation": "Stress" if time > 1 else ("Langeweile" if time < -1 else "Normal")
@@ -322,7 +269,11 @@ if st.button("🚀 Analyse starten", disabled=not confirmed):
     st.dataframe(
         pd.DataFrame(results),
         column_config={
-            "Flow-Index": st.column_config.ProgressColumn(min_value=0, max_value=1),
+            "Flow-Index": st.column_config.ProgressColumn(
+                min_value=0, 
+                max_value=1,
+                format="%.2f"
+            ),
             "Zeitempfinden": st.column_config.NumberColumn(format="%d")
         },
         hide_index=True,
@@ -345,30 +296,18 @@ if st.button("🚀 Analyse starten", disabled=not confirmed):
     
     st.success("Analyse erfolgreich gespeichert und angezeigt!")
 
-# Datenexport als PDF
+# Datenexport als Text
 if st.session_state.data:
-    # Temporäres Bild für PDF speichern
-    domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
-    fig = create_flow_plot(st.session_state.data[-1], domain_colors)
+    # Text-Report erstellen
+    report_text = create_text_report(st.session_state.data[-1])
     
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-        fig.savefig(tmpfile.name, dpi=300, bbox_inches='tight')
-        plot_path = tmpfile.name
-    
-    # PDF erstellen
-    pdf_path = create_pdf_report(st.session_state.data, plot_path)
-    
-    # PDF zum Download anbieten
-    with open(pdf_path, "rb") as pdf_file:
-        pdf_bytes = pdf_file.read()
-    
+    # Text zum Download anbieten
     st.download_button(
-        "💾 Alle Daten exportieren (PDF)",
-        pdf_bytes,
-        "flow_analyse_report.pdf",
-        "application/pdf"
+        "💾 Report als Textdatei exportieren",
+        report_text,
+        "flow_analyse_report.txt",
+        "text/plain"
     )
-    
-    # Temporäre Dateien bereinigen
-    os.unlink(plot_path)
-    os.unlink(pdf_path)
+
+    # Erklärender Hinweis
+    st.info("Für PDF-Export installieren Sie bitte das fpdf-Paket mit: 'pip install fpdf'")
