@@ -30,7 +30,7 @@ DOMAINS = {
     }
 }
 
-THEORY_IMAGE = "flow_matrix_csikszentmihalyi.png"
+THEORY_IMAGE = "grafik.png"
 DB_NAME = "flow_data.db"
 
 # ===== INITIALISIERUNG =====
