@@ -66,7 +66,7 @@ Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu 
 
 Beispiel: Du sollst eine neue Aufgabe übernehmen, z. B. eine Schulung für Kollegen leiten.
 
-Positiv erlebt: Du fühlst dich sicher und neugierig, weil du ähnliche Aufgaben bereits gemeistert hast und dein Wissen anwenden kannst.
+Positiv erlebt: Du fühlst sich sicher und neugierig, weil du ähnliche Aufgaben bereits gemeistert hast und dein Wissen anwenden kannst.
 
 Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforderungen nicht gerecht zu werden, selbst wenn du später die Aufgabe gut bewältigst."""
     },
@@ -156,7 +156,7 @@ def calculate_flow(skill, challenge):
         explanation = "Fähigkeiten übersteigen die Herausforderungen - Unterforderung"
     else:
         zone = "Mittlere Aktivierung"
-        explanation = "Grundlegende Passung mit Entwicklungpotential"
+        explanation = "Grundlegende Passung mit Entwicklungspotential"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
@@ -354,7 +354,7 @@ def create_text_report(data):
             
         elif "Flow" in zone:
             report += f"   → Maßnahme: Aktuelle Balance beibehalten und Erfahrungen dokumentieren\n"
-            report += f"   💡 PRAXIS-TIPP: Erfolgsstrategien analysieren und auf andere Bereiche übertragen\n"
+            report += f"   💡 PRAXIS-TIPP: Erfolgsstrategies analysieren und auf andere Bereiche übertragen\n"
             
         else:
             report += f"   → Maßnahme: Leichte Anpassungen in beide Richtungen zur Flow-Optimierung\n"
@@ -404,9 +404,25 @@ def get_all_data():
     conn.close()
     return df
 
+def reset_database():
+    """Löscht alle Daten aus der Datenbank"""
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("DELETE FROM responses")
+    conn.commit()
+    conn.close()
+    st.success("✅ Alle Daten wurden erfolgreich gelöscht!")
+    st.session_state.submitted = False
+
 def create_team_analysis():
     """Erstellt eine Teamanalyse basierend auf allen gespeicherten Daten"""
     st.subheader("👥 Team-Analyse")
+    
+    # Reset-Button
+    if st.button("🗑️ Alle Daten zurücksetzen", type="secondary"):
+        if st.checkbox("❌ Ich bestätige, dass ich ALLE Daten unwiderruflich löschen möchte"):
+            reset_database()
+            st.rerun()
     
     # Daten aus der Datenbank abrufen
     df = get_all_data()
@@ -463,9 +479,6 @@ def create_team_analysis():
                    color='lightcoral', alpha=0.3, label='Angst/Überlastung')
     
     # Punkte für jede Domäne zeichnen
-    colors = [DOMAINS[domain]['color'] for domain in DOMAINS.keys() if domain in domain_stats.index]
-    labels = [domain for domain in DOMAINS.keys() if domain in domain_stats.index]
-    
     for domain in DOMAINS.keys():
         if domain in domain_stats.index:
             skill = domain_stats.loc[domain, 'skill']
@@ -514,19 +527,19 @@ def create_team_analysis():
         for area in development_areas:
             st.write(f"- {area}")
     
-    # Empfehlungen für das Team
+    # Empfehlungen für das Team (KORRIGIERT)
     st.subheader("💡 Empfehlungen für das Team")
     
     for domain in development_areas:
         skill = domain_stats.loc[domain, 'skill']
         challenge = domain_stats.loc[domain, 'challenge']
         
-        if skill < challenge:
+        if challenge > skill:  # KORREKT: Überlastung - Herausforderungen größer als Fähigkeiten
             st.write(f"**{domain}:** Das Team fühlt sich überfordert. Empfohlene Maßnahmen:")
             st.write(f"- Gezielte Schulungen und Training für das gesamte Team")
             st.write(f"- Klärung von Erwartungen und Prioritäten")
             st.write(f"- Gegenseitige Unterstützung und Erfahrungsaustausch fördern")
-        else:
+        else:  # KORREKT: Langeweile - Fähigkeiten größer als Herausforderungen
             st.write(f"**{domain}:** Das Team ist unterfordert. Empfohlene Maßnahmen:")
             st.write(f"- Neue, anspruchsvollere Aufgaben suchen")
             st.write(f"- Verantwortungsbereiche erweitern")
