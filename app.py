@@ -218,7 +218,7 @@ def create_text_report(data):
     report += f"Erstellt am:    {datetime.now().strftime('%d.%m.%Y %H:%M')}\n"
     report += "-" * 80 + "\n\n"
     
-    # Theoretische Einordnung
+    # Theoretische Einordnung (nur einmal)
     report += "THEORETISCHE EINORDNUNG:\n"
     report += "-" * 80 + "\n"
     report += "Diese Analyse integriert:\n"
@@ -282,7 +282,7 @@ def create_text_report(data):
     
     report += "\n" + "-" * 80 + "\n\n"
     
-    # Detailtabelle
+    # Detailtabelle (straffer)
     report += "DETAILAUSWERTUNG PRO DOMÄNE:\n"
     report += "-" * 80 + "\n"
     report += f"{'Domäne':<35} {'Fähig':<6} {'Herausf':<8} {'Zeit':<6} {'Flow':<6} {'Zone':<20}\n"
@@ -309,7 +309,7 @@ def create_text_report(data):
     report += "Zeitempfinden: 🐢 = Zeit dehnt sich (Unterforderung/Überforderung), ⏱️ = Normal, ⚡ = Zeit rafft sich (Flow/Stress)\n"
     report += "\n"
     
-    # Handlungsempfehlungen priorisiert
+    # Handlungsempfehlungen priorisiert (individualisierter)
     report += "HANDLUNGSEMPFEHLUNGEN (PRIORISIERT NACH ENTWICKLUNGSBEDARF):\n"
     report += "-" * 80 + "\n"
     domains_sorted = sorted(DOMAINS.keys(), key=lambda d: calculate_flow(data[f"Skill_{d}"], data[f"Challenge_{d}"])[0])
@@ -322,29 +322,46 @@ def create_text_report(data):
         priority_emoji = "✅" if "Flow" in zone else ("⚠️" if "Mittlere" in zone else "🚩")
         
         report += f"{priority_emoji} {domain}:\n"
-        report += f"   Theorie: {DOMAINS[domain]['bischof']}\n"
         report += f"   {explanation}\n"
         
         if "Angst/Überlastung" in zone:
-            report += f"   → Maßnahme: Herausforderung reduzieren (Bischof: Explorationsdruck mindern) oder Fähigkeiten durch Training verbessern (Grawe: Kompetenzerleben stärken)\n"
-            report += f"   💡 PRAXIS-TIPP: Nutzen Sie Supervision, bitten Sie um Entlastung oder gezieltes Training\n"
+            if skill <= 2:
+                report += f"   → Maßnahme: Intensives Training und Mentoring für grundlegende Kompetenzen\n"
+                report += f"   💡 PRAXIS-TIPP: Strukturierte Einarbeitung durch erfahrene Kollegen, regelmäßige Feedbackgespräche\n"
+            elif skill <= 4:
+                report += f"   → Maßnahme: Gezielte Fortbildung und schrittweise Steigerung der Verantwortung\n"
+                report += f"   💡 PRAXIS-TIPP: Teilnahme an Workshops, schrittweise Übernahme komplexerer Aufgaben\n"
+            else:
+                report += f"   → Maßnahme: Temporäre Reduzierung der Herausforderungen oder Delegation\n"
+                report += f"   💡 PRAXIS-TIPP: Priorisierung von Aufgaben, Fokus auf Kernkompetenzen\n"
+                
         elif "Langeweile" in zone:
-            report += f"   → Maßnahme: Herausforderung erhöhen (Bischof: Exploration anregen) oder neue Aufgaben suchen (Csikszentmihalyi: Flow-Kanal nutzen)\n"
-            report += f"   💡 PRAXIS-TIPP: Bitten Sie um anspruchsvollere Aufgaben oder übernehmen Sie Mentoring-Rollen\n"
+            if challenge <= 2:
+                report += f"   → Maßnahme: Übernahme zusätzlicher Verantwortung und anspruchsvollerer Aufgaben\n"
+                report += f"   💡 PRAXIS-TIPP: Projektleitung übernehmen, Mentoring für neue Kollegen\n"
+            elif challenge <= 4:
+                report += f"   → Maßnahme: Erweiterung des Aufgabenbereichs und Übernahme spezieller Aufgaben\n"
+                report += f"   💡 PRAXIS-TIPP: Spezialisierung entwickeln, Expertenrolle einnehmen\n"
+            else:
+                report += f"   → Maßnahme: Strategische Neuausrichtung oder Rollenwechsel\n"
+                report += f"   💡 PRAXIS-TIPP: Karrieregespräch führen, neue Herausforderungen im Unternehmen suchen\n"
+                
         elif "Apathie" in zone:
-            report += f"   → Maßnahme: Sowohl Fähigkeiten als auch Herausforderungen steigern (Grawe: Konsistenz durch Bedürfniserfüllung)\n"
-            report += f"   💡 PRAXIS-TIPP: Setzen Sie sich kleine, erreichbare Ziele und feiern Sie Erfolge\n"
+            report += f"   → Maßnahme: Kombinierte Steigerung von Fähigkeiten und Herausforderungen\n"
+            report += f"   💡 PRAXIS-TIPP: Kleine, messbare Ziele setzen, Erfolge dokumentieren und feiern\n"
+            
         elif "Flow" in zone:
-            report += f"   → Maßnahme: Aktuelle Balance beibehalten - idealer Zustand! (Csikszentmihalyi: Flow-Zustand erhalten)\n"
-            report += f"   💡 PRAXIS-TIPP: Dokumentieren Sie Ihre Erfolgsstrategien für andere Bereiche\n"
+            report += f"   → Maßnahme: Aktuelle Balance beibehalten und Erfahrungen dokumentieren\n"
+            report += f"   💡 PRAXIS-TIPP: Erfolgsstrategien analysieren und auf andere Bereiche übertragen\n"
+            
         else:
-            report += f"   → Maßnahme: Leichte Anpassungen in beide Richtungen könnten Flow verstärken (Grawe: Konsistenzoptimierung)\n"
-            report += f"   💡 PRAXIS-TIPP: Kleine Veränderungen in beiden Dimensionen ausprobieren\n"
+            report += f"   → Maßnahme: Leichte Anpassungen in beide Richtungen zur Flow-Optimierung\n"
+            report += f"   💡 PRAXIS-TIPP: Experimentieren mit kleinen Veränderungen, regelmäßige Selbstreflexion\n"
         
         if time_perception < -1:
-            report += f"   → Zeitgestaltung: Aufgaben interessanter gestalten (Csikszentmihalyi: Zeitdehnung durch mangelnde Passung)\n"
+            report += f"   → Zeitgestaltung: Aufgaben interessanter gestalten, mehr Autonomie einfordern\n"
         elif time_perception > 1:
-            report += f"   → Zeitgestaltung: Auf ausreichende Pausen achten (Bischof: Explorationserschöpfung vermeiden)\n"
+            report += f"   → Zeitgestaltung: Regelmäßige Pausen einplanen, Arbeitsrhythmus optimieren\n"
         
         report += f"   Flow-Index: {flow_index:.2f}/1.0\n\n"
     
@@ -356,12 +373,12 @@ def create_text_report(data):
         "kurzfristig": "Innerhalb von 1-3 Monaten", 
         "mittelfristig": "Innerhalb von 3-6 Monaten"
     }
-    # Übersicht strukturieren
+    
     timeframe_categories = {"sofort": [], "kurzfristig": [], "mittelfristig": []}
     for i, domain in enumerate(domains_sorted):
         flow_index, zone, explanation = calculate_flow(data[f"Skill_{domain}"], data[f"Challenge_{domain}"])
         if "Flow" not in zone:
-            priority_level = min(i, 2)  # 0->sofort, 1->kurzfristig, 2+->mittelfristig
+            priority_level = min(i, 2)
             timeframe = list(timeframe_categories.keys())[priority_level]
             timeframe_categories[timeframe].append(domain)
     
@@ -370,25 +387,8 @@ def create_text_report(data):
         if domains:
             report += f"{timeframes[key].upper()}:\n"
             for d in domains:
-                report += f"• {d}\n"
+                report += f"• {d}: {generate_recommendation(data[f'Skill_{d}'], data[f'Challenge_{d}'], data[f'Time_{d}'], d)}\n"
             report += "\n"
-    
-    report += "\n" + "-" * 80 + "\n\n"
-    
-    # Skalen-Erklärung
-    report += "THEORETISCHE ERKLÄRUNG DER SKALEN:\n"
-    report += "-" * 80 + "\n"
-    report += "Fähigkeiten (1-7):          Vertrautheit nach Bischof - Erleben von Sicherheit und Kompetenz\n"
-    report += "Herausforderungen (1-7):    Exploration nach Bischof - Neuheitsgrad und Anforderungsniveau\n"
-    report += "Zeitempfinden (-3 bis +3):  Indikator für motivationale Passung (Csikszentmihalyi) - Zeitdehnung bei Unterforderung/Überforderung, Zeitraffung bei Flow/Stress\n\n"
-    
-    report += "FLOW-ZONEN (THEORIEINTEGRIERT):\n"
-    report += "-" * 80 + "\n"
-    report += "- Flow (Csikszentmihalyi):                    Optimale Balance = Konsistenz (Grawe) + Explorations-Bindungs-Balance (Bischof)\n"
-    report += "- Apathie (Grawe):                            Bedürfnisfrustration in mehreren Grundbedürfnissen\n"
-    report += "- Langeweile (Bischof):                       Explorationsblockade bei ausreichender Bindungssicherheit\n"
-    report += "- Angst/Überlastung (Csikszentmihalyi):       Disflow durch mangelnde Passung zwischen Fähigkeiten und Herausforderungen\n"
-    report += "- Mittlere Aktivierung:                       Grundlegende Passung mit Entwicklungspotential\n"
     
     report += "\n" + "=" * 80 + "\n"
     report += "END OF REPORT - © Flow-Analyse Pro (Theorieintegriert)"
@@ -425,6 +425,7 @@ with st.expander("📚 Theoretische Grundlagen erklären"):
     **3. Csikszentmihalyis Flow-Theorie**
     - Flow entsteht bei optimaler Passung zwischen Fähigkeiten und Herausforderungen
     - Zeiterleben als Indikator: Zeitraffung bei Flow, Zeitdehnung bei Langeweile/Überforderung
+    - Flow-Kanal: Bereich, in dem Herausforderungen und Fähigkeiten im Gleichgewicht sind
     """)
 
 # Neue Erhebung
@@ -452,11 +453,21 @@ for domain, config in DOMAINS.items():
             help="1 = sehr geringe Herausforderung/Exploration, 7 = sehr hohe Herausforderung/Exploration"
         )
     with cols[2]:
+        # Farbcodierter Slider für Zeitempfinden
         time_perception = st.slider(
             "Zeitempfinden (-3 bis +3)", -3, 3, 0,
             key=f"time_{domain}",
-            help="-3 = Zeit zieht sich extrem (Unterforderung/Überforderung), 0 = Normal, +3 = Zeit vergeht extrem schnell (Flow/Stress)"
+            help="-3 = Zeit zieht sich extrem (Unterforderung/Überforderung), 0 = Normal, +3 = Zeit vergeht extrem schnell (Flow/Stress)",
+            format="%d",
         )
+        # Visuelle Farbcodierung
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            st.markdown("<p style='color: red; text-align: center;'>-3 bis -2<br>kritisch</p>", unsafe_allow_html=True)
+        with col2:
+            st.markdown("<p style='color: green; text-align: center;'>-1 bis +1<br>optimal</p>", unsafe_allow_html=True)
+        with col3:
+            st.markdown("<p style='color: red; text-align: center;'>+2 bis +3<br>kritisch</p>", unsafe_allow_html=True)
     
     current_data.update({
         f"Skill_{domain}": skill,
@@ -603,10 +614,9 @@ if st.button("🚀 Theoriegestützte Analyse starten", disabled=not confirmed):
         else:
             st.success("🎉 Exzellent! Sie befinden sich in allen Bereichen im Flow-Zustand.")
 
-# Optionales UI-Feedback nach Absenden
+# Optionales UI-Feedback nach Absenden (ohne Ballons)
 if st.session_state.get('submitted', False):
     st.success("✅ Analyse erfolgreich gespeichert und durchgeführt!")
-    st.balloons()
 
 # Footer
 st.divider()
