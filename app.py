@@ -55,7 +55,7 @@ Positiv erlebt: Du gehst die Umstellung gelassen an, weil du schon oft neue Abl�
 Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt."""
     },
     "Kompetenzanforderungen / Weiterbildung": {
-        "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierungen",
+        "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierations",
         "color": "#06D6A0",
         "bischof": "Explorationssystem - Kompetenzerweiterung und Wachstum",
         "grawe": "Bedürfnisse: Selbstwerterhöhung, Kompetenzerleben, Kontrolle",
@@ -150,26 +150,23 @@ def calculate_flow(skill, challenge):
 def create_flow_plot(data, domain_colors):
     fig, ax = plt.subplots(figsize=(12, 8))
     
-    # Definiere die Flow-Zonen als Csikszentmihalyi's Flow-Kanal
-    # Apathiezone (unten links)
-    apathy_zone = Polygon([[1, 1], [4, 1], [4, 2], [2.5, 2], [1, 1]], 
-                         closed=True, color='lightgray', alpha=0.3, label='Apathie')
+    # Definiere die Flow-Zonen nach Csikszentmihalyi
+    # Flow-Kanal (diagonaler Bereich zwischen y = x - 1 und y = x + 1)
+    x_vals = np.linspace(1, 7, 100)
+    flow_channel_lower = np.maximum(x_vals - 1, 1)  # Begrenze auf den Bereich 1-7
+    flow_channel_upper = np.minimum(x_vals + 1, 7)  # Begrenze auf den Bereich 1-7
     
-    # Langeweile-Zone (unten rechts)
-    boredom_zone = Polygon([[4, 1], [7, 1], [7, 4], [4, 4], [4, 1]], 
-                          closed=True, color='lightblue', alpha=0.3, label='Langeweile')
+    # Fülle den Bereich zwischen den Linien
+    ax.fill_between(x_vals, flow_channel_lower, flow_channel_upper, 
+                   color='lightgreen', alpha=0.3, label='Flow-Kanal')
     
-    # Angst-Zone (oben links)
-    anxiety_zone = Polygon([[1, 4], [4, 4], [4, 7], [1, 7], [1, 4]], 
-                          closed=True, color='lightcoral', alpha=0.3, label='Angst/Überlastung')
+    # Apathiezone (unterhalb des Flow-Kanals)
+    ax.fill_between(x_vals, 1, flow_channel_lower, 
+                   color='lightgray', alpha=0.3, label='Apathie')
     
-    # Flow-Kanal (diagonaler Bereich)
-    flow_zone = Polygon([[4, 4], [7, 4], [7, 7], [4, 7], [4, 4]], 
-                       closed=True, color='lightgreen', alpha=0.3, label='Flow-Kanal')
-    
-    # Füge die Zonen zum Plot hinzu
-    for zone in [apathy_zone, boredom_zone, anxiety_zone, flow_zone]:
-        ax.add_patch(zone)
+    # Angst-Zone (oberhalb des Flow-Kanals)
+    ax.fill_between(x_vals, flow_channel_upper, 7, 
+                   color='lightcoral', alpha=0.3, label='Angst/Überlastung')
     
     # Extrahiere Datenpunkte
     x = [data[f"Skill_{d}"] for d in DOMAINS]
