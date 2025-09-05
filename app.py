@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sqlite3
 from datetime import datetime
-import requests
 import json
+import openai
 
-# ===== DEEPSEEK KONFIGURATION =====
-DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_API_KEY = "sk-a9f67eeaf4ed426fb9710ef92a9cc446"  # Dein Key
+# ===== OPENAI KONFIGURATION =====
+OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")
+openai.api_key = OPENAI_API_KEY
 
-# ===== DOMAINS =====
+# ===== KONFIGURATION =====
 DOMAINS = {
     "Team-Veränderungen": {
         "examples": "Personalwechsel, Ausfälle, Rollenänderungen, neue Teammitglieder",
@@ -20,7 +20,7 @@ DOMAINS = {
         "grawe": "Bedürfnisse: Bindung, Orientierung/Kontrolle, Selbstwertschutz",
         "flow": "Balance zwischen Vertrautheit (Fähigkeit) und Neuem (Herausforderung)",
         "explanation": """In deinem Arbeitsalltag verändern sich Teams ständig: neue Kollegen kommen hinzu, Rollen verschieben sich, manchmal fallen Personen aus.
-
+        
 Beispiel: Ein Mitarbeiter sagt kurzfristig ab.
 
 Positiv erlebt: Du bleibst ruhig, weil du Erfahrung hast und vertraust, dass Aufgaben kompetent verteilt werden.
@@ -90,16 +90,148 @@ DB_NAME = "flow_data.db"
 # ===== INITIALISIERUNG =====
 if 'data' not in st.session_state:
     st.session_state.data = []
-if 'current_data' not in st.session_state:
-    st.session_state.current_data = {}
 if 'confirmed' not in st.session_state:
     st.session_state.confirmed = False
 if 'submitted' not in st.session_state:
     st.session_state.submitted = False
 if 'ai_analysis' not in st.session_state:
     st.session_state.ai_analysis = {}
+if 'current_data' not in st.session_state:
+    st.session_state.current_data = {}
 
-# ===== FUNKTIONEN =====
+# ===== OPENAI FUNKTIONEN =====
+def query_openai_ai(prompt, system_message=""):
+    """
+    Sendet Anfrage an OpenAI GPT
+    """
+    if not OPENAI_API_KEY:
+        return None
+    try:
+        messages = []
+        if system_message:
+            messages.append({"role": "system", "content": system_message})
+        messages.append({"role": "user", "content": prompt})
+        
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=messages,
+            temperature=0.7,
+            max_tokens=2000
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        st.error(f"OpenAI API Fehler: {str(e)}")
+        return None
+
+def generate_ai_domain_analysis(data, domain):
+    """
+    KI-gestützte Analyse pro Domäne
+    """
+    skill = data[f"Skill_{domain}"]
+    challenge = data[f"Challenge_{domain}"]
+    time_perception = data[f"Time_{domain}"]
+    flow_index, zone, explanation = calculate_flow(skill, challenge)
+    
+    prompt = f"""
+Analysiere diese Flow-Daten für den Bereich '{domain}':
+
+FÄHIGKEITEN: {skill}/7
+HERAUSFORDERUNGEN: {challenge}/7
+ZEITEMPFINDEN: {time_perception} (-3 bis +3)
+FLOW-ZONE: {zone}
+FLOW-INDEX: {flow_index:.2f}/1.0
+
+THEORETISCHER HINTERGRUND:
+- Bischofs Zürcher Modell: {DOMAINS[domain]['bischof']}
+- Graves Konsistenztheorie: {DOMAINS[domain]['grawe']}
+- Csikszentmihalyis Flow-Theorie: {DOMAINS[domain]['flow']}
+
+Erstelle eine präzise, empathische Analyse mit 2-3 praxisnahen Empfehlungen.
+Maximal 150 Wörter.
+"""
+    
+    system_msg = f"""Du bist ein erfahrener Psychologe/Coach.
+- Kenne Bischof, Grawe, Csikszentmihalyi
+- Liefere praxisnahe Empfehlungen
+- Professionell, flüssig, deutsch"""
+    
+    result = query_openai_ai(prompt, system_msg)
+    if result:
+        return result
+    else:
+        return get_fallback_domain_analysis(data, domain)
+
+def generate_comprehensive_ai_report(data):
+    """
+    Gesamtbericht
+    """
+    domain_analyses = []
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_val = data[f"Time_{domain}"]
+        flow_index, zone, explanation = calculate_flow(skill, challenge)
+        
+        domain_analyses.append({
+            "domain": domain,
+            "skill": skill,
+            "challenge": challenge,
+            "time_perception": time_val,
+            "flow_index": flow_index,
+            "zone": zone,
+            "bischof": DOMAINS[domain]["bischof"],
+            "grawe": DOMAINS[domain]["grawe"],
+            "flow_theory": DOMAINS[domain]["flow"]
+        })
+    
+    total_flow = sum(analysis["flow_index"] for analysis in domain_analyses)
+    avg_flow = total_flow / len(domain_analyses)
+    
+    prompt = f"""
+Erstelle einen umfassenden psychologischen Bericht:
+
+NAME: {data['Name'] if data['Name'] else 'Unbenannt'}
+GESAMTFLOW-INDEX: {avg_flow:.2f}/1.0
+
+Einzelanalysen:
+{json.dumps(domain_analyses, indent=2, ensure_ascii=False)}
+
+Erstelle flüssigen Text, integriere Theorie und Praxis, max. 400 Wörter.
+"""
+    
+    system_msg = "Du erstellst psychologische Fachberichte zur Flow-Analyse. Präzise, empathisch, praxisnah."
+    
+    result = query_openai_ai(prompt, system_msg)
+    if result:
+        return result
+    else:
+        return "Fallback-Report: KI-Report konnte nicht erstellt werden."
+
+# ===== Fallback-Funktion =====
+def get_fallback_domain_analysis(data, domain):
+    skill = data[f"Skill_{domain}"]
+    challenge = data[f"Challenge_{domain}"]
+    time_val = data[f"Time_{domain}"]
+    flow_index, zone, explanation = calculate_flow(skill, challenge)
+    
+    return f"""
+**Analyse für {domain}**
+
+**Bewertung**: Fähigkeiten={skill}/7, Herausforderung={challenge}/7, Zeitempfinden={time_val}
+
+**Flow-Zone**: {zone} (Index: {flow_index:.2f}/1.0)
+
+**Interpretation**: {explanation}
+
+**Theoretische Einordnung**:
+- **Bischof**: {DOMAINS[domain]['bischof']}
+- **Grawe**: {DOMAINS[domain]['grawe']}
+- **Flow-Theorie**: {DOMAINS[domain]['flow']}
+
+**Handlungsempfehlung**: {generate_recommendation(skill, challenge, time_val, domain)}
+"""
+
+# ===== RESTLICHE FUNKTIONEN =====
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
@@ -122,7 +254,7 @@ def save_to_db(data):
         c.execute('''INSERT INTO responses 
                      (name, domain, skill, challenge, time_perception, timestamp)
                      VALUES (?,?,?,?,?,?)''',
-                  (data.get("Name", ""), domain, 
+                  (data["Name"], domain, 
                    data[f"Skill_{domain}"], 
                    data[f"Challenge_{domain}"], 
                    data[f"Time_{domain}"],
@@ -143,7 +275,6 @@ def validate_data(data):
 def calculate_flow(skill, challenge):
     diff = skill - challenge
     mean_level = (skill + challenge) / 2
-    
     if mean_level < 3:
         zone = "Apathie"
         explanation = "Geringe Motivation durch mangelnde Passung zwischen Fähigkeiten und Herausforderungen"
@@ -159,140 +290,21 @@ def calculate_flow(skill, challenge):
     else:
         zone = "Mittlere Aktivierung"
         explanation = "Grundlegende Passung mit Entwicklungspotential"
-    
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
     return flow_index, zone, explanation
 
-def create_flow_plot(data, domain_colors):
-    fig, ax = plt.subplots(figsize=(12, 8))
-    x_vals = np.linspace(1, 7, 100)
-    ax.fill_between(x_vals, np.maximum(x_vals - 1, 1), np.minimum(x_vals + 1, 7), color='lightgreen', alpha=0.3, label='Flow-Kanal')
-    ax.fill_between(x_vals, 1, np.maximum(x_vals - 1, 1), color='lightgray', alpha=0.3, label='Apathie')
-    ax.fill_between(x_vals, np.minimum(x_vals + 1, 7), 7, color='lightcoral', alpha=0.3, label='Angst/Überlastung')
-
-    x = [data[f"Skill_{d}"] for d in DOMAINS]
-    y = [data[f"Challenge_{d}"] for d in DOMAINS]
-    time = [data[f"Time_{d}"] for d in DOMAINS]
-    colors = [domain_colors[d] for d in DOMAINS]
-    labels = list(DOMAINS.keys())
-    
-    for (xi, yi, ti, color, label) in zip(x, y, time, colors, labels):
-        ax.scatter(xi, yi, c=color, s=200, alpha=0.9, edgecolors='white', linewidths=1.5, label=label)
-        ax.annotate(f"{ti}", (xi+0.1, yi+0.1), fontsize=9, fontweight='bold')
-
-    ax.set_xlim(0.5, 7.5)
-    ax.set_ylim(0.5, 7.5)
-    ax.set_xlabel('Fähigkeiten (1-7)', fontsize=12)
-    ax.set_ylabel('Herausforderungen (1-7)', fontsize=12)
-    ax.set_title('Flow-Kanal nach Csikszentmihalyi mit Zeitempfinden', fontsize=14, fontweight='bold')
-    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis')
-    ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
-    ax.grid(True, alpha=0.3)
-    plt.tight_layout()
-    return fig
-
-def generate_ai_domain_analysis(data, domain):
-    skill = data[f"Skill_{domain}"]
-    challenge = data[f"Challenge_{domain}"]
-    time_val = data[f"Time_{domain}"]
-
-    prompt = (
-        f"Analysiere die Domäne '{domain}' für eine Person mit folgenden Werten:\n"
-        f"- Fähigkeiten: {skill}/7\n"
-        f"- Herausforderungen: {challenge}/7\n"
-        f"- Zeitempfinden: {time_val}\n\n"
-        f"Erstelle eine kurze psychologische Interpretation unter Bezug auf Motivation, Flow, Stress oder Unterforderung."
-    )
-
-    if DEEPSEEK_API_KEY:
-        try:
-            headers = {
-                "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
-                "Content-Type": "application/json"
-            }
-            messages = [{"role": "user", "content": prompt}]
-            payload = {"model": "deepseek-chat", "messages": messages, "temperature": 0.7, "max_tokens": 2000}
-            response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
-            response.raise_for_status()
-            result = response.json()
-            return result['choices'][0]['message']['content']
-        except Exception as e:
-            st.warning(f"DeepSeek API Fehler: {e}")
-
-    # Fallback-Analyse
+def generate_recommendation(skill, challenge, time, domain):
     diff = skill - challenge
     if diff < -2:
-        mood = "Überlastung, Stress"
-        advice = "Reduzieren Sie die Anforderungen oder steigern Sie Ihre Fähigkeiten."
+        return f"Reduzieren Sie die Herausforderungen in {domain} oder erhöhen Sie Ihre Kompetenzen durch Training und Unterstützung."
     elif diff > 2:
-        mood = "Unterforderung, Langeweile"
-        advice = "Suchen Sie neue Herausforderungen oder erhöhen Sie Ihre Aufgaben."
+        return f"Erhöhen Sie die Herausforderungen in {domain} oder suchen Sie nach neuen Aufgabenstellungen."
     elif abs(diff) <= 1 and (skill + challenge)/2 >= 5:
-        mood = "Flow, motiviert"
-        advice = "Behalten Sie die Balance bei."
+        return f"Behalten Sie die aktuelle Balance in {domain} bei - idealer Zustand!"
     else:
-        mood = "Mittlere Aktivierung"
-        advice = "Achten Sie auf eine gute Balance zwischen Fähigkeiten und Herausforderungen."
+        return f"Arbeiten Sie an beiden Dimensionen: Steigern Sie sowohl Fähigkeiten als auch Herausforderungen in {domain}."
 
-    return f"Zustand: {mood}\nEmpfehlung: {advice}"
-
-# ===== STREAMLIT UI =====
-st.set_page_config(layout="wide", page_title="Flow-Analyse Pro (Theorieintegriert)")
+# ===== STREAMLIT-UI =====
+st.set_page_config(layout="wide", page_title="Flow-Analyse Pro (GPT integriert)")
 init_db()
-
-st.sidebar.title("🌊 Navigation")
-page = st.sidebar.radio("Seite auswählen:", ["Einzelanalyse", "Team-Analyse"])
-
-if page == "Einzelanalyse":
-    st.title("🌊 Flow-Analyse Pro")
-    st.markdown("Bewerten Sie Fähigkeiten, Herausforderungen und Zeitempfinden.")
-
-    name = st.text_input("Name (optional)", key="name")
-    st.session_state.current_data = {"Name": name}
-
-    for domain, config in DOMAINS.items():
-        st.subheader(f"**{domain}**")
-        with st.expander("❓ Frage erklärt"):
-            st.markdown(config['explanation'])
-        st.caption(f"Beispiele: {config['examples']}")
-        
-        cols = st.columns(3)
-        with cols[0]:
-            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}")
-        with cols[1]:
-            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}")
-        with cols[2]:
-            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}")
-        
-        st.session_state.current_data.update({
-            f"Skill_{domain}": skill,
-            f"Challenge_{domain}": challenge,
-            f"Time_{domain}": time_perception
-        })
-
-    confirmed = st.checkbox("✅ Ich bestätige, dass alle Bewertungen bewusst gewählt sind", key="global_confirm")
-
-    if st.button("🚀 Theoriegestützte Analyse starten", disabled=not confirmed):
-        if not validate_data(st.session_state.current_data):
-            st.error("Bitte prüfen Sie die Eingaben.")
-            st.stop()
-        save_to_db(st.session_state.current_data)
-        st.session_state.data.append(st.session_state.current_data)
-        st.session_state.submitted = True
-
-        st.subheader("📊 Flow-Kanal nach Csikszentmihalyi")
-        domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
-        fig = create_flow_plot(st.session_state.current_data, domain_colors)
-        st.pyplot(fig)
-
-        st.subheader("🧠 KI-gestützte psychologische Interpretation")
-        for domain in DOMAINS:
-            with st.expander(f"🧠 {domain}", expanded=False):
-                analysis = generate_ai_domain_analysis(st.session_state.current_data, domain)
-                st.session_state.ai_analysis[domain] = analysis
-                st.write(analysis)
-
-else:
-    st.title("👥 Team-Analyse")
-    st.markdown("Diese Analyse zeigt aggregierte Daten aller Teilnehmer.")
