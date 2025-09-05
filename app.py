@@ -150,14 +150,10 @@ if 'confirmed' not in st.session_state:
     st.session_state.confirmed = False
 if 'submitted' not in st.session_state:
     st.session_state.submitted = False
-if 'ai_analysis' not in st.session_state:
-    st.session_state.ai_analysis = {}
 if 'full_report_generated' not in st.session_state:
     st.session_state.full_report_generated = False
 if 'full_report_content' not in st.session_state:
     st.session_state.full_report_content = ""
-if 'show_ai_analysis' not in st.session_state:
-    st.session_state.show_ai_analysis = False
 if 'show_full_report' not in st.session_state:
     st.session_state.show_full_report = False
 if 'analysis_started' not in st.session_state:
@@ -165,199 +161,7 @@ if 'analysis_started' not in st.session_state:
 if 'database_reset' not in st.session_state:
     st.session_state.database_reset = False
 
-# ===== INTELLIGENTE ANALYSE-FUNKTIONEN =====
-def generate_smart_domain_analysis(data, domain):
-    """Erstellt intelligente Domain-Analysen ohne API - 100% kostenlos"""
-    skill = data[f"Skill_{domain}"]
-    challenge = data[f"Challenge_{domain}"]
-    time_val = data[f"Time_{domain}"]
-    flow_index, zone, explanation = calculate_flow(skill, challenge)
-    
-    # Zeiterlebens-Analyse
-    time_info = TIME_PERCEPTION_SCALE[time_val]
-    
-    # Zustandsbewertung basierend auf Flow-Index
-    if flow_index >= 0.7:
-        status = "ausgezeichnet"
-        empfehlung = "Weiter so! Die aktuelle Balance ist ideal für produktives Arbeiten."
-    elif flow_index >= 0.5:
-        status = "gut"
-        empfehlung = "Gute Passung mit leichten Optimierungsmöglichkeiten."
-    elif flow_index >= 0.4:
-        status = "stabil"
-        empfehlung = "Stabile Basis mit Entwicklungspotential."
-    else:
-        status = "entwicklungsbedürftig"
-        empfehlung = "Gezielte Massnahmen zur Verbesserung der Passung empfohlen."
-    
-    analysis = f"""
-**🧠 Psychologische Analyse für {domain}**
-
-**Zustand**: {status} (Flow-Index: {flow_index:.2f}/1.0)
-**Zone**: {zone}
-**Zeitempfinden**: {time_info['label']} - {time_info['description']}
-
-**Psychologische Bedeutung**:
-{time_info['psychological_meaning']}
-
-**Theoretische Einordnung**:
-- **Bischof**: {DOMAINS[domain]['bischof']} → {time_info['bischof']}
-- **Grawe**: {DOMAINS[domain]['grawe']} → {time_info['grawe']}
-- **Flow**: {DOMAINS[domain]['flow']}
-
-**Interpretation**: {explanation}
-
-**Handlungsempfehlung**: {empfehlung}
-
-**Konkrete Schritte**:
-{generate_time_based_recommendation(time_val, skill, challenge, domain)}
-"""
-    return analysis
-
-def generate_time_based_recommendation(time_val, skill, challenge, domain):
-    """Generiert spezifische Empfehlungen basierend auf Zeiterleben"""
-    
-    recommendations = {
-        -3: [
-            "Dringend neue Herausforderungen suchen",
-            "Tätigkeitsprofil erweitern oder anpassen",
-            "Supervision zur Motivationsklärung nutzen"
-        ],
-        -2: [
-            "Zusätzliche Aufgaben übernehmen",
-            "Eigene Projekte initiieren",
-            "Weiterbildungsmöglichkeiten prüfen"
-        ],
-        -1: [
-            "Leichte Erweiterung der Kompetenzen",
-            "Neue Aspekte in vertraute Aufgaben einbringen",
-            "Mentoring für andere überlegen"
-        ],
-        0: [
-            "Aktuelle Balance bewusst beibehalten",
-            "Erfolgsfaktoren dokumentieren und transferieren",
-            "Als Multiplikator für andere wirken"
-        ],
-        1: [
-            "Idealzustand - bewusst geniessen und stabilisieren",
-            "Erfahrungen reflektieren und generalisieren",
-            "Als Best Practice teilen"
-        ],
-        2: [
-            "Arbeitspensen kritisch prüfen",
-            "Delegationsmöglichkeiten ausloten",
-            "Entlastung und Pausengestaltung optimieren"
-        ],
-        3: [
-            "Akute Entlastung notwendig",
-            "Supervision oder Coaching in Anspruch nehmen",
-            "Gesundheitliche Folgen beachten und priorisieren"
-        ]
-    }
-    
-    base_recommendations = recommendations[time_val]
-    
-    # Domänenspezifische Zusatzempfehlungen
-    domain_specific = {
-        "Team-Veränderungen": [
-            "Kommunikation im Team intensivieren",
-            "Rollenklarheit herstellen",
-            "Unterstützungsnetzwerke aufbauen"
-        ],
-        "Veränderungen im Betreuungsbedarf der Klient:innen": [
-            "Fallsupervision nutzen",
-            "Kollegiale Beratung etablieren",
-            "Entlastung durch Teamarbeit"
-        ],
-        "Prozess- oder Verfahrensänderungen": [
-            "Schulungen und Einarbeitung optimieren",
-            "Feedback-Prozesse etablieren",
-            "Pilotphasen einplanen"
-        ],
-        "Kompetenzanforderungen / Weiterbildung": [
-            "Lernziele klar definieren",
-            "Lernpartnerschaften bilden",
-            "Praxistransfer sicherstellen"
-        ],
-        "Interpersonelle Veränderungen": [
-            "Konfliktgespräche führen",
-            "Teamtage zur Klärung nutzen",
-            "Externe Moderation in Anspruch nehmen"
-        ]
-    }
-    
-    all_recommendations = base_recommendations + domain_specific.get(domain, [])
-    return "\n".join([f"• {rec}" for rec in all_recommendations])
-
-def generate_comprehensive_smart_report(data):
-    """Erstellt einen umfassenden Bericht ohne API"""
-    report = "=" * 80 + "\n"
-    report += "🌊 FLOW-ANALYSE PRO - REPORT (Theorieintegriert)\n"
-    report += "=" * 80 + "\n\n"
-    
-    # Kopfbereich
-    report += f"Name:           {data['Name'] if data['Name'] else 'Unbenannt'}\n"
-    report += f"Erstellt am:    {datetime.now().strftime('%d.%m.%Y %H:%M')}\n"
-    report += "-" * 80 + "\n\n"
-    
-    # Theoretische Einordnung
-    report += "THEORETISCHE EINORDNUNG:\n"
-    report += "-" * 80 + "\n"
-    report += "Diese Analyse integriert:\n"
-    report += "• Bischofs Zürcher Modell (Bindung/Exploration)\n"
-    report += "• Grawe Konsistenztheorie (psychologische Grundbedürfnisse)\n"
-    report += "• Csikszentmihalyis Flow-Theorie (Fähigkeiten-Herausforderungs-Balance)\n\n"
-    
-    # Zusammenfassende Bewertung
-    report += "ZUSAMMENFASSENDE BEWERTUNG:\n"
-    report += "-" * 80 + "\n"
-    
-    total_flow = 0
-    domain_count = len(DOMAINS)
-    
-    for domain in DOMAINS:
-        skill = data[f"Skill_{domain}"]
-        challenge = data[f"Challenge_{domain}"]
-        flow_index, zone, explanation = calculate_flow(skill, challenge)
-        total_flow += flow_index
-    
-    avg_flow = total_flow / domain_count
-    report += f"Durchschnittlicher Flow-Index: {avg_flow:.2f}/1.0\n"
-    
-    if avg_flow >= 0.7:
-        report += "Gesamtbewertung: HOHES FLOW-ERLEBEN 🎯\n"
-    elif avg_flow >= 0.4:
-        report += "Gesamtbewertung: MODERATES FLOW-ERLEBEN 🔄\n"
-    else:
-        report += "Gesamtbewertung: GERINGES FLOW-ERLEBEN ⚠️\n"
-    
-    report += "\n" + "-" * 80 + "\n\n"
-    
-    # Detailanalyse für jede Domain
-    report += "DETAILANALYSE PRO DOMÄNE:\n"
-    report += "-" * 80 + "\n"
-    
-    for domain in DOMAINS:
-        skill = data[f"Skill_{domain}"]
-        challenge = data[f"Challenge_{domain}"]
-        time_val = data[f"Time_{domain}"]
-        flow_index, zone, explanation = calculate_flow(skill, challenge)
-        time_info = TIME_PERCEPTION_SCALE[time_val]
-        
-        report += f"\n**{domain}**\n"
-        report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7\n"
-        report += f"Flow-Index: {flow_index:.2f}/1.0 | Zone: {zone}\n"
-        report += f"Zeitempfinden: {time_info['label']}\n"
-        report += f"Interpretation: {explanation}\n"
-        report += f"Empfehlung: {generate_time_based_recommendation(time_val, skill, challenge, domain)}\n"
-        report += "-" * 40 + "\n"
-    
-    report += "\n" + "=" * 80 + "\n"
-    report += "END OF REPORT - © Flow-Analyse Pro"
-    
-    return report
-
-# ===== BESTEHENDE FUNKTIONEN =====
+# ===== FUNKTIONEN =====
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
@@ -452,6 +256,216 @@ def create_flow_plot(data, domain_colors):
     plt.tight_layout()
     return fig
 
+def generate_time_based_recommendation(time_val, skill, challenge, domain):
+    """Generiert spezifische Empfehlungen basierend auf Zeiterleben"""
+    
+    recommendations = {
+        -3: [
+            "Dringend neue Herausforderungen suchen",
+            "Tätigkeitsprofil erweitern oder anpassen",
+            "Supervision zur Motivationsklärung nutzen"
+        ],
+        -2: [
+            "Zusätzliche Aufgaben übernehmen",
+            "Eigene Projekte initiieren",
+            "Weiterbildungsmöglichkeiten prüfen"
+        ],
+        -1: [
+            "Leichte Erweiterung der Kompetenzen",
+            "Neue Aspekte in vertraute Aufgaben einbringen",
+            "Mentoring für andere überlegen"
+        ],
+        0: [
+            "Aktuelle Balance bewusst beibehalten",
+            "Erfolgsfaktoren dokumentieren und transferieren",
+            "Als Multiplikator für andere wirken"
+        ],
+        1: [
+            "Idealzustand - bewusst geniessen und stabilisieren",
+            "Erfahrungen reflektieren und generalisieren",
+            "Als Best Practice teilen"
+        ],
+        2: [
+            "Arbeitspensen kritisch prüfen",
+            "Delegationsmöglichkeiten ausloten",
+            "Entlastung und Pausengestaltung optimieren"
+        ],
+        3: [
+            "Akute Entlastung notwendig",
+            "Supervision oder Coaching in Anspruch nehmen",
+            "Gesundheitliche Folgen beachten und priorisieren"
+        ]
+    }
+    
+    base_recommendations = recommendations[time_val]
+    
+    # Domänenspezifische Zusatzempfehlungen
+    domain_specific = {
+        "Team-Veränderungen": [
+            "Kommunikation im Team intensivieren",
+            "Rollenklarheit herstellen",
+            "Unterstützungsnetzwerke aufbauen"
+        ],
+        "Veränderungen im Betreuungsbedarf der Klient:innen": [
+            "Fallsupervision nutzen",
+            "Kollegiale Beratung etablieren",
+            "Entlastung durch Teamarbeit"
+        ],
+        "Prozess- oder Verfahrensänderungen": [
+            "Schulungen und Einarbeitung optimieren",
+            "Feedback-Prozesse etablieren",
+            "Pilotphasen einplanen"
+        ],
+        "Kompetenzanforderungen / Weiterbildung": [
+            "Lernziele klar definieren",
+            "Lernpartnerschaften bilden",
+            "Praxistransfer sicherstellen"
+        ],
+        "Interpersonelle Veränderungen": [
+            "Konfliktgespräche führen",
+            "Teamtage zur Klärung nutzen",
+            "Externe Moderation in Anspruch nehmen"
+        ]
+    }
+    
+    all_recommendations = base_recommendations + domain_specific.get(domain, [])
+    # Personalisierte Formulierung
+    personalized_recs = [rec.replace("Sie ", "Du ").replace("Ihre ", "Deine ").replace("Ihnen ", "dir ") for rec in all_recommendations]
+    return "\n".join([f"• {rec}" for rec in personalized_recs])
+
+def generate_comprehensive_smart_report(data):
+    """Erstellt einen persönlichen, emotional intelligenten Bericht"""
+    
+    report = "=" * 80 + "\n"
+    report += "🌊 DEINE PERSÖNLICHE FLOW-ANALYSE\n"
+    report += "=" * 80 + "\n\n"
+    
+    # Persönliche Ansprache
+    name = data['Name'] if data['Name'] else "Du"
+    report += f"Hallo {name}!\n\n"
+    report += "Dies ist deine persönliche Auswertung. Sie zeigt, wie du dich aktuell in deiner Arbeit fühlst\n"
+    report += "und wo du vielleicht Entlastung oder neue Herausforderungen brauchst.\n\n"
+    
+    report += "GEMEINSAM GESCHAUT: DREI BLICKE AUF DEINE ARBEITSSITUATION\n"
+    report += "-" * 80 + "\n\n"
+    
+    report += "Wir schauen gemeinsam auf drei Ebenen:\n"
+    report += "• **Flow-Ebene**: Wie gut passen deine Fähigkeiten zu den Aufgaben?\n"
+    report += "• **Bedürfnis-Ebene**: Was brauchst du, um dich wohlzufühlen?\n"
+    report += "• **Balance-Ebene**: Wie gelingt dir der Ausgleich zwischen Sicherheit und Neuem?\n\n"
+    
+    # Gesamtbewertung persönlich und emotional
+    total_flow = sum(calculate_flow(data[f"Skill_{d}"], data[f"Challenge_{d}"])[0] for d in DOMAINS)
+    avg_flow = total_flow / len(DOMAINS)
+    
+    report += "WIE ES DIR GEHT: DEIN GESAMTBILD\n"
+    report += "-" * 80 + "\n\n"
+    
+    if avg_flow >= 0.7:
+        report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig gut! 🎉\n\n"
+        report += "Du findest offenbar eine gute Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
+        report += "Das ist nicht selbstverständlich - geniesse dieses gute Gefühl!\n\n"
+        
+    elif avg_flow >= 0.5:
+        report += f"Dein Wert von {avg_flow:.2f} zeigt: Grundsätzlich kommst du gut zurecht, aber es gibt Luft nach oben. 🔄\n\n"
+        report += "An manchen Tagen läuft es sicher super, an anderen spürst du vielleicht, dass etwas nicht ganz rund läuft.\n"
+        report += "Das ist völlig normal - schauen wir gemeinsam, wo genau du ansetzen kannst.\n\n"
+        
+    else:
+        report += f"Dein Wert von {avg_flow:.2f} sagt: Momentan ist vieles ziemlich anstrengend für dich. 💭\n\n"
+        report += "Vielleicht fühlst du dich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
+        report += "Das ist okay - viele Menschen erleben solche Phasen. Wichtig ist, dass du jetzt auf dich achtest.\n\n"
+    
+    # Detaillierte Domain-Analysen persönlich und einfühlsam
+    report += "WO DU STEHST: BEREICH FÜR BEREICH\n"
+    report += "-" * 80 + "\n\n"
+    
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_val = data[f"Time_{domain}"]
+        flow_index, zone, _ = calculate_flow(skill, challenge)
+        time_info = TIME_PERCEPTION_SCALE[time_val]
+        
+        report += f"**{domain}**\n"
+        report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7 | "
+        report += f"Zeitgefühl: {time_info['label']}\n\n"
+        
+        # Einfühlsame Interpretation
+        report += "**Was das für dich bedeutet:**\n"
+        
+        if zone == "Flow":
+            report += f"Hier fühlst du dich richtig kompetent! 💪\n"
+            report += f"Die Aufgaben passen gut zu dem, was du kannst. Das Zeitgefühl '{time_info['label']}'\n"
+            report += "zeigt, dass du in diesen Momenten richtig aufgehst.\n"
+        elif zone == "Apathie":
+            report += f"Hier könnte mehr Schwung rein! 🌱\n"
+            report += f"Vielleicht kennst du alles schon oder die Aufgaben fordern dich nicht wirklich.\n"
+            report += f"Das Zeitgefühl '{time_info['label']}' deutet darauf hin, dass es dir hier an Pep fehlt.\n"
+        elif "Überlastung" in zone:
+            report += f"Hier bist du oft am Limit! 🆘\n"
+            report += f"Die Aufgaben überfordern dich vielleicht oder du hast das Gefühl, nie hinterherzukommen.\n"
+            report += f"Das Zeitgefühl '{time_info['label']}' zeigt, wie anstrengend das für dich ist.\n"
+        else:
+            report += f"Hier läuft es okay, aber nicht perfekt. 🔄\n"
+            report += f"Manchmal klappt es gut, manchmal nicht. Das Zeitgefühl '{time_info['label']}'\n"
+            report += f"passt zu diesem Wechselbad der Gefühle.\n"
+        
+        # Theorie leicht verständlich eingewoben
+        report += f"\n**Was dahinter steckt:**\n"
+        report += f"• {DOMAINS[domain]['flow'].replace('Balance zwischen', 'Ausgleich von')}\n"
+        report += f"• {DOMAINS[domain]['grawe'].replace('Bedürfnisse:', 'Hier geht es um dein Bedürfnis nach')}\n"
+        report += f"• {DOMAINS[domain]['bischof'].replace('Bindungssystem -', 'Dein Wunsch nach')}\n"
+        
+        # Handlungsempfehlungen persönlich formuliert
+        report += f"\n**Was dir helfen könnte:**\n"
+        recommendations = generate_time_based_recommendation(time_val, skill, challenge, domain)
+        for rec in recommendations.split('\n'):
+            if rec.strip():
+                report += f"{rec.strip()}\n"
+        
+        report += "\n" + "-" * 50 + "\n\n"
+    
+    # Integrierte Handlungsstrategie
+    report += "WAS JETZT FÜR DICH DRAN IST\n"
+    report += "-" * 80 + "\n\n"
+    
+    report += "Basierend auf deinen Werten könntest du:\n\n"
+    
+    report += "**SOFORT (diese Woche noch):**\n"
+    report += "• Nimm dir einen Bereich vor, der dir besonders am Herzen liegt\n"
+    report += "• Überlege, was dir dort sofort Erleichterung bringen könnte\n"
+    report += "• Sprich vielleicht mit einer Vertrauensperson darüber\n\n"
+    
+    report += "**KURZFRISTIG (nächste 4 Wochen):**\n"
+    report += "• Schau dir die konkreten Tipps für deine kritischen Bereiche an\n"
+    report += "• Such dir Unterstützung, wo du sie brauchst\n"
+    report += "• Feiere auch kleine Erfolge bewusst\n\n"
+    
+    report += "**LANGFRISTIG (ab 3 Monaten):**\n"
+    report += "• Entwickle deine Stärken weiter\n"
+    report += "• Sorge für mehr Ausgleich in anstrengenden Bereichen\n"
+    report += "• Behalte dein Wohlbefinden im Blick\n\n"
+    
+    # Abschluss mit Ermutigung
+    report += "ZUM SCHLUSS\n"
+    report += "-" * 80 + "\n\n"
+    
+    report += "Denk dran: Diese Analyse ist eine Momentaufnahme. \n"
+    report += "Arbeitsituationen verändern sich - und du veränderst dich auch.\n\n"
+    
+    report += "Nimm mit, was sich für dich stimmig anfühlt.\n"
+    report += "Du kennst dich selbst am besten.\n\n"
+    
+    report += "Alles Gute für deinen Weg! 🌟\n\n"
+    
+    report += "=" * 80 + "\n"
+    report += "Deine Flow-Analyse\n"
+    report += "Erstellt am " + datetime.now().strftime("%d.%m.%Y") + "\n"
+    report += "=" * 80
+    
+    return report
+
 def get_all_data():
     """Holt alle Daten aus der Datenbank für die Teamanalyse"""
     conn = sqlite3.connect(DB_NAME)
@@ -470,9 +484,7 @@ def reset_database():
     st.session_state.database_reset = True
     st.session_state.submitted = False
     st.session_state.analysis_started = False
-    st.session_state.ai_analysis = {}
     st.session_state.full_report_generated = False
-    st.session_state.show_ai_analysis = False
     st.session_state.show_full_report = False
 
 def create_team_analysis():
@@ -619,11 +631,11 @@ st.sidebar.title("🌊 Navigation")
 page = st.sidebar.radio("Seite auswählen:", ["Einzelanalyse", "Team-Analyse"])
 
 if page == "Einzelanalyse":
-    st.title("🌊 Flow-Analyse Pro mit Theorieintegration")
+    st.title("🌊 Flow-Analyse Pro")
     
     # Zeiterlebens-Legende anzeigen
     with st.expander("ℹ️ Zeiterlebens-Skala erklärt", expanded=False):
-        st.write("**Wie empfinden Sie die Zeit in dieser Situation?**")
+        st.write("**Wie empfindest du die Zeit in dieser Situation?**")
         cols = st.columns(4)
         with cols[0]:
             st.write("**-3:** Extreme Langeweile")
@@ -688,43 +700,26 @@ if page == "Einzelanalyse":
         fig = create_flow_plot(st.session_state.current_data, domain_colors)
         st.pyplot(fig)
         
-        # KI-Buttons
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("🤖 Einzelanalysen generieren", key="generate_ai_analysis"):
-                st.session_state.show_ai_analysis = True
-                st.session_state.ai_analysis = {}
-                st.rerun()
-        
-        with col2:
-            if st.button("📊 Gesamtbericht erstellen", key="generate_full_report"):
-                st.session_state.show_full_report = True
-                st.session_state.full_report_generated = False
-                st.rerun()
-        
-        # Einzelanalysen anzeigen
-        if st.session_state.get('show_ai_analysis', False):
-            st.subheader("🧠 Psychologische Einzelanalysen")
-            for domain in DOMAINS:
-                with st.expander(f"📖 {domain}", expanded=False):
-                    if domain not in st.session_state.ai_analysis:
-                        analysis = generate_smart_domain_analysis(st.session_state.current_data, domain)
-                        st.session_state.ai_analysis[domain] = analysis
-                    st.markdown(st.session_state.ai_analysis[domain])
+        # Nur noch Gesamtbericht-Button
+        if st.button("📊 Persönlichen Bericht erstellen", type="primary", key="generate_full_report"):
+            st.session_state.show_full_report = True
+            st.session_state.full_report_generated = False
+            st.rerun()
         
         # Gesamtbericht anzeigen
         if st.session_state.get('show_full_report', False):
-            st.subheader("📄 Psychologischer Gesamtbericht")
+            st.subheader("📄 Dein persönlicher Flow-Bericht")
             if not st.session_state.full_report_generated:
                 report = generate_comprehensive_smart_report(st.session_state.current_data)
                 st.session_state.full_report_content = report
                 st.session_state.full_report_generated = True
             
-            st.text_area("Bericht", st.session_state.full_report_content, height=400)
+            st.text_area("Bericht", st.session_state.full_report_content, height=500, label_visibility="collapsed")
+            
             st.download_button(
                 label="📥 Bericht herunterladen",
                 data=st.session_state.full_report_content,
-                file_name=f"flow_bericht_{name if name else 'anonymous'}.txt",
+                file_name=f"flow_bericht_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
                 mime="text/plain"
             )
 
