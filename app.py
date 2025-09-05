@@ -40,7 +40,7 @@ Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich spät
 
 Beispiel: Ein Klient benötigt plötzlich mehr Unterstützung im Alltag.
 
-Positiv erlebt: Du spürst, dass du die Situation gut einschätzen kannst, weil du Erfahrung mit ähnlichen Fällen hast und weißt, wie du angemessen reagieren kannst.
+Positiv erlebt: Du spürst, dass du die Situation gut einschätzen kannst, weil du Erfahrung mit ähnlichen Fällen hast und weisst, wie du angemessen reagieren kannst.
 
 Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränderung löst Stress aus, weil du Angst hast, etwas falsch zu machen."""
     },
@@ -50,7 +50,7 @@ Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränder
         "bischof": "Orientierungssystem - Umgang mit veränderter Struktur",
         "grawe": "Bedürfnisse: Orientierung, Kontrolle, Selbstwert (durch Routine)",
         "flow": "Balance zwischen Routinesicherheit und Lernherausforderungen",
-        "explanation": """Interne Abläufe ändern sich regelmäßig, z. B. bei Dienstübergaben, Dokumentationen oder neuer Software.
+        "explanation": """Interne Abläufe ändern sich regelmässig, z. B. bei Dienstübergaben, Dokumentationen oder neuer Software.
 
 Beispiel: Ein neues digitales Dokumentationssystem wird eingeführt.
 
@@ -82,9 +82,62 @@ Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforder
 
 Beispiel: Ein Konflikt zwischen Kollegen entsteht oder eine neue Leitungskraft übernimmt.
 
-Positiv erlebt: Du spürst, dass du gut damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weißt, wie man Spannungen aushält.
+Positiv erlebt: Du spürst, dass du gut damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weisst, wie man Spannungen aushält.
 
 Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt."""
+    }
+}
+
+# Fachlich fundierte Zeiterlebens-Skala
+TIME_PERCEPTION_SCALE = {
+    -3: {
+        "label": "Extreme Langeweile",
+        "description": "Zeit scheint stillzustehen - stark unterfordernde Situation",
+        "psychological_meaning": "Apathie, Desengagement, mangelnde Stimulation",
+        "bischof": "Sicherheitsüberschuss ohne Explorationsanreize",
+        "grawe": "Bedürfnisse nach Kompetenzerleben und Lustgewinn unerfüllt"
+    },
+    -2: {
+        "label": "Langeweile", 
+        "description": "Zeit vergeht langsam - deutliche Unterforderung",
+        "psychological_meaning": "Mangelnde Passung, suche nach Stimulation",
+        "bischof": "Explorationsdefizit bei hoher Vertrautheit",
+        "grawe": "Ungenügende Selbstwerterhöhung durch Unterforderung"
+    },
+    -1: {
+        "label": "Entspanntes Zeitgefühl",
+        "description": "Zeit vergeht ruhig und gleichmässig - leichte Unterforderung",
+        "psychological_meaning": "Entspannung bei guter Kontrolle",
+        "bischof": "Balance mit leichter Sicherheitsdominanz",
+        "grawe": "Grundkonsistenz mit Entwicklungspotential"
+    },
+    0: {
+        "label": "Normales Zeitgefühl",
+        "description": "Zeitwahrnehmung entspricht der Realzeit - optimale Passung",
+        "psychological_meaning": "Präsenz im Moment, gute Selbstregulation",
+        "bischof": "Ausgeglichene Bindung-Exploration-Balance",
+        "grawe": "Optimale Konsistenz aller Grundbedürfnisse"
+    },
+    1: {
+        "label": "Zeit fliesst positiv",
+        "description": "Zeit vergeht angenehm schnell - leichte positive Aktivierung",
+        "psychological_meaning": "Leichtes Flow-Erleben, engagierte Konzentration",
+        "bischof": "Leichte Explorationsdominanz bei guter Sicherheit",
+        "grawe": "Positive Aktivierung durch optimale Herausforderung"
+    },
+    2: {
+        "label": "Zeit rennt - Wachsamkeit",
+        "description": "Zeit vergeht sehr schnell - hohe Aktivierung, erste Stresssignale",
+        "psychological_meaning": "Erregungszunahme, benötigt bewusste Regulation",
+        "bischof": "Explorationsdominanz nähert sich Kapazitätsgrenze",
+        "grawe": "Kontrollbedürfnis wird aktiviert, Selbstwert möglicherweise gefährdet"
+    },
+    3: {
+        "label": "Stress - Zeit rast",
+        "description": "Zeitgefühl ist gestört - Überaktivierung, Kontrollverlust",
+        "psychological_meaning": "Stress, Überforderung, Regulationsbedarf",
+        "bischof": "Explorationssystem überlastet, Sicherheitsbedürfnis aktiviert",
+        "grawe": "Konsistenzstörung durch Überforderung der Bewältigungsressourcen"
     }
 }
 
@@ -120,6 +173,9 @@ def generate_smart_domain_analysis(data, domain):
     time_val = data[f"Time_{domain}"]
     flow_index, zone, explanation = calculate_flow(skill, challenge)
     
+    # Zeiterlebens-Analyse
+    time_info = TIME_PERCEPTION_SCALE[time_val]
+    
     # Zustandsbewertung basierend auf Flow-Index
     if flow_index >= 0.7:
         status = "ausgezeichnet"
@@ -132,27 +188,106 @@ def generate_smart_domain_analysis(data, domain):
         empfehlung = "Stabile Basis mit Entwicklungspotential."
     else:
         status = "entwicklungsbedürftig"
-        empfehlung = "Gezielte Maßnahmen zur Verbesserung der Passung empfohlen."
+        empfehlung = "Gezielte Massnahmen zur Verbesserung der Passung empfohlen."
     
     analysis = f"""
 **🧠 Psychologische Analyse für {domain}**
 
 **Zustand**: {status} (Flow-Index: {flow_index:.2f}/1.0)
 **Zone**: {zone}
-**Zeitempfinden**: {'beschleunigt' if time_val > 0 else 'verlangsamt' if time_val < 0 else 'normal'}
+**Zeitempfinden**: {time_info['label']} - {time_info['description']}
+
+**Psychologische Bedeutung**:
+{time_info['psychological_meaning']}
 
 **Theoretische Einordnung**:
-- **Bischof**: {DOMAINS[domain]['bischof']}
-- **Grawe**: {DOMAINS[domain]['grawe']}
+- **Bischof**: {DOMAINS[domain]['bischof']} → {time_info['bischof']}
+- **Grawe**: {DOMAINS[domain]['grawe']} → {time_info['grawe']}
+- **Flow**: {DOMAINS[domain]['flow']}
 
 **Interpretation**: {explanation}
 
 **Handlungsempfehlung**: {empfehlung}
 
 **Konkrete Schritte**:
-{generate_recommendation(skill, challenge, time_val, domain)}
+{generate_time_based_recommendation(time_val, skill, challenge, domain)}
 """
     return analysis
+
+def generate_time_based_recommendation(time_val, skill, challenge, domain):
+    """Generiert spezifische Empfehlungen basierend auf Zeiterleben"""
+    
+    recommendations = {
+        -3: [
+            "Dringend neue Herausforderungen suchen",
+            "Tätigkeitsprofil erweitern oder anpassen",
+            "Supervision zur Motivationsklärung nutzen"
+        ],
+        -2: [
+            "Zusätzliche Aufgaben übernehmen",
+            "Eigene Projekte initiieren",
+            "Weiterbildungsmöglichkeiten prüfen"
+        ],
+        -1: [
+            "Leichte Erweiterung der Kompetenzen",
+            "Neue Aspekte in vertraute Aufgaben einbringen",
+            "Mentoring für andere überlegen"
+        ],
+        0: [
+            "Aktuelle Balance bewusst beibehalten",
+            "Erfolgsfaktoren dokumentieren und transferieren",
+            "Als Multiplikator für andere wirken"
+        ],
+        1: [
+            "Idealzustand - bewusst geniessen und stabilisieren",
+            "Erfahrungen reflektieren und generalisieren",
+            "Als Best Practice teilen"
+        ],
+        2: [
+            "Arbeitspensen kritisch prüfen",
+            "Delegationsmöglichkeiten ausloten",
+            "Entlastung und Pausengestaltung optimieren"
+        ],
+        3: [
+            "Akute Entlastung notwendig",
+            "Supervision oder Coaching in Anspruch nehmen",
+            "Gesundheitliche Folgen beachten und priorisieren"
+        ]
+    }
+    
+    base_recommendations = recommendations[time_val]
+    
+    # Domänenspezifische Zusatzempfehlungen
+    domain_specific = {
+        "Team-Veränderungen": [
+            "Kommunikation im Team intensivieren",
+            "Rollenklarheit herstellen",
+            "Unterstützungsnetzwerke aufbauen"
+        ],
+        "Veränderungen im Betreuungsbedarf der Klient:innen": [
+            "Fallsupervision nutzen",
+            "Kollegiale Beratung etablieren",
+            "Entlastung durch Teamarbeit"
+        ],
+        "Prozess- oder Verfahrensänderungen": [
+            "Schulungen und Einarbeitung optimieren",
+            "Feedback-Prozesse etablieren",
+            "Pilotphasen einplanen"
+        ],
+        "Kompetenzanforderungen / Weiterbildung": [
+            "Lernziele klar definieren",
+            "Lernpartnerschaften bilden",
+            "Praxistransfer sicherstellen"
+        ],
+        "Interpersonelle Veränderungen": [
+            "Konfliktgespräche führen",
+            "Teamtage zur Klärung nutzen",
+            "Externe Moderation in Anspruch nehmen"
+        ]
+    }
+    
+    all_recommendations = base_recommendations + domain_specific.get(domain, [])
+    return "\n".join([f"• {rec}" for rec in all_recommendations])
 
 def generate_comprehensive_smart_report(data):
     """Erstellt einen umfassenden Bericht ohne API"""
@@ -207,12 +342,15 @@ def generate_comprehensive_smart_report(data):
         challenge = data[f"Challenge_{domain}"]
         time_val = data[f"Time_{domain}"]
         flow_index, zone, explanation = calculate_flow(skill, challenge)
+        time_info = TIME_PERCEPTION_SCALE[time_val]
         
         report += f"\n**{domain}**\n"
-        report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7 | Zeit: {time_val}\n"
+        report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7\n"
         report += f"Flow-Index: {flow_index:.2f}/1.0 | Zone: {zone}\n"
+        report += f"Zeitempfinden: {time_info['label']}\n"
         report += f"Interpretation: {explanation}\n"
-        report += f"Empfehlung: {generate_recommendation(skill, challenge, time_val, domain)}\n"
+        report += f"Empfehlung: {generate_time_based_recommendation(time_val, skill, challenge, domain)}\n"
+        report += "-" * 40 + "\n"
     
     report += "\n" + "=" * 80 + "\n"
     report += "END OF REPORT - © Flow-Analyse Pro"
@@ -314,17 +452,6 @@ def create_flow_plot(data, domain_colors):
     plt.tight_layout()
     return fig
 
-def generate_recommendation(skill, challenge, time, domain):
-    diff = skill - challenge
-    if diff < -2:
-        return f"Reduzieren Sie die Herausforderungen in {domain} oder erhöhen Sie Ihre Kompetenzen."
-    elif diff > 2:
-        return f"Erhöhen Sie die Herausforderungen in {domain} oder suchen Sie nach neuen Aufgaben."
-    elif abs(diff) <= 1 and (skill + challenge)/2 >= 5:
-        return f"Behalten Sie die aktuelle Balance in {domain} bei - idealer Zustand!"
-    else:
-        return f"Arbeiten Sie an beiden Dimensionen in {domain}."
-
 def get_all_data():
     """Holt alle Daten aus der Datenbank für die Teamanalyse"""
     conn = sqlite3.connect(DB_NAME)
@@ -411,7 +538,7 @@ def create_team_analysis():
     ax.fill_between(x_vals, 1, flow_channel_lower, 
                    color='lightgray', alpha=0.3, label='Apathie')
     ax.fill_between(x_vals, flow_channel_upper, 7, 
-                   color='lightcoral', alpha=0.3, label='Angst/Überlastung')  # HIER WAR DER FEHLER!
+                   color='lightcoral', alpha=0.3, label='Angst/Überlastung')
     
     # Punkte für jede Domäne zeichnen
     for domain in DOMAINS.keys():
@@ -470,12 +597,12 @@ def create_team_analysis():
         challenge = domain_stats.loc[domain, 'challenge']
         
         if challenge > skill:
-            st.write(f"**{domain}:** Das Team fühlt sich überfordert. Empfohlene Maßnahmen:")
+            st.write(f"**{domain}:** Das Team fühlt sich überfordert. Empfohlene Massnahmen:")
             st.write(f"- Gezielte Schulungen und Training für das gesamte Team")
             st.write(f"- Klärung von Erwartungen und Prioritäten")
             st.write(f"- Gegenseitige Unterstützung und Erfahrungsaustausch fördern")
         else:
-            st.write(f"**{domain}:** Das Team ist unterfordert. Empfohlene Maßnahmen:")
+            st.write(f"**{domain}:** Das Team ist unterfordert. Empfohlene Massnahmen:")
             st.write(f"- Neue, anspruchsvollere Aufgaben suchen")
             st.write(f"- Verantwortungsbereiche erweitern")
             st.write(f"- Innovative Projekte initiieren")
@@ -494,6 +621,22 @@ page = st.sidebar.radio("Seite auswählen:", ["Einzelanalyse", "Team-Analyse"])
 if page == "Einzelanalyse":
     st.title("🌊 Flow-Analyse Pro mit Theorieintegration")
     
+    # Zeiterlebens-Legende anzeigen
+    with st.expander("ℹ️ Zeiterlebens-Skala erklärt", expanded=False):
+        st.write("**Wie empfinden Sie die Zeit in dieser Situation?**")
+        cols = st.columns(4)
+        with cols[0]:
+            st.write("**-3:** Extreme Langeweile")
+            st.write("**-2:** Langeweile")
+        with cols[1]:
+            st.write("**-1:** Entspannt")
+            st.write("**0:** Normal")
+        with cols[2]:
+            st.write("**+1:** Zeit fliesst")
+            st.write("**+2:** Zeit rennt")
+        with cols[3]:
+            st.write("**+3:** Stress")
+    
     # Datenerfassung
     name = st.text_input("Name (optional)", key="name")
     
@@ -505,11 +648,14 @@ if page == "Einzelanalyse":
         
         cols = st.columns(3)
         with cols[0]:
-            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}")
+            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}",
+                             help="1 = sehr gering, 7 = sehr hoch")
         with cols[1]:
-            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}")
+            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}",
+                                 help="1 = sehr gering, 7 = sehr hoch")
         with cols[2]:
-            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}")
+            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}",
+                                       help="-3 = extreme Langeweile, +3 = Stress")
         
         st.session_state.current_data.update({
             f"Skill_{domain}": skill,
