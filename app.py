@@ -22,7 +22,13 @@ DOMAINS = {
         "bischof": "Bindungssystem - Bedürfnis nach Vertrautheit und Sicherheit",
         "grawe": "Bedürfnisse: Bindung, Orientierung/Kontrolle, Selbstwertschutz",
         "flow": "Balance zwischen Vertrautheit (Fähigkeit) und Neuem (Herausforderung)",
-        "explanation": """In deinem Arbeitsalltag verändern sich Teams ständig: neue Kollegen kommen hinzu, Rollen verschieben sich, manchmal fallen Personen aus."""
+        "explanation": """In deinem Arbeitsalltag verändern sich Teams ständig: neue Kollegen kommen hinzu, Rollen verschieben sich, manchmal fallen Personen aus.
+        
+Beispiel: Ein Mitarbeiter sagt kurzfzeitig ab.
+
+Positiv erlebt: Du bleibst ruhig, weil du Erfahrung hast und vertraust, dass Aufgaben kompetent verteilt werden.
+
+Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich später herausstellt, dass alles in Ordnung ist."""
     },
     "Veränderungen im Betreuungsbedarf der Klient:innen": {
         "examples": "steigender Pflegebedarf, neue pädagogische Anforderungen, komplexere Cases",
@@ -30,7 +36,13 @@ DOMAINS = {
         "bischof": "Explorationssystem - Umgang mit veränderten Anforderungen",
         "grawe": "Bedürfnisse: Kompetenzerleben, Kontrolle, Lustgewinn/Unlustvermeidung",
         "flow": "Passung zwischen professionellen Kompetenzen und Anforderungen",
-        "explanation": """Der Betreuungsbedarf der Klienten kann sich verändern."""
+        "explanation": """Der Betreuungsbedarf der Klienten kann sich verändern, z. B. durch gesundheitliche Verschlechterungen oder neue Anforderungen.
+
+Beispiel: Ein Klient benötigt plötzlich mehr Unterstützung im Alltag.
+
+Positiv erlebt: Du spürst, dass du die Situation gut einschätzen kannst, weil du Erfahrung mit ähnlichen Fällen hast und weißt, wie du angemessen reagieren kannst.
+
+Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränderung löst Stress aus, weil du Angst hast, etwas falsch zu machen."""
     },
     "Prozess- oder Verfahrensänderungen": {
         "examples": "Anpassung bei Dienstübergaben, Dokumentation, interne Abläufe, neue Software",
@@ -38,7 +50,13 @@ DOMAINS = {
         "bischof": "Orientierungssystem - Umgang mit veränderter Struktur",
         "grawe": "Bedürfnisse: Orientierung, Kontrolle, Selbstwert (durch Routine)",
         "flow": "Balance zwischen Routinesicherheit und Lernherausforderungen",
-        "explanation": """Interne Abläufe ändern sich regelmäßig."""
+        "explanation": """Interne Abläufe ändern sich regelmäßig, z. B. bei Dienstübergaben, Dokumentationen oder neuer Software.
+
+Beispiel: Ein neues digitales Dokumentationssystem wird eingeführt.
+
+Positiv erlebt: Du gehst die Umstellung gelassen an, weil du schon oft neue Abläufe gelernt hast und dir vertraut ist, dass Schulungen helfen.
+
+Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt."""
     },
     "Kompetenzanforderungen / Weiterbildung": {
         "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierungen",
@@ -46,7 +64,13 @@ DOMAINS = {
         "bischof": "Explorationssystem - Kompetenzerweiterung und Wachstum",
         "grawe": "Bedürfnisse: Selbstwerterhöhung, Kompetenzerleben, Kontrolle",
         "flow": "Optimale Lernherausforderung ohne Überforderung",
-        "explanation": """Manchmal kommen neue Aufgaben oder zusätzliche Qualifikationen auf dich zu."""
+        "explanation": """Manchmal kommen neue Aufgaben oder zusätzliche Qualifikationen auf dich zu.
+
+Beispiel: Du sollst eine neue Aufgabe übernehmen, z. B. eine Schulung für Kollegen leiten.
+
+Positiv erlebt: Du fühlst dich sicher und neugierig, weil du ähnliche Aufgaben bereits gemeistert hast und dein Wissen anwenden kannst.
+
+Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforderungen nicht gerecht zu werden, selbst wenn du später die Aufgabe gut bewältigst."""
     },
     "Interpersonelle Veränderungen": {
         "examples": "Konflikte, Rollenverschiebungen, neue Kolleg:innen, Veränderung in Führung",
@@ -54,7 +78,13 @@ DOMAINS = {
         "bischof": "Bindungssystem - Sicherheit in sozialen Beziehungen",
         "grawe": "Bedürfnisse: Bindung, Selbstwertschutz, Unlustvermeidung",
         "flow": "Soziale Kompetenz im Umgang mit zwischenmenschlichen Herausforderungen",
-        "explanation": """Beziehungen im Team verändern sich."""
+        "explanation": """Beziehungen im Team verändern sich, z. B. durch Konflikte, neue Kollegen oder Führungswechsel.
+
+Beispiel: Ein Konflikt zwischen Kollegen entsteht oder eine neue Leitungskraft übernimmt.
+
+Positiv erlebt: Du spürst, dass du gut damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weißt, wie man Spannungen aushält.
+
+Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt."""
     }
 }
 
@@ -381,7 +411,7 @@ def create_team_analysis():
     ax.fill_between(x_vals, 1, flow_channel_lower, 
                    color='lightgray', alpha=0.3, label='Apathie')
     ax.fill_between(x_vals, flow_channel_upper, 7, 
-                   color['lightcoral'], alpha=0.3, label='Angst/Überlastung')
+                   color='lightcoral', alpha=0.3, label='Angst/Überlastung')  # HIER WAR DER FEHLER!
     
     # Punkte für jede Domäne zeichnen
     for domain in DOMAINS.keys():
