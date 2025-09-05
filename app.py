@@ -14,10 +14,6 @@ from io import StringIO
 import requests
 import json
 
-# ===== DEEPSEEK KONFIGURATION =====
-DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
-DEEPSEEK_API_KEY = st.secrets.get("DEEPSEEK_API_KEY", "")
-
 # ===== KONFIGURATION =====
 DOMAINS = {
     "Team-Veränderungen": {
@@ -82,105 +78,176 @@ if 'show_ai_analysis' not in st.session_state:
 if 'show_full_report' not in st.session_state:
     st.session_state.show_full_report = False
 
-# ===== DEEPSEEK FUNKTIONEN =====
-def query_deepseek_ai(prompt, system_message=""):
-    """Sendet eine Anfrage an die DeepSeek API"""
-    if not DEEPSEEK_API_KEY:
-        return "⚠️ DeepSeek API Key nicht konfiguriert. Bitte in Streamlit Secrets setzen."
-    
-    try:
-        headers = {
-            "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
-            "Content-Type": "application/json"
-        }
-        
-        messages = []
-        if system_message:
-            messages.append({"role": "system", "content": system_message})
-        messages.append({"role": "user", "content": prompt})
-        
-        payload = {
-            "model": "deepseek-chat",
-            "messages": messages,
-            "temperature": 0.7,
-            "max_tokens": 1500
-        }
-        
-        response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload, timeout=30)
-        response.raise_for_status()
-        
-        result = response.json()
-        return result['choices'][0]['message']['content']
-        
-    except Exception as e:
-        return f"❌ DeepSeek API Fehler: {str(e)}"
-
-def generate_ai_domain_analysis(data, domain):
-    """Generiert eine KI-gestützte Analyse für eine bestimmte Domäne"""
+# ===== INTELLIGENTE ANALYSE-FUNKTIONEN (100% KOSTENLOS) =====
+def generate_smart_domain_analysis(data, domain):
+    """Erstellt intelligente Domain-Analysen ohne API - 100% kostenlos"""
     skill = data[f"Skill_{domain}"]
     challenge = data[f"Challenge_{domain}"]
-    time_perception = data[f"Time_{domain}"]
+    time_val = data[f"Time_{domain}"]
     flow_index, zone, explanation = calculate_flow(skill, challenge)
     
-    prompt = f"""
-Analysiere diese Flow-Daten für '{domain}':
-- Fähigkeiten: {skill}/7
-- Herausforderungen: {challenge}/7  
-- Zeitempfinden: {time_perception}
-- Flow-Zone: {zone}
-- Flow-Index: {flow_index:.2f}/1.0
-
-Theorie: {DOMAINS[domain]['bischof']} | {DOMAINS[domain]['grawe']}
-
-Erstelle eine flüssige Analyse mit:
-1. Situationsbewertung
-2. Theoretischer Einordnung
-3. Praxisempfehlungen
-
-Maximal 100 Wörter.
-"""
+    # Zustandsbewertung basierend auf Flow-Index
+    if flow_index >= 0.7:
+        status = "ausgezeichnet"
+        empfehlung = "Weiter so! Die aktuelle Balance ist ideal für produktives Arbeiten."
+    elif flow_index >= 0.5:
+        status = "gut"
+        empfehlung = "Gute Passung mit leichten Optimierungsmöglichkeiten."
+    elif flow_index >= 0.4:
+        status = "stabil"
+        empfehlung = "Stabile Basis mit Entwicklungspotential."
+    else:
+        status = "entwicklungsbedürftig"
+        empfehlung = "Gezielte Maßnahmen zur Verbesserung der Passung empfohlen."
     
-    system_msg = "Du bist ein Psychologe. Erstelle präzise, praxisnahe Analysen."
-    return query_deepseek_ai(prompt, system_msg)
+    # Fähigkeiten-Level Bewertung
+    if skill >= 6:
+        faehigkeiten_level = "Expertenniveau"
+        faehigkeiten_tipp = "Wissen weitergeben und mentoring betreiben"
+    elif skill >= 4:
+        faehigkeiten_level = "Fortgeschritten"
+        faehigkeiten_tipp = "Weiterentwicklung durch Spezialisierung"
+    else:
+        faehigkeiten_level = "Training empfohlen"
+        faehigkeiten_tipp = "Gezielte Schulungen und Praxisübungen"
+    
+    # Herausforderungen-Bewertung
+    if challenge > skill + 1:
+        herausforderungen_tipp = "Reduzieren oder Kompetenzen steigern"
+    elif challenge < skill - 1:
+        herausforderungen_tipp = "Steigern durch neue Aufgaben"
+    else:
+        herausforderungen_tipp = "Beibehalten"
+    
+    # Zeitmanagement-Bewertung
+    if time_val > 1:
+        zeit_tipp = "Pausen optimieren und Stressmanagement"
+    elif time_val < -1:
+        zeit_tipp = "Aufgaben interessanter gestalten"
+    else:
+        zeit_tipp = "Rhythmus beibehalten"
+    
+    # Zeitempfinden-Interpretation
+    if time_val > 1:
+        zeit_interpretation = "beschleunigt (Flow/Stress)"
+    elif time_val < -1:
+        zeit_interpretation = "verlangsamt (Unterforderung)"
+    else:
+        zeit_interpretation = "normal"
+    
+    analysis = f"""
+**🧠 Psychologische Analyse für {domain}**
 
-def generate_comprehensive_ai_report(data):
-    """Erstellt einen umfassenden KI-generierten Gesamtbericht"""
-    domain_analyses = []
+**Zustand**: {status} (Flow-Index: {flow_index:.2f}/1.0)
+**Zone**: {zone}
+**Zeitempfinden**: {zeit_interpretation}
+
+**Theoretische Einordnung**:
+- **Bischof**: {DOMAINS[domain]['bischof']}
+- **Grawe**: {DOMAINS[domain]['grawe']}
+
+**Interpretation**: {explanation}
+
+**Handlungsempfehlung**: {empfehlung}
+
+**Konkrete Schritte**:
+1. **Fähigkeiten** ({skill}/7): {faehigkeiten_level} → {faehigkeiten_tipp}
+2. **Herausforderungen** ({challenge}/7): {herausforderungen_tipp}
+3. **Zeitmanagement**: {zeit_tipp}
+
+**Flow-Theorie**: {DOMAINS[domain]['flow']}
+"""
+    return analysis
+
+def generate_comprehensive_smart_report(data):
+    """Erstellt einen umfassenden Bericht ohne API"""
+    report = "=" * 60 + "\n"
+    report += "🌊 FLOW-ANALYSEBERICHT - Psychologische Auswertung\n"
+    report += "=" * 60 + "\n\n"
+    
+    report += f"Name: {data['Name'] if data['Name'] else 'Unbenannt'}\n"
+    report += f"Datum: {datetime.now().strftime('%d.%m.%Y %H:%M')}\n"
+    report += "-" * 60 + "\n\n"
+    
+    # Gesamtbewertung
+    total_flow = 0
+    domain_count = len(DOMAINS)
+    
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        flow_index, zone, explanation = calculate_flow(skill, challenge)
+        total_flow += flow_index
+    
+    avg_flow = total_flow / domain_count
+    
+    report += "**GESAMTBEWERTUNG**\n"
+    report += "-" * 40 + "\n"
+    report += f"Durchschnittlicher Flow-Index: {avg_flow:.2f}/1.0\n"
+    
+    if avg_flow >= 0.7:
+        report += "**Gesamtzustand**: 🎯 Ausgezeichnet - Hohe Passung in allen Bereichen\n"
+    elif avg_flow >= 0.5:
+        report += "**Gesamtzustand**: ✅ Gut - Stabile Basis mit Stärken\n"
+    elif avg_flow >= 0.4:
+        report += "**Gesamtzustand**: 🔄 Stabil - Grundlegende Passung vorhanden\n"
+    else:
+        report += "**Gesamtzustand**: 📈 Entwicklungsbedarf - Gezielte Optimierung nötig\n"
+    
+    report += "\n**DETAILANALYSE NACH BEREICHEN**\n"
+    report += "-" * 40 + "\n"
+    
+    # Detailanalyse für jede Domain
     for domain in DOMAINS:
         skill = data[f"Skill_{domain}"]
         challenge = data[f"Challenge_{domain}"]
         time_val = data[f"Time_{domain}"]
         flow_index, zone, explanation = calculate_flow(skill, challenge)
         
-        domain_analyses.append({
-            "domain": domain,
-            "skill": skill,
-            "challenge": challenge,
-            "time_perception": time_val,
-            "flow_index": flow_index,
-            "zone": zone
-        })
+        report += f"\n**{domain}** (Flow: {flow_index:.2f}/1.0)\n"
+        report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7 | Zeit: {time_val}\n"
+        report += f"Zone: {zone}\n"
+        
+        if flow_index >= 0.7:
+            report += "✅ Stärkenbereich - Idealzustand beibehalten\n"
+        elif flow_index >= 0.4:
+            report += "🔄 Stabil - Leichte Optimierung möglich\n"
+        else:
+            report += "📈 Entwicklungsbereich - Gezielte Maßnahmen nötig\n"
     
-    total_flow = sum(analysis["flow_index"] for analysis in domain_analyses)
-    avg_flow = total_flow / len(domain_analyses)
+    report += "\n**PRAXISEMPFEHLUNGEN**\n"
+    report += "-" * 40 + "\n"
     
-    prompt = f"""
-Erstelle einen psychologischen Bericht für {data['Name']}:
-
-Durchschnittlicher Flow-Index: {avg_flow:.2f}/1.0
-Daten: {json.dumps(domain_analyses, ensure_ascii=False)}
-
-Struktur:
-1. Zusammenfassende Bewertung
-2. Detailanalyse der 5 Bereiche  
-3. Theoretische Einordnung
-4. Handlungsempfehlungen
-
-Maximal 300 Wörter. Flüssiger Text.
-"""
+    # Priorisierte Empfehlungen
+    domains_sorted = sorted(DOMAINS.keys(), 
+                          key=lambda d: calculate_flow(data[f"Skill_{d}"], data[f"Challenge_{d}"])[0])
     
-    system_msg = "Du erstellst psychologische Fachberichte. Sei präzise und praxisorientiert."
-    return query_deepseek_ai(prompt, system_msg)
+    for i, domain in enumerate(domains_sorted):
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        flow_index, zone, explanation = calculate_flow(skill, challenge)
+        
+        if flow_index < 0.5:
+            priority = "🔴 Hohe Priorität" if flow_index < 0.4 else "🟡 Mittlere Priorität"
+            report += f"\n{priority}: {domain}\n"
+            
+            if "Angst" in zone:
+                report += f"→ Maßnahme: {generate_recommendation(skill, challenge, 0, domain)}\n"
+            elif "Langeweile" in zone:
+                report += f"→ Maßnahme: {generate_recommendation(skill, challenge, 0, domain)}\n"
+            else:
+                report += f"→ Maßnahme: Beide Dimensionen entwickeln\n"
+    
+    report += "\n**THEORETISCHE GRUNDLAGEN**\n"
+    report += "-" * 40 + "\n"
+    report += "• Bischofs Zürcher Modell: Balance zwischen Bindung und Exploration\n"
+    report += "• Grawe Konsistenztheorie: Psychologische Grundbedürfnisse\n"
+    report += "• Csikszentmihalyi Flow-Theorie: Optimaler Challenge-Skill-Fit\n"
+    
+    report += "\n" + "=" * 60 + "\n"
+    report += "Ende des Berichts - © Flow-Analyse Pro"
+    
+    return report
 
 # ===== BESTEHENDE FUNKTIONEN =====
 def init_db():
@@ -229,19 +296,19 @@ def calculate_flow(skill, challenge):
     
     if mean_level < 3:
         zone = "Apathie"
-        explanation = "Geringe Motivation"
+        explanation = "Geringe Motivation durch mangelnde Passung zwischen Fähigkeiten und Herausforderungen"
     elif abs(diff) <= 1 and mean_level >= 5:
         zone = "Flow"
-        explanation = "Optimale Passung"
+        explanation = "Optimale Passung - hohe Motivation und produktives Arbeiten"
     elif diff < -2:
         zone = "Angst/Überlastung"
-        explanation = "Herausforderungen übersteigen Fähigkeiten"
+        explanation = "Herausforderungen übersteigen die Fähigkeiten - Stresserleben"
     elif diff > 2:
         zone = "Langeweile"
-        explanation = "Fähigkeiten übersteigen Herausforderungen"
+        explanation = "Fähigkeiten übersteigen die Herausforderungen - Unterforderung"
     else:
         zone = "Mittlere Aktivierung"
-        explanation = "Grundlegende Passung"
+        explanation = "Grundlegende Passung mit Entwicklungspotential"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
@@ -276,6 +343,17 @@ def create_flow_plot(data, domain_colors):
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     return fig
+
+def generate_recommendation(skill, challenge, time, domain):
+    diff = skill - challenge
+    if diff < -2:  # Überlastung
+        return f"Reduzieren Sie die Herausforderungen in {domain} oder erhöhen Sie Ihre Kompetenzen durch Training und Unterstützung."
+    elif diff > 2:  # Langeweile
+        return f"Erhöhen Sie die Herausforderungen in {domain} oder suchen Sie nach neuen Aufgabenstellungen."
+    elif abs(diff) <= 1 and (skill + challenge)/2 >= 5:  # Flow
+        return f"Behalten Sie die aktuelle Balance in {domain} bei - idealer Zustand!"
+    else:  # Apathie oder mittlere Aktivierung
+        return f"Arbeiten Sie an beiden Dimensionen: Steigern Sie sowohl Fähigkeiten als auch Herausforderungen in {domain}."
 
 # ===== STREAMLIT-UI =====
 st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
@@ -323,6 +401,8 @@ if page == "Einzelanalyse":
         
         save_to_db(st.session_state.current_data)
         st.session_state.submitted = True
+        st.session_state.ai_analysis = {}
+        st.session_state.full_report_generated = False
         st.rerun()
 
     # Nach erfolgreicher Analyse
@@ -337,36 +417,34 @@ if page == "Einzelanalyse":
         # KI-Buttons
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("🤖 KI-Einzelanalysen generieren"):
+            if st.button("🤖 Einzelanalysen generieren", key="generate_ai_analysis"):
                 st.session_state.show_ai_analysis = True
                 st.rerun()
         
         with col2:
-            if st.button("📊 KI-Gesamtbericht erstellen"):
+            if st.button("📊 Gesamtbericht erstellen", key="generate_full_report"):
                 st.session_state.show_full_report = True
                 st.rerun()
         
-        # KI-Einzelanalysen anzeigen
+        # Einzelanalysen anzeigen
         if st.session_state.get('show_ai_analysis', False):
-            st.subheader("🧠 KI-Einzelanalysen")
+            st.subheader("🧠 Psychologische Einzelanalysen")
             for domain in DOMAINS:
-                with st.expander(f"📖 {domain}"):
+                with st.expander(f"📖 {domain}", expanded=False):
                     if domain not in st.session_state.ai_analysis:
-                        with st.spinner(f"Analysiere {domain}..."):
-                            analysis = generate_ai_domain_analysis(st.session_state.current_data, domain)
-                            st.session_state.ai_analysis[domain] = analysis
-                    st.write(st.session_state.ai_analysis[domain])
+                        analysis = generate_smart_domain_analysis(st.session_state.current_data, domain)
+                        st.session_state.ai_analysis[domain] = analysis
+                    st.markdown(st.session_state.ai_analysis[domain])
         
-        # KI-Gesamtbericht anzeigen
+        # Gesamtbericht anzeigen
         if st.session_state.get('show_full_report', False):
-            st.subheader("📄 KI-Gesamtbericht")
+            st.subheader("📄 Psychologischer Gesamtbericht")
             if not st.session_state.full_report_generated:
-                with st.spinner("Erstelle Gesamtbericht..."):
-                    report = generate_comprehensive_ai_report(st.session_state.current_data)
-                    st.session_state.full_report_content = report
-                    st.session_state.full_report_generated = True
+                report = generate_comprehensive_smart_report(st.session_state.current_data)
+                st.session_state.full_report_content = report
+                st.session_state.full_report_generated = True
             
-            st.text_area("Bericht", st.session_state.full_report_content, height=300)
+            st.text_area("Bericht", st.session_state.full_report_content, height=400)
             st.download_button(
                 label="📥 Bericht herunterladen",
                 data=st.session_state.full_report_content,
@@ -379,4 +457,4 @@ else:
     st.info("Team-Analyse Funktion kommt demnächst")
 
 st.divider()
-st.caption("© Flow-Analyse Pro")
+st.caption("© Flow-Analyse Pro - 100% kostenlose psychologische Diagnostik")
