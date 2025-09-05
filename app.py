@@ -59,7 +59,7 @@ Positiv erlebt: Du gehst die Umstellung gelassen an, weil du schon oft neue Abl�
 Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt."""
     },
     "Kompetenzanforderungen / Weiterbildung": {
-        "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierungen",
+        "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierations",
         "color": "#06D6A0",
         "bischof": "Explorationssystem - Kompetenzerweiterung und Wachstum",
         "grawe": "Bedürfnisse: Selbstwerterhöhung, Kompetenzerleben, Kontrolle",
@@ -161,7 +161,7 @@ if 'analysis_started' not in st.session_state:
 if 'database_reset' not in st.session_state:
     st.session_state.database_reset = False
 
-# ===== FUNKTIONEN =====
+# ===== KERN-FUNKTIONEN =====
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
@@ -206,21 +206,28 @@ def calculate_flow(skill, challenge):
     diff = skill - challenge
     mean_level = (skill + challenge) / 2
     
-    if mean_level < 3:
-        zone = "Apathie"
-        explanation = "Geringe Motivation durch mangelnde Passung"
-    elif abs(diff) <= 1 and mean_level >= 5:
-        zone = "Flow"
-        explanation = "Optimale Passung - hohe Motivation"
+    # Präzisere Zonen-Definition mit klaren Schwellenwerten
+    if abs(diff) <= 1 and mean_level >= 5:
+        zone = "Flow - Optimale Passung"
+        explanation = "Idealzone: Fähigkeiten und Herausforderungen im Gleichgewicht"
+    elif diff < -3:
+        zone = "Akute Überforderung"
+        explanation = "Krisenzone: Massive Diskrepanz zu Ungunsten der Fähigkeiten"
+    elif diff > 3:
+        zone = "Akute Unterforderung"
+        explanation = "Krisenzone: Massive Diskrepanz zu Ungunsten der Herausforderungen"
     elif diff < -2:
-        zone = "Angst/Überlastung"
-        explanation = "Herausforderungen übersteigen die Fähigkeiten"
+        zone = "Überforderung"
+        explanation = "Warnzone: Deutliche Überlastungssituation"
     elif diff > 2:
-        zone = "Langeweile"
-        explanation = "Fähigkeiten übersteigen die Herausforderungen"
+        zone = "Unterforderung" 
+        explanation = "Warnzone: Deutliche Unterforderungssituation"
+    elif mean_level < 3:
+        zone = "Apathie"
+        explanation = "Rückzugszone: Geringes Engagement in beiden Dimensionen"
     else:
-        zone = "Mittlere Aktivierung"
-        explanation = "Grundlegende Passung mit Entwicklungspotential"
+        zone = "Stabile Passung"
+        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotential"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
@@ -333,6 +340,84 @@ def generate_time_based_recommendation(time_val, skill, challenge, domain):
     personalized_recs = [rec.replace("Sie ", "Du ").replace("Ihre ", "Deine ").replace("Ihnen ", "dir ") for rec in all_recommendations]
     return "\n".join([f"• {rec}" for rec in personalized_recs])
 
+def generate_domain_interpretation(domain, skill, challenge, time_val, flow_index, zone):
+    time_info = TIME_PERCEPTION_SCALE[time_val]
+    
+    report = f"**{domain}**\n"
+    report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7 | "
+    report += f"Zeitgefühl: {time_info['label']}\n\n"
+    
+    report += "**Was das bedeutet:**\n"
+    
+    # 🔴 AKUTE UNTERFORDERUNG (z.B. 7/1)
+    if zone == "Akute Unterforderung" or (skill - challenge >= 3):
+        report += f"Hier schätzt du deine Fähigkeiten sehr hoch ein, doch im Alltag fehlt oft die passende Herausforderung. \n"
+        report += f"Viele alltägliche Dinge wirken schnell monoton, und man hat das Gefühl, jeden Tag wiederholt sich dasselbe. \n"
+        report += f"Dabei sind die Dinge oft komplexer, als sie auf den ersten Blick erscheinen. Selbst hinter ganz gewöhnlichen \n"
+        report += f"Abläufen können erstaunlich komplexe Prozesse stecken.\n\n"
+        
+        report += f"Vielleicht hast du eine besonders gute Auffassungsgabe und könntest andere davon profitieren lassen, \n"
+        report += f"indem du Mentorenrollen übernimmst. Sprich das doch einmal mit deiner oder deinem Vorgesetzten an.\n\n"
+        
+        report += f"*Wenn man eine einfache Blume lange und genau betrachtet, kann man die Gesetzmässigkeiten des gesamten \n"
+        report += f"Universums erkennen – eine Erinnerung daran, dass auch im Alltäglichen viel Tiefe steckt.*\n"
+    
+    # 🔴 AKUTE ÜBERFORDERUNG (z.B. 2/7)  
+    elif zone == "Akute Überforderung" or (challenge - skill >= 3):
+        report += f"Hier erlebst du die Anforderungen als sehr hoch, während du dir deine Fähigkeiten noch im Aufbau vorstellst. \n"
+        report += f"Das kann das Gefühl geben, ständig am Limit zu sein und nie wirklich durchatmen zu können.\n\n"
+        
+        report += f"Vergiss nicht: Auch die erfahrensten Kolleg:innen haben mal klein angefangen. Jede Überforderung ist \n"
+        report += f"ein Zeichen dafür, dass du wächst – auch wenn es sich im Moment anstrengend anfühlt.\n\n"
+        
+        report += f"Such dir gezielt Unterstützung bei Themen, die dir schwerfallen. Oft reicht schon ein kurzer Austausch, \n"
+        report += f"um wieder klarer zu sehen.\n"
+    
+    # 🟢 FLOW (optimale Passung)
+    elif zone == "Flow - Optimale Passung":
+        report += f"Perfekt! Hier findest du die ideale Balance zwischen dem, was du kannst und was von dir gefordert wird. \n"
+        report += f"Du arbeitest engagiert und spürst, dass deine Fähigkeiten genau dort gebraucht werden, wo sie hingehören.\n\n"
+        
+        report += f"Geniesse diese Momente bewusst. Sie zeigen dir, wofür sich die ganze Mühe lohnt.\n"
+    
+    # 🟡 UNTERFORDERUNG (z.B. 6/3)
+    elif zone == "Unterforderung" or (skill - challenge >= 2):
+        report += f"Du bringst gute Fähigkeiten mit, könntest aber noch mehr gefordert werden. Manchmal fehlt der letzte Kick, \n"
+        report += f"der aus Routineaufgaben echte Entwicklungsmöglichkeiten macht.\n\n"
+        
+        report += f"Vielleicht findest du Wege, deine Aufgaben etwas anspruchsvoller zu gestalten oder übernimmst zusätzliche \n"
+        report += f"Verantwortung in Bereichen, die dich interessieren.\n"
+    
+    # 🟡 ÜBERFORDERUNG (z.B. 4/6)  
+    elif zone == "Überforderung" or (challenge - skill >= 2):
+        report += f"Die Anforderungen sind hier spürbar hoch für dich. Das kann herausfordernd sein, aber auch eine Chance, \n"
+        report += f"dich weiterzuentwickeln.\n\n"
+        
+        report += f"Nimm dir Zeit, die neuen Herausforderungen Schritt für Schritt zu meistern. Niemand erwartet, \n"
+        report += f"dass du alles sofort perfekt beherrschst.\n"
+    
+    # 🟢 STABILE PASSUNG (z.B. 5/3, 4/4)
+    else:
+        report += f"Hier findest du eine gute Grundbalance. Die Aufgaben passen zu dem, was du kannst, und du kommst \n"
+        report += f"gut zurecht. Vielleicht ist hier nicht alles spektakulär, aber es läuft stabil und verlässlich.\n\n"
+        
+        report += f"Solche Phasen der Stabilität sind wertvoll – sie geben dir die Energie für anspruchsvollere Bereiche.\n"
+    
+    # Theorie leicht verständlich eingewoben
+    report += f"\n**Was dahinter steckt:**\n"
+    report += f"• {DOMAINS[domain]['flow'].replace('Balance zwischen', 'Ausgleich von')}\n"
+    report += f"• {DOMAINS[domain]['grawe'].replace('Bedürfnisse:', 'Hier geht es um dein Bedürfnis nach')}\n"
+    report += f"• {DOMAINS[domain]['bischof'].replace('Bindungssystem -', 'Dein Wunsch nach')}\n"
+    
+    # Handlungsempfehlungen persönlich formuliert
+    report += f"\n**Was dir helfen könnte:**\n"
+    recommendations = generate_time_based_recommendation(time_val, skill, challenge, domain)
+    for rec in recommendations.split('\n'):
+        if rec.strip():
+            report += f"{rec.strip()}\n"
+    
+    return report
+
 def generate_comprehensive_smart_report(data):
     """Erstellt einen persönlichen, emotional intelligenten Bericht"""
     
@@ -376,7 +461,7 @@ def generate_comprehensive_smart_report(data):
         report += "Vielleicht fühlst du dich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
         report += "Das ist okay - viele Menschen erleben solche Phasen. Wichtig ist, dass du jetzt auf dich achtest.\n\n"
     
-    # Detaillierte Domain-Analysen persönlich und einfühlsam
+    # Detaillierte Domain-Analysen
     report += "WO DU STEHST: BEREICH FÜR BEREICH\n"
     report += "-" * 80 + "\n\n"
     
@@ -385,46 +470,9 @@ def generate_comprehensive_smart_report(data):
         challenge = data[f"Challenge_{domain}"]
         time_val = data[f"Time_{domain}"]
         flow_index, zone, _ = calculate_flow(skill, challenge)
-        time_info = TIME_PERCEPTION_SCALE[time_val]
         
-        report += f"**{domain}**\n"
-        report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7 | "
-        report += f"Zeitgefühl: {time_info['label']}\n\n"
-        
-        # Einfühlsame Interpretation
-        report += "**Was das für dich bedeutet:**\n"
-        
-        if zone == "Flow":
-            report += f"Hier fühlst du dich richtig kompetent! 💪\n"
-            report += f"Die Aufgaben passen gut zu dem, was du kannst. Das Zeitgefühl '{time_info['label']}'\n"
-            report += "zeigt, dass du in diesen Momenten richtig aufgehst.\n"
-        elif zone == "Apathie":
-            report += f"Hier könnte mehr Schwung rein! 🌱\n"
-            report += f"Vielleicht kennst du alles schon oder die Aufgaben fordern dich nicht wirklich.\n"
-            report += f"Das Zeitgefühl '{time_info['label']}' deutet darauf hin, dass es dir hier an Pep fehlt.\n"
-        elif "Überlastung" in zone:
-            report += f"Hier bist du oft am Limit! 🆘\n"
-            report += f"Die Aufgaben überfordern dich vielleicht oder du hast das Gefühl, nie hinterherzukommen.\n"
-            report += f"Das Zeitgefühl '{time_info['label']}' zeigt, wie anstrengend das für dich ist.\n"
-        else:
-            report += f"Hier läuft es okay, aber nicht perfekt. 🔄\n"
-            report += f"Manchmal klappt es gut, manchmal nicht. Das Zeitgefühl '{time_info['label']}'\n"
-            report += f"passt zu diesem Wechselbad der Gefühle.\n"
-        
-        # Theorie leicht verständlich eingewoben
-        report += f"\n**Was dahinter steckt:**\n"
-        report += f"• {DOMAINS[domain]['flow'].replace('Balance zwischen', 'Ausgleich von')}\n"
-        report += f"• {DOMAINS[domain]['grawe'].replace('Bedürfnisse:', 'Hier geht es um dein Bedürfnis nach')}\n"
-        report += f"• {DOMAINS[domain]['bischof'].replace('Bindungssystem -', 'Dein Wunsch nach')}\n"
-        
-        # Handlungsempfehlungen persönlich formuliert
-        report += f"\n**Was dir helfen könnte:**\n"
-        recommendations = generate_time_based_recommendation(time_val, skill, challenge, domain)
-        for rec in recommendations.split('\n'):
-            if rec.strip():
-                report += f"{rec.strip()}\n"
-        
-        report += "\n" + "-" * 50 + "\n\n"
+        domain_report = generate_domain_interpretation(domain, skill, challenge, time_val, flow_index, zone)
+        report += domain_report + "\n" + "-" * 50 + "\n\n"
     
     # Integrierte Handlungsstrategie
     report += "WAS JETZT FÜR DICH DRAN IST\n"
@@ -447,20 +495,55 @@ def generate_comprehensive_smart_report(data):
     report += "• Sorge für mehr Ausgleich in anstrengenden Bereichen\n"
     report += "• Behalte dein Wohlbefinden im Blick\n\n"
     
-    # Abschluss mit Ermutigung
-    report += "ZUM SCHLUSS\n"
-    report += "-" * 80 + "\n\n"
+    # Stärken und Ressourcen am Ende
+    report += "=" * 60 + "\n"
+    report += "DEINE STÄRKEN UND RESSOURCEN\n"
+    report += "=" * 60 + "\n\n"
     
-    report += "Denk dran: Diese Analyse ist eine Momentaufnahme. \n"
-    report += "Arbeitsituationen verändern sich - und du veränderst dich auch.\n\n"
+    # Stärken aus der Analyse extrahieren
+    strengths = []
+    resources = []
     
-    report += "Nimm mit, was sich für dich stimmig anfühlt.\n"
-    report += "Du kennst dich selbst am besten.\n\n"
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        flow_index, zone, _ = calculate_flow(skill, challenge)
+        
+        if flow_index >= 0.6:  # Stärken identifizieren
+            strengths.append(f"• {domain}: Du bringst hier besondere Kompetenzen mit (Fähigkeiten: {skill}/7)")
+        if skill >= 5:  # Ressourcen identifizieren
+            resources.append(f"• {domain}: Deine Fähigkeiten ({skill}/7) sind eine wertvolle Ressource")
     
-    report += "Alles Gute für deinen Weg! 🌟\n\n"
+    if strengths:
+        report += "**Das sind deine besonderen Stärken:**\n"
+        report += "\n".join(strengths) + "\n\n"
+    else:
+        report += "**Deine aktuelle Stärke:** Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
+        report += "Diese Selbstwahrnehmung ist eine wichtige Grundlage für jede Weiterentwicklung.\n\n"
+    
+    if resources:
+        report += "**Diese Ressourcen stehen dir zur Verfügung:**\n"
+        report += "\n".join(resources) + "\n\n"
+    
+    # Abschluss mit empowernder Botschaft
+    report += "=" * 60 + "\n"
+    report += "ZUM ABSCHLUSS\n"
+    report += "=" * 60 + "\n\n"
+    
+    report += "Vergiss nicht: Diese Analyse zeigt eine Momentaufnahme. Jeder Mensch durchlebt Phasen,\n"
+    report += "in denen sich Passung und Herausforderungen verändern. Wichtig ist, dass du:\n\n"
+    report += "• Auf dein Bauchgefühl hörst\n"
+    report += "• Dir Unterstützung holst, wenn du sie brauchst\n"
+    report += "• Deine Erfolge bewusst wahrnimmst\n"
+    report += "• Weisst, dass du nicht alleine bist\n\n"
+    
+    report += "Du bringst wertvolle Erfahrungen und Fähigkeiten mit. Manchmal geht es darum,\n"
+    report += "sie dort einzusetzen, wo sie am meisten Wirkung entfalten können.\n\n"
+    
+    report += "Alles Gute auf deinem Weg! 🌟\n\n"
     
     report += "=" * 80 + "\n"
-    report += "Deine Flow-Analyse\n"
+    report += "Deine Flow-Analyse - Stärkenorientiert und ressourcenbasiert\n"
     report += "Erstellt am " + datetime.now().strftime("%d.%m.%Y") + "\n"
     report += "=" * 80
     
