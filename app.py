@@ -13,7 +13,7 @@ DOMAINS = {
         "grawe": "Bedürfnisse: Bindung, Orientierung/Kontrolle, Selbstwertschutz",
         "flow": "Balance zwischen Vertrautheit (Fähigkeit) und Neuem (Herausforderung)",
         "explanation": """In deinem Arbeitsalltag verändern sich Teams ständig: neue Kollegen kommen hinzu, Rollen verschieben sich, manchmal fallen Personen aus.
-Beispiel: Ein Mitarbeiter sagt kurzfzeitig ab.
+Beispiel: Ein Mitarbeiter sagt kurzfristig ab.
 Positiv erlebt: Du bleibst ruhig, weil du Erfahrung hast und vertraust, dass Aufgaben kompetent verteilt werden.
 Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich später herausstellt, dass alles in Ordnung ist."""
     },
