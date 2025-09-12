@@ -979,6 +979,7 @@ else:  # Team-Analyse
     st.title("👥 Team-Analyse")
     st.markdown("""
     Diese Analyse basiert auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
+   
     Du kannst sie nach dem Schritt „Persönlichen Bericht erstellen“ in der Einzelanalyse herunterladen.
     
     Workflow:
