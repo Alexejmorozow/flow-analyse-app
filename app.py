@@ -978,11 +978,12 @@ if page == "Einzelanalyse":
 else:  # Team-Analyse
     st.title("👥 Team-Analyse")
     st.markdown("""
-    Diese Analyse basiert primär auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
+    Diese Analyse basiert auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
+    Du kannst sie nach dem Schritt „Persönlichen Bericht erstellen“ in der Einzelanalyse herunterladen.
     
     Workflow:
     1. Jede Person exportiert im Bereich 'Persönlicher Bericht' ihren JSON/CSV-Export.
-    2. Der Manager sammelt diese Dateien und lädt sie hier hoch.
+    2. Sammle die Berichte und lade sie hier hoch.
     3. Die App aggregiert die hochgeladenen Dateien und erstellt die Team-Analyse.
     """)
     st.markdown("**Hinweis:** Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
