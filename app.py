@@ -109,7 +109,7 @@ TIME_PERCEPTION_SCALE = {
         "description": "Zeit vergeht ruhig und gleichmässig - leichte Unterforderung",
         "psychological_meaning": "Entspannung bei guter Kontrolle",
         "bischof": "Balance mit leichter Sicherheitsdominanz",
-        "grawe": "Grundkonsistenz mit Entwicklungspotential"
+        "grawe": "Grundkonsistenz mit Entwicklungpotenzial"
     },
     0: {
         "label": "Normales Zeitgefühl",
@@ -150,12 +150,18 @@ if 'confirmed' not in st.session_state:
     st.session_state.confirmed = False
 if 'submitted' not in st.session_state:
     st.session_state.submitted = False
-if 'full_report_generated' not in st.session_state:
-    st.session_state.full_report_generated = False
-if 'full_report_content' not in st.session_state:
-    st.session_state.full_report_content = ""
-if 'show_full_report' not in st.session_state:
-    st.session_state.show_full_report = False
+if 'personal_report_generated' not in st.session_state:
+    st.session_state.personal_report_generated = False
+if 'personal_report_content' not in st.session_state:
+    st.session_state.personal_report_content = ""
+if 'show_personal_report' not in st.session_state:
+    st.session_state.show_personal_report = False
+if 'machine_report_generated' not in st.session_state:
+    st.session_state.machine_report_generated = False
+if 'machine_report_content' not in st.session_state:
+    st.session_state.machine_report_content = ""
+if 'show_machine_report' not in st.session_state:
+    st.session_state.show_machine_report = False
 if 'analysis_started' not in st.session_state:
     st.session_state.analysis_started = False
 if 'database_reset' not in st.session_state:
@@ -227,7 +233,7 @@ def calculate_flow(skill, challenge):
         explanation = "Rückzugszone: Geringes Engagement in beiden Dimensionen"
     else:
         zone = "Stabile Passung"
-        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotential"
+        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotenzial"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
@@ -352,7 +358,7 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
     # 🔴 AKUTE UNTERFORDERUNG (z.B. 7/1)
     if zone == "Akute Unterforderung" or (skill - challenge >= 3):
         report += f"Hier schätzt du deine Fähigkeiten sehr hoch ein, doch im Alltag fehlt oft die passende Herausforderung. \n"
-        report += f"Viele alltägliche Dinge wirken schnell monoton, und man hat das Gefühl, jeden Tag wiederholt sich dasselbe. \n"
+        report += f"Viele alltägliche Dinge wirken schnell monoton, und man hat das Gefühl, jeden день wiederholt sich dasselbe. \n"
         report += f"Dabei sind die Dinge oft komplexer, als sie auf den ersten Blick erscheinen. Selbst hinter ganz gewöhnlichen \n"
         report += f"Abläufen können erstaunlich komplexe Prozesse stecken.\n\n"
         
@@ -458,7 +464,7 @@ def generate_comprehensive_smart_report(data):
         
     else:
         report += f"Dein Wert von {avg_flow:.2f} sagt: Momentan ist vieles ziemlich anstrengend für dich. 💭\n\n"
-        report += "Vielleicht fühlst du dich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
+        report += "Vielleicht fühlst du sich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
         report += "Das ist okay - viele Menschen erleben solche Phasen. Wichtig ist, dass du jetzt auf dich achtest.\n\n"
     
     # Detaillierte Domain-Analysen
@@ -518,7 +524,7 @@ def generate_comprehensive_smart_report(data):
         report += "**Das sind deine besonderen Stärken:**\n"
         report += "\n".join(strengths) + "\n\n"
     else:
-        report += "**Deine aktuelle Stärke:** Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
+        report += "**Deine aktuelle Stärke**: Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
         report += "Diese Selbstwahrnehmung ist eine wichtige Grundlage für jede Weiterentwicklung.\n\n"
     
     if resources:
@@ -549,6 +555,20 @@ def generate_comprehensive_smart_report(data):
     
     return report
 
+def generate_machine_readable_report(data):
+    """Erstellt einen maschinenlesbaren Bericht für die Team-Analyse"""
+    report = f"FLOW_ANALYSE_DATA|{data.get('Name', 'Unbekannt')}|{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_val = data[f"Time_{domain}"]
+        flow_index, zone, _ = calculate_flow(skill, challenge)
+        
+        report += f"DOMAIN|{domain}|SKILL|{skill}|CHALLENGE|{challenge}|TIME|{time_val}|FLOW_INDEX|{flow_index:.3f}|ZONE|{zone}\n"
+    
+    return report
+
 def get_all_data():
     """Holt alle Daten aus der Datenbank für die Teamanalyse"""
     conn = sqlite3.connect(DB_NAME)
@@ -567,8 +587,10 @@ def reset_database():
     st.session_state.database_reset = True
     st.session_state.submitted = False
     st.session_state.analysis_started = False
-    st.session_state.full_report_generated = False
-    st.session_state.show_full_report = False
+    st.session_state.personal_report_generated = False
+    st.session_state.show_personal_report = False
+    st.session_state.machine_report_generated = False
+    st.session_state.show_machine_report = False
 
 def create_team_analysis():
     """Erstellt eine Teamanalyse basierend auf allen gespeicherten Daten"""
@@ -602,218 +624,42 @@ def create_team_analysis():
     # Flow-Index für jede Domäne berechnen
     flow_indices = []
     zones = []
-    for domain in DOMAINS.keys():
-        if domain in domain_stats.index:
-            skill = domain_stats.loc[domain, 'skill']
-            challenge = domain_stats.loc[domain, 'challenge']
-            flow_index, zone, _ = calculate_flow(skill, challenge)
-            flow_indices.append(flow_index)
-            zones.append(zone)
-        else:
-            flow_indices.append(0)
-            zones.append("Keine Daten")
+    for domain in domain_stats.index:
+        skill_mean = domain_stats.loc[domain, 'skill']
+        challenge_mean = domain_stats.loc[domain, 'challenge']
+        flow_index, zone, _ = calculate_flow(skill_mean, challenge_mean)
+        flow_indices.append(round(flow_index, 3))
+        zones.append(zone)
     
     domain_stats['flow_index'] = flow_indices
     domain_stats['zone'] = zones
     
-    # Team-Übersicht anzeigen
-    st.write("**Team-Übersicht pro Domäne:**")
+    st.write("**Durchschnittswerte pro Domäne:**")
     st.dataframe(domain_stats)
     
-    # Visualisierung der Team-Ergebnisse
-    fig, ax = plt.subplots(figsize=(12, 8))
+    # Visualisierung: Flow-Kanal
+    st.subheader("📊 Flow-Kanal Visualisierung")
+    domain_colors = {d: DOMAINS[d]['color'] for d in DOMAINS}
+    mean_data = {}
+    for domain in DOMAINS:
+        domain_rows = df[df['domain'] == domain]
+        mean_data[f"Skill_{domain}"] = domain_rows['skill'].mean()
+        mean_data[f"Challenge_{domain}"] = domain_rows['challenge'].mean()
+        mean_data[f"Time_{domain}"] = round(domain_rows['time_perception'].mean())
     
-    # Flow-Kanal zeichnen
-    x_vals = np.linspace(1, 7, 100)
-    flow_channel_lower = np.maximum(x_vals - 1, 1)
-    flow_channel_upper = np.minimum(x_vals + 1, 7)
-    
-    ax.fill_between(x_vals, flow_channel_lower, flow_channel_upper, 
-                   color='lightgreen', alpha=0.3, label='Flow-Kanal')
-    ax.fill_between(x_vals, 1, flow_channel_lower, 
-                   color='lightgray', alpha=0.3, label='Apathie')
-    ax.fill_between(x_vals, flow_channel_upper, 7, 
-                   color='lightcoral', alpha=0.3, label='Angst/Überlastung')
-    
-    # Punkte für jede Domäne zeichnen
-    for domain in DOMAINS.keys():
-        if domain in domain_stats.index:
-            skill = domain_stats.loc[domain, 'skill']
-            challenge = domain_stats.loc[domain, 'challenge']
-            time_perception = domain_stats.loc[domain, 'time_perception']
-            color = DOMAINS[domain]['color']
-            
-            ax.scatter(skill, challenge, c=color, s=200, alpha=0.9, 
-                      edgecolors='white', linewidths=1.5, label=domain)
-            ax.annotate(f"{time_perception:.1f}", (skill+0.1, challenge+0.1), 
-                       fontsize=9, fontweight='bold')
-    
-    ax.set_xlim(0.5, 7.5)
-    ax.set_ylim(0.5, 7.5)
-    ax.set_xlabel('Durchschnittliche Fähigkeiten (1-7)', fontsize=12)
-    ax.set_ylabel('Durchschnittliche Herausforderungen (1-7)', fontsize=12)
-    ax.set_title('Team-Analyse: Flow-Kanal nach Csikszentmihalyi', fontsize=14, fontweight='bold')
-    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis')
-    ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
-    ax.grid(True, alpha=0.3)
-    plt.tight_layout()
-    
+    fig = create_flow_plot(mean_data, domain_colors)
     st.pyplot(fig)
     
-    # Team-Stärken und Entwicklungsbereiche identifizieren
-    st.subheader("📊 Team-Stärken und Entwicklungsbereiche")
-    
-    strengths = []
-    development_areas = []
-    
-    for domain in DOMAINS.keys():
-        if domain in domain_stats.index:
-            flow_index = domain_stats.loc[domain, 'flow_index']
-            if flow_index >= 0.7:
-                strengths.append(domain)
-            elif flow_index <= 0.4:
-                development_areas.append(domain)
-    
-    if strengths:
-        st.write("**🏆 Team-Stärken:**")
-        for strength in strengths:
-            st.write(f"- {strength}")
-    
-    if development_areas:
-        st.write("**📈 Entwicklungsbereiche:**")
-        for area in development_areas:
-            st.write(f"- {area}")
-    
-    # Empfehlungen für das Team
-    st.subheader("💡 Empfehlungen für das Team")
-    
-    for domain in development_areas:
-        skill = domain_stats.loc[domain, 'skill']
-        challenge = domain_stats.loc[domain, 'challenge']
-        
-        if challenge > skill:
-            st.write(f"**{domain}:** Das Team fühlt sich überfordert. Empfohlene Massnahmen:")
-            st.write(f"- Gezielte Schulungen und Training für das gesamte Team")
-            st.write(f"- Klärung von Erwartungen und Prioritäten")
-            st.write(f"- Gegenseitige Unterstützung und Erfahrungsaustausch fördern")
-        else:
-            st.write(f"**{domain}:** Das Team ist unterfordert. Empfohlene Massnahmen:")
-            st.write(f"- Neue, anspruchsvollere Aufgaben suchen")
-            st.write(f"- Verantwortungsbereiche erweitern")
-            st.write(f"- Innovative Projekte initiieren")
-        
-        st.write("")
+    # Empfehlungen pro Domäne
+    st.subheader("💡 Handlungsempfehlungen pro Domäne")
+    for domain in DOMAINS:
+        skill_mean = mean_data[f"Skill_{domain}"]
+        challenge_mean = mean_data[f"Challenge_{domain}"]
+        time_val = mean_data[f"Time_{domain}"]
+        flow_index, zone, _ = calculate_flow(skill_mean, challenge_mean)
+        rec_text = generate_time_based_recommendation(time_val, skill_mean, challenge_mean, domain)
+        st.markdown(f"**{domain}** (Flow-Index: {flow_index:.2f}, Zone: {zone})")
+        st.markdown(rec_text.replace("\n", "  \n"))
+        st.markdown("---")
     
     return True
-
-# ===== STREAMLIT-UI =====
-st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
-init_db()
-
-st.sidebar.title("🌊 Navigation")
-page = st.sidebar.radio("Seite auswählen:", ["Einzelanalyse", "Team-Analyse"])
-
-if page == "Einzelanalyse":
-    st.title("🌊 Flow-Analyse Pro")
-    
-    # Zeiterlebens-Legende anzeigen
-    with st.expander("ℹ️ Zeiterlebens-Skala erklärt", expanded=False):
-        st.write("**Wie empfindest du die Zeit in dieser Situation?**")
-        cols = st.columns(4)
-        with cols[0]:
-            st.write("**-3:** Extreme Langeweile")
-            st.write("**-2:** Langeweile")
-        with cols[1]:
-            st.write("**-1:** Entspannt")
-            st.write("**0:** Normal")
-        with cols[2]:
-            st.write("**+1:** Zeit fliesst")
-            st.write("**+2:** Zeit rennt")
-        with cols[3]:
-            st.write("**+3:** Stress")
-    
-    # Datenerfassung
-    name = st.text_input("Name (optional)", key="name")
-    
-    # Domänen-Abfrage
-    for domain, config in DOMAINS.items():
-        st.subheader(f"**{domain}**")
-        with st.expander("❓ Frage erklärt"):
-            st.markdown(config['explanation'])
-        
-        cols = st.columns(3)
-        with cols[0]:
-            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}",
-                             help="1 = sehr gering, 7 = sehr hoch")
-        with cols[1]:
-            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}",
-                                 help="1 = sehr gering, 7 = sehr hoch")
-        with cols[2]:
-            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}",
-                                       help="-3 = extreme Langeweile, +3 = Stress")
-        
-        st.session_state.current_data.update({
-            f"Skill_{domain}": skill,
-            f"Challenge_{domain}": challenge,
-            f"Time_{domain}": time_perception
-        })
-    
-    st.session_state.current_data["Name"] = name
-    
-    st.divider()
-    confirmed = st.checkbox("✅ Bewertungen bestätigen", key="global_confirm")
-
-    # Hauptanalyse-Button
-    if st.button("🚀 Analyse starten", disabled=not confirmed, type="primary"):
-        if not validate_data(st.session_state.current_data):
-            st.error("Bitte alle Werte korrekt ausfüllen.")
-            st.stop()
-        
-        save_to_db(st.session_state.current_data)
-        st.session_state.submitted = True
-        st.session_state.analysis_started = True
-        st.rerun()
-
-    # Nach erfolgreicher Analyse
-    if st.session_state.get('submitted', False):
-        st.success("✅ Analyse erfolgreich!")
-        
-        # Flow-Plot
-        domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
-        fig = create_flow_plot(st.session_state.current_data, domain_colors)
-        st.pyplot(fig)
-        
-        # Nur noch Gesamtbericht-Button
-        if st.button("📊 Persönlichen Bericht erstellen", type="primary", key="generate_full_report"):
-            st.session_state.show_full_report = True
-            st.session_state.full_report_generated = False
-            st.rerun()
-        
-        # Gesamtbericht anzeigen
-        if st.session_state.get('show_full_report', False):
-            st.subheader("📄 Dein persönlicher Flow-Bericht")
-            if not st.session_state.full_report_generated:
-                report = generate_comprehensive_smart_report(st.session_state.current_data)
-                st.session_state.full_report_content = report
-                st.session_state.full_report_generated = True
-            
-            st.text_area("Bericht", st.session_state.full_report_content, height=500, label_visibility="collapsed")
-            
-            st.download_button(
-                label="📥 Bericht herunterladen",
-                data=st.session_state.full_report_content,
-                file_name=f"flow_bericht_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
-                mime="text/plain"
-            )
-
-else:  # Team-Analyse
-    st.title("👥 Team-Analyse")
-    st.markdown("""
-    Diese Analyse zeigt aggregierte Daten aller Teilnehmer und hilft dabei, 
-    teamweite Stärken und Entwicklungsbereiche zu identifizieren.
-    """)
-    
-    create_team_analysis()
-
-st.divider()
-st.caption("© Flow-Analyse Pro - Integrierte psychologische Diagnostik für Veränderungsprozesse")
