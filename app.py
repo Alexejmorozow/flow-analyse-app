@@ -109,7 +109,7 @@ TIME_PERCEPTION_SCALE = {
         "description": "Zeit vergeht ruhig und gleichmässig - leichte Unterforderung",
         "psychological_meaning": "Entspannung bei guter Kontrolle",
         "bischof": "Balance mit leichter Sicherheitsdominanz",
-        "grawe": "Grundkonsistenz mit Entwicklungpotenzial"
+        "grawe": "Grundkonsistenz mit Entwicklungspotential"
     },
     0: {
         "label": "Normales Zeitgefühl",
@@ -150,29 +150,22 @@ if 'confirmed' not in st.session_state:
     st.session_state.confirmed = False
 if 'submitted' not in st.session_state:
     st.session_state.submitted = False
-if 'personal_report_generated' not in st.session_state:
-    st.session_state.personal_report_generated = False
-if 'personal_report_content' not in st.session_state:
-    st.session_state.personal_report_content = ""
-if 'show_personal_report' not in st.session_state:
-    st.session_state.show_personal_report = False
-if 'machine_report_generated' not in st.session_state:
-    st.session_state.machine_report_generated = False
-if 'machine_report_content' not in st.session_state:
-    st.session_state.machine_report_content = ""
-if 'show_machine_report' not in st.session_state:
-    st.session_state.show_machine_report = False
+if 'full_report_generated' not in st.session_state:
+    st.session_state.full_report_generated = False
+if 'full_report_content' not in st.session_state:
+    st.session_state.full_report_content = ""
+if 'show_full_report' not in st.session_state:
+    st.session_state.show_full_report = False
 if 'analysis_started' not in st.session_state:
     st.session_state.analysis_started = False
-if 'uploaded_files_data' not in st.session_state:
-    st.session_state.uploaded_files_data = pd.DataFrame()
+if 'database_reset' not in st.session_state:
+    st.session_state.database_reset = False
 
 # ===== KERN-FUNKTIONEN =====
 def init_db():
-    # Nur für Einzeldaten, nicht für Team-Daten
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS individual_responses
+    c.execute('''CREATE TABLE IF NOT EXISTS responses
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   name TEXT,
                   domain TEXT,
@@ -184,12 +177,11 @@ def init_db():
     conn.close()
 
 def save_to_db(data):
-    # Nur Einzeldaten speichern
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     timestamp = datetime.now()
     for domain in DOMAINS:
-        c.execute('''INSERT INTO individual_responses 
+        c.execute('''INSERT INTO responses 
                      (name, domain, skill, challenge, time_perception, timestamp)
                      VALUES (?,?,?,?,?,?)''',
                   (data["Name"], domain, 
@@ -214,6 +206,7 @@ def calculate_flow(skill, challenge):
     diff = skill - challenge
     mean_level = (skill + challenge) / 2
     
+    # Präzisere Zonen-Definition mit klaren Schwellenwerten
     if abs(diff) <= 1 and mean_level >= 5:
         zone = "Flow - Optimale Passung"
         explanation = "Idealzone: Fähigkeiten und Herausforderungen im Gleichgewicht"
@@ -234,7 +227,7 @@ def calculate_flow(skill, challenge):
         explanation = "Rückzugszone: Geringes Engagement in beiden Dimensionen"
     else:
         zone = "Stabile Passung"
-        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotenzial"
+        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotential"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
@@ -271,6 +264,8 @@ def create_flow_plot(data, domain_colors):
     return fig
 
 def generate_time_based_recommendation(time_val, skill, challenge, domain):
+    """Generiert spezifische Empfehlungen basierend auf Zeiterleben"""
+    
     recommendations = {
         -3: [
             "Dringend neue Herausforderungen suchen",
@@ -311,6 +306,7 @@ def generate_time_based_recommendation(time_val, skill, challenge, domain):
     
     base_recommendations = recommendations[time_val]
     
+    # Domänenspezifische Zusatzempfehlungen
     domain_specific = {
         "Team-Veränderungen": [
             "Kommunikation im Team intensivieren",
@@ -340,6 +336,7 @@ def generate_time_based_recommendation(time_val, skill, challenge, domain):
     }
     
     all_recommendations = base_recommendations + domain_specific.get(domain, [])
+    # Personalisierte Formulierung
     personalized_recs = [rec.replace("Sie ", "Du ").replace("Ihre ", "Deine ").replace("Ihnen ", "dir ") for rec in all_recommendations]
     return "\n".join([f"• {rec}" for rec in personalized_recs])
 
@@ -352,6 +349,7 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
     
     report += "**Was das bedeutet:**\n"
     
+    # 🔴 AKUTE UNTERFORDERUNG (z.B. 7/1)
     if zone == "Akute Unterforderung" or (skill - challenge >= 3):
         report += f"Hier schätzt du deine Fähigkeiten sehr hoch ein, doch im Alltag fehlt oft die passende Herausforderung. \n"
         report += f"Viele alltägliche Dinge wirken schnell monoton, und man hat das Gefühl, jeden Tag wiederholt sich dasselbe. \n"
@@ -361,6 +359,10 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
         report += f"Vielleicht hast du eine besonders gute Auffassungsgabe und könntest andere davon profitieren lassen, \n"
         report += f"indem du Mentorenrollen übernimmst. Sprich das doch einmal mit deiner oder deinem Vorgesetzten an.\n\n"
         
+        report += f"*Wenn man eine einfache Blume lange und genau betrachtet, kann man die Gesetzmässigkeiten des gesamten \n"
+        report += f"Universums erkennen – eine Erinnerung daran, dass auch im Alltäglichen viel Tiefe steckt.*\n"
+    
+    # 🔴 AKUTE ÜBERFORDERUNG (z.B. 2/7)  
     elif zone == "Akute Überforderung" or (challenge - skill >= 3):
         report += f"Hier erlebst du die Anforderungen als sehr hoch, während du dir deine Fähigkeiten noch im Aufbau vorstellst. \n"
         report += f"Das kann das Gefühl geben, ständig am Limit zu sein und nie wirklich durchatmen zu können.\n\n"
@@ -371,12 +373,14 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
         report += f"Such dir gezielt Unterstützung bei Themen, die dir schwerfallen. Oft reicht schon ein kurzer Austausch, \n"
         report += f"um wieder klarer zu sehen.\n"
     
+    # 🟢 FLOW (optimale Passung)
     elif zone == "Flow - Optimale Passung":
         report += f"Perfekt! Hier findest du die ideale Balance zwischen dem, was du kannst und was von dir gefordert wird. \n"
         report += f"Du arbeitest engagiert und spürst, dass deine Fähigkeiten genau dort gebraucht werden, wo sie hingehören.\n\n"
         
         report += f"Geniesse diese Momente bewusst. Sie zeigen dir, wofür sich die ganze Mühe lohnt.\n"
     
+    # 🟡 UNTERFORDERUNG (z.B. 6/3)
     elif zone == "Unterforderung" or (skill - challenge >= 2):
         report += f"Du bringst gute Fähigkeiten mit, könntest aber noch mehr gefordert werden. Manchmal fehlt der letzte Kick, \n"
         report += f"der aus Routineaufgaben echte Entwicklungsmöglichkeiten macht.\n\n"
@@ -384,6 +388,7 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
         report += f"Vielleicht findest du Wege, deine Aufgaben etwas anspruchsvoller zu gestalten oder übernimmst zusätzliche \n"
         report += f"Verantwortung in Bereichen, die dich interessieren.\n"
     
+    # 🟡 ÜBERFORDERUNG (z.B. 4/6)  
     elif zone == "Überforderung" or (challenge - skill >= 2):
         report += f"Die Anforderungen sind hier spürbar hoch für dich. Das kann herausfordernd sein, aber auch eine Chance, \n"
         report += f"dich weiterzuentwickeln.\n\n"
@@ -391,17 +396,20 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
         report += f"Nimm dir Zeit, die neuen Herausforderungen Schritt für Schritt zu meistern. Niemand erwartet, \n"
         report += f"dass du alles sofort perfekt beherrschst.\n"
     
+    # 🟢 STABILE PASSUNG (z.B. 5/3, 4/4)
     else:
-        report += f"Here findest du eine gute Grundbalance. Die Aufgaben passen zu dem, was du kannst, und du kommst \n"
+        report += f"Hier findest du eine gute Grundbalance. Die Aufgaben passen zu dem, was du kannst, und du kommst \n"
         report += f"gut zurecht. Vielleicht ist hier nicht alles spektakulär, aber es läuft stabil und verlässlich.\n\n"
         
         report += f"Solche Phasen der Stabilität sind wertvoll – sie geben dir die Energie für anspruchsvollere Bereiche.\n"
     
+    # Theorie leicht verständlich eingewoben
     report += f"\n**Was dahinter steckt:**\n"
     report += f"• {DOMAINS[domain]['flow'].replace('Balance zwischen', 'Ausgleich von')}\n"
     report += f"• {DOMAINS[domain]['grawe'].replace('Bedürfnisse:', 'Hier geht es um dein Bedürfnis nach')}\n"
     report += f"• {DOMAINS[domain]['bischof'].replace('Bindungssystem -', 'Dein Wunsch nach')}\n"
     
+    # Handlungsempfehlungen persönlich formuliert
     report += f"\n**Was dir helfen könnte:**\n"
     recommendations = generate_time_based_recommendation(time_val, skill, challenge, domain)
     for rec in recommendations.split('\n'):
@@ -411,15 +419,27 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
     return report
 
 def generate_comprehensive_smart_report(data):
+    """Erstellt einen persönlichen, emotional intelligenten Bericht"""
+    
     report = "=" * 80 + "\n"
     report += "🌊 DEINE PERSÖNLICHE FLOW-ANALYSE\n"
     report += "=" * 80 + "\n\n"
     
+    # Persönliche Ansprache
     name = data['Name'] if data['Name'] else "Du"
     report += f"Hallo {name}!\n\n"
     report += "Dies ist deine persönliche Auswertung. Sie zeigt, wie du dich aktuell in deiner Arbeit fühlst\n"
     report += "und wo du vielleicht Entlastung oder neue Herausforderungen brauchst.\n\n"
     
+    report += "GEMEINSAM GESCHAUT: DREI BLICKE AUF DEINE ARBEITSSITUATION\n"
+    report += "-" * 80 + "\n\n"
+    
+    report += "Wir schauen gemeinsam auf drei Ebenen:\n"
+    report += "• **Flow-Ebene**: Wie gut passen deine Fähigkeiten zu den Aufgaben?\n"
+    report += "• **Bedürfnis-Ebene**: Was brauchst du, um dich wohlzufühlen?\n"
+    report += "• **Balance-Ebene**: Wie gelingt dir der Ausgleich zwischen Sicherheit und Neuem?\n\n"
+    
+    # Gesamtbewertung persönlich und emotional
     total_flow = sum(calculate_flow(data[f"Skill_{d}"], data[f"Challenge_{d}"])[0] for d in DOMAINS)
     avg_flow = total_flow / len(DOMAINS)
     
@@ -428,10 +448,22 @@ def generate_comprehensive_smart_report(data):
     
     if avg_flow >= 0.7:
         report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig gut! 🎉\n\n"
+        report += "Du findest offenbar eine gute Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
+        report += "Das ist nicht selbstverständlich - geniesse dieses gute Gefühl!\n\n"
+        
     elif avg_flow >= 0.5:
         report += f"Dein Wert von {avg_flow:.2f} zeigt: Grundsätzlich kommst du gut zurecht, aber es gibt Luft nach oben. 🔄\n\n"
+        report += "An manchen Tagen läuft es sicher super, an anderen spürst du vielleicht, dass etwas nicht ganz rund läuft.\n"
+        report += "Das ist völlig normal - schauen wir gemeinsam, wo genau du ansetzen kannst.\n\n"
+        
     else:
         report += f"Dein Wert von {avg_flow:.2f} sagt: Momentan ist vieles ziemlich anstrengend für dich. 💭\n\n"
+        report += "Vielleicht fühlst du dich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
+        report += "Das ist okay - viele Menschen erleben solche Phasen. Wichtig ist, dass du jetzt auf dich achtest.\n\n"
+    
+    # Detaillierte Domain-Analysen
+    report += "WO DU STEHST: BEREICH FÜR BEREICH\n"
+    report += "-" * 80 + "\n\n"
     
     for domain in DOMAINS:
         skill = data[f"Skill_{domain}"]
@@ -442,85 +474,156 @@ def generate_comprehensive_smart_report(data):
         domain_report = generate_domain_interpretation(domain, skill, challenge, time_val, flow_index, zone)
         report += domain_report + "\n" + "-" * 50 + "\n\n"
     
-    return report
-
-def generate_machine_readable_report(data):
-    report = f"FLOW_ANALYSE_DATA|{data.get('Name', 'Unbekannt')}|{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    # Integrierte Handlungsstrategie
+    report += "WAS JETZT FÜR DICH DRAN IST\n"
+    report += "-" * 80 + "\n\n"
+    
+    report += "Basierend auf deinen Werten könntest du:\n\n"
+    
+    report += "**SOFORT (diese Woche noch):**\n"
+    report += "• Nimm dir einen Bereich vor, der dir besonders am Herzen liegt\n"
+    report += "• Überlege, was dir dort sofort Erleichterung bringen könnte\n"
+    report += "• Sprich vielleicht mit einer Vertrauensperson darüber\n\n"
+    
+    report += "**KURZFRISTIG (nächste 4 Wochen):**\n"
+    report += "• Schau dir die konkreten Tipps für deine kritischen Bereiche an\n"
+    report += "• Such dir Unterstützung, wo du sie brauchst\n"
+    report += "• Feiere auch kleine Erfolge bewusst\n\n"
+    
+    report += "**LANGFRISTIG (ab 3 Monaten):**\n"
+    report += "• Entwickle deine Stärken weiter\n"
+    report += "• Sorge für mehr Ausgleich in anstrengenden Bereichen\n"
+    report += "• Behalte dein Wohlbefinden im Blick\n\n"
+    
+    # Stärken und Ressourcen am Ende
+    report += "=" * 60 + "\n"
+    report += "DEINE STÄRKEN UND RESSOURCEN\n"
+    report += "=" * 60 + "\n\n"
+    
+    # Stärken aus der Analyse extrahieren
+    strengths = []
+    resources = []
     
     for domain in DOMAINS:
         skill = data[f"Skill_{domain}"]
         challenge = data[f"Challenge_{domain}"]
-        time_val = data[f"Time_{domain}"]
         flow_index, zone, _ = calculate_flow(skill, challenge)
         
-        report += f"DOMAIN|{domain}|SKILL|{skill}|CHALLENGE|{challenge}|TIME|{time_val}|FLOW_INDEX|{flow_index:.3f}|ZONE|{zone}\n"
+        if flow_index >= 0.6:  # Stärken identifizieren
+            strengths.append(f"• {domain}: Du bringst hier besondere Kompetenzen mit (Fähigkeiten: {skill}/7)")
+        if skill >= 5:  # Ressourcen identifizieren
+            resources.append(f"• {domain}: Deine Fähigkeiten ({skill}/7) sind eine wertvolle Ressource")
+    
+    if strengths:
+        report += "**Das sind deine besonderen Stärken:**\n"
+        report += "\n".join(strengths) + "\n\n"
+    else:
+        report += "**Deine aktuelle Stärke:** Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
+        report += "Diese Selbstwahrnehmung ist eine wichtige Grundlage für jede Weiterentwicklung.\n\n"
+    
+    if resources:
+        report += "**Diese Ressourcen stehen dir zur Verfügung:**\n"
+        report += "\n".join(resources) + "\n\n"
+    
+    # Abschluss mit empowernder Botschaft
+    report += "=" * 60 + "\n"
+    report += "ZUM ABSCHLUSS\n"
+    report += "=" * 60 + "\n\n"
+    
+    report += "Vergiss nicht: Diese Analyse zeigt eine Momentaufnahme. Jeder Mensch durchlebt Phasen,\n"
+    report += "in denen sich Passung und Herausforderungen verändern. Wichtig ist, dass du:\n\n"
+    report += "• Auf dein Bauchgefühl hörst\n"
+    report += "• Dir Unterstützung holst, wenn du sie brauchst\n"
+    report += "• Deine Erfolge bewusst wahrnimmst\n"
+    report += "• Weisst, dass du nicht alleine bist\n\n"
+    
+    report += "Du bringst wertvolle Erfahrungen und Fähigkeiten mit. Manchmal geht es darum,\n"
+    report += "sie dort einzusetzen, wo sie am meisten Wirkung entfalten können.\n\n"
+    
+    report += "Alles Gute auf deinem Weg! 🌟\n\n"
+    
+    report += "=" * 80 + "\n"
+    report += "Deine Flow-Analyse - Stärkenorientiert und ressourcenbasiert\n"
+    report += "Erstellt am " + datetime.now().strftime("%d.%m.%Y") + "\n"
+    report += "=" * 80
     
     return report
 
-def parse_machine_report(file_content):
-    """Parst den maschinenlesbaren Bericht"""
-    data = []
-    lines = file_content.split('\n')
-    
-    for line in lines:
-        if line.startswith('DOMAIN|'):
-            parts = line.split('|')
-            if len(parts) >= 11:
-                data.append({
-                    'name': parts[1] if len(parts) > 1 else 'Unbekannt',
-                    'domain': parts[3],
-                    'skill': float(parts[5]),
-                    'challenge': float(parts[7]),
-                    'time_perception': float(parts[9]),
-                    'flow_index': float(parts[11]),
-                    'zone': parts[13] if len(parts) > 13 else ''
-                })
-    
-    return pd.DataFrame(data)
+def get_all_data():
+    """Holt alle Daten aus der Datenbank für die Teamanalyse"""
+    conn = sqlite3.connect(DB_NAME)
+    query = "SELECT name, domain, skill, challenge, time_perception, timestamp FROM responses"
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    return df
 
-def create_team_analysis_from_files(uploaded_files):
-    """Erstellt Team-Analyse aus hochgeladenen Dateien"""
-    st.subheader("👥 Team-Analyse aus hochgeladenen Berichten")
+def reset_database():
+    """Löscht alle Daten aus der Datenbank"""
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("DELETE FROM responses")
+    conn.commit()
+    conn.close()
+    st.session_state.database_reset = True
+    st.session_state.submitted = False
+    st.session_state.analysis_started = False
+    st.session_state.full_report_generated = False
+    st.session_state.show_full_report = False
+
+def create_team_analysis():
+    """Erstellt eine Teamanalyse basierend auf allen gespeicherten Daten"""
+    st.subheader("👥 Team-Analyse")
     
-    if not uploaded_files:
-        st.info("Bitte lade maschinenlesbare Berichte hoch (.txt Dateien)")
-        return
+    # Reset-Button
+    if st.button("🗑️ Alle Daten zurücksetzen", type="secondary", key="reset_button"):
+        if st.checkbox("❌ Ich bestätige, dass ich ALLE Daten unwiderruflich löschen möchte", key="confirm_delete"):
+            reset_database()
+            st.success("✅ Alle Daten wurden erfolgreich gelöscht!")
+            return True
     
-    all_data = []
-    for uploaded_file in uploaded_files:
-        try:
-            stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-            file_content = stringio.read()
-            df = parse_machine_report(file_content)
-            if not df.empty:
-                all_data.append(df)
-                st.success(f"✅ {uploaded_file.name} erfolgreich verarbeitet")
-        except Exception as e:
-            st.error(f"❌ Fehler beim Verarbeiten von {uploaded_file.name}: {str(e)}")
+    # Daten aus der Datenbank abrufen
+    df = get_all_data()
     
-    if not all_data:
-        st.error("Keine gültigen Daten gefunden")
-        return
-    
-    # Alle Daten zusammenführen
-    combined_df = pd.concat(all_data, ignore_index=True)
-    st.session_state.uploaded_files_data = combined_df
+    if df.empty:
+        st.info("Noch keine Daten für eine Teamanalyse verfügbar.")
+        return False
     
     # Anzahl der Teilnehmer
-    num_participants = combined_df['name'].nunique()
+    num_participants = df['name'].nunique()
     st.write(f"**Anzahl der Teilnehmer:** {num_participants}")
     
     # Durchschnittswerte pro Domäne berechnen
-    domain_stats = combined_df.groupby('domain').agg({
+    domain_stats = df.groupby('domain').agg({
         'skill': 'mean',
         'challenge': 'mean',
-        'time_perception': 'mean',
-        'flow_index': 'mean'
+        'time_perception': 'mean'
     }).round(2)
     
-    # Visualisierung
+    # Flow-Index für jede Domäne berechnen
+    flow_indices = []
+    zones = []
+    for domain in DOMAINS.keys():
+        if domain in domain_stats.index:
+            skill = domain_stats.loc[domain, 'skill']
+            challenge = domain_stats.loc[domain, 'challenge']
+            flow_index, zone, _ = calculate_flow(skill, challenge)
+            flow_indices.append(flow_index)
+            zones.append(zone)
+        else:
+            flow_indices.append(0)
+            zones.append("Keine Daten")
+    
+    domain_stats['flow_index'] = flow_indices
+    domain_stats['zone'] = zones
+    
+    # Team-Übersicht anzeigen
+    st.write("**Team-Übersicht pro Domäne:**")
+    st.dataframe(domain_stats)
+    
+    # Visualisierung der Team-Ergebnisse
     fig, ax = plt.subplots(figsize=(12, 8))
     
+    # Flow-Kanal zeichnen
     x_vals = np.linspace(1, 7, 100)
     flow_channel_lower = np.maximum(x_vals - 1, 1)
     flow_channel_upper = np.minimum(x_vals + 1, 7)
@@ -532,6 +635,7 @@ def create_team_analysis_from_files(uploaded_files):
     ax.fill_between(x_vals, flow_channel_upper, 7, 
                    color='lightcoral', alpha=0.3, label='Angst/Überlastung')
     
+    # Punkte für jede Domäne zeichnen
     for domain in DOMAINS.keys():
         if domain in domain_stats.index:
             skill = domain_stats.loc[domain, 'skill']
@@ -556,7 +660,7 @@ def create_team_analysis_from_files(uploaded_files):
     
     st.pyplot(fig)
     
-    # Team-Stärken und Entwicklungsbereiche
+    # Team-Stärken und Entwicklungsbereiche identifizieren
     st.subheader("📊 Team-Stärken und Entwicklungsbereiche")
     
     strengths = []
@@ -580,9 +684,27 @@ def create_team_analysis_from_files(uploaded_files):
         for area in development_areas:
             st.write(f"- {area}")
     
-    # Rohdaten anzeigen (optional)
-    with st.expander("📋 Rohdaten anzeigen"):
-        st.dataframe(combined_df)
+    # Empfehlungen für das Team
+    st.subheader("💡 Empfehlungen für das Team")
+    
+    for domain in development_areas:
+        skill = domain_stats.loc[domain, 'skill']
+        challenge = domain_stats.loc[domain, 'challenge']
+        
+        if challenge > skill:
+            st.write(f"**{domain}:** Das Team fühlt sich überfordert. Empfohlene Massnahmen:")
+            st.write(f"- Gezielte Schulungen und Training für das gesamte Team")
+            st.write(f"- Klärung von Erwartungen und Prioritäten")
+            st.write(f"- Gegenseitige Unterstützung und Erfahrungsaustausch fördern")
+        else:
+            st.write(f"**{domain}:** Das Team ist unterfordert. Empfohlene Massnahmen:")
+            st.write(f"- Neue, anspruchsvollere Aufgaben suchen")
+            st.write(f"- Verantwortungsbereiche erweitern")
+            st.write(f"- Innovative Projekte initiieren")
+        
+        st.write("")
+    
+    return True
 
 # ===== STREAMLIT-UI =====
 st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
@@ -594,6 +716,7 @@ page = st.sidebar.radio("Seite auswählen:", ["Einzelanalyse", "Team-Analyse"])
 if page == "Einzelanalyse":
     st.title("🌊 Flow-Analyse Pro")
     
+    # Zeiterlebens-Legende anzeigen
     with st.expander("ℹ️ Zeiterlebens-Skala erklärt", expanded=False):
         st.write("**Wie empfindest du die Zeit in dieser Situation?**")
         cols = st.columns(4)
@@ -609,8 +732,10 @@ if page == "Einzelanalyse":
         with cols[3]:
             st.write("**+3:** Stress")
     
+    # Datenerfassung
     name = st.text_input("Name (optional)", key="name")
     
+    # Domänen-Abfrage
     for domain, config in DOMAINS.items():
         st.subheader(f"**{domain}**")
         with st.expander("❓ Frage erklärt"):
@@ -638,6 +763,7 @@ if page == "Einzelanalyse":
     st.divider()
     confirmed = st.checkbox("✅ Bewertungen bestätigen", key="global_confirm")
 
+    # Hauptanalyse-Button
     if st.button("🚀 Analyse starten", disabled=not confirmed, type="primary"):
         if not validate_data(st.session_state.current_data):
             st.error("Bitte alle Werte korrekt ausfüllen.")
@@ -648,78 +774,46 @@ if page == "Einzelanalyse":
         st.session_state.analysis_started = True
         st.rerun()
 
+    # Nach erfolgreicher Analyse
     if st.session_state.get('submitted', False):
         st.success("✅ Analyse erfolgreich!")
         
+        # Flow-Plot
         domain_colors = {domain: config["color"] for domain, config in DOMAINS.items()}
         fig = create_flow_plot(st.session_state.current_data, domain_colors)
         st.pyplot(fig)
         
-        col1, col2 = st.columns(2)
+        # Nur noch Gesamtbericht-Button
+        if st.button("📊 Persönlichen Bericht erstellen", type="primary", key="generate_full_report"):
+            st.session_state.show_full_report = True
+            st.session_state.full_report_generated = False
+            st.rerun()
         
-        with col1:
-            if st.button("💭 Deinen persönlichen Bericht erstellen", type="primary", key="generate_personal_report"):
-                st.session_state.show_personal_report = True
-                st.session_state.personal_report_generated = False
-                
-        with col2:
-            if st.button("📊 Maschinenlesbaren Bericht erstellen", type="secondary", key="generate_machine_report"):
-                st.session_state.show_machine_report = True
-                st.session_state.machine_report_generated = False
-        
-        if st.session_state.get('show_personal_report', False):
+        # Gesamtbericht anzeigen
+        if st.session_state.get('show_full_report', False):
             st.subheader("📄 Dein persönlicher Flow-Bericht")
-            if not st.session_state.personal_report_generated:
+            if not st.session_state.full_report_generated:
                 report = generate_comprehensive_smart_report(st.session_state.current_data)
-                st.session_state.personal_report_content = report
-                st.session_state.personal_report_generated = True
+                st.session_state.full_report_content = report
+                st.session_state.full_report_generated = True
             
-            st.text_area("Persönlicher Bericht", st.session_state.personal_report_content, height=500, label_visibility="collapsed")
-            
-            st.download_button(
-                label="📥 Persönlichen Bericht herunterladen",
-                data=st.session_state.personal_report_content,
-                file_name=f"flow_bericht_persoenlich_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
-                mime="text/plain",
-                key="download_personal"
-            )
-        
-        if st.session_state.get('show_machine_report', False):
-            st.subheader("📊 Maschinenlesbarer Bericht (für Team-Analyse)")
-            if not st.session_state.machine_report_generated:
-                report = generate_machine_readable_report(st.session_state.current_data)
-                st.session_state.machine_report_content = report
-                st.session_state.machine_report_generated = True
-            
-            st.text_area("Maschinenlesbarer Bericht", st.session_state.machine_report_content, height=200, label_visibility="collapsed")
+            st.text_area("Bericht", st.session_state.full_report_content, height=500, label_visibility="collapsed")
             
             st.download_button(
-                label="📥 Maschinenlesbaren Bericht herunterladen",
-                data=st.session_state.machine_report_content,
-                file_name=f"flow_bericht_maschine_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
-                mime="text/plain",
-                key="download_machine"
+                label="📥 Bericht herunterladen",
+                data=st.session_state.full_report_content,
+                file_name=f"flow_bericht_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
+                mime="text/plain"
             )
-            
-            st.info("💡 Dieser Bericht kann für die Team-Analyse hochgeladen werden.")
 
 else:  # Team-Analyse
     st.title("👥 Team-Analyse")
     st.markdown("""
-    ### Hochladen von maschinenlesbaren Berichten
-    Lade die .txt-Dateien hoch, die von der Einzelanalyse generiert wurden, 
-    um eine Team-Analyse durchzuführen.
+    Diese Analyse zeigt aggregierte Daten aller Teilnehmer und hilft dabei, 
+    teamweite Stärken und Entwicklungsbereiche zu identifizieren.
     """)
     
-    uploaded_files = st.file_uploader(
-        "Maschinenlesbare Berichte hochladen", 
-        type=["txt"], 
-        accept_multiple_files=True,
-        help="Wähle die .txt-Dateien aus, die du von der Einzelanalyse heruntergeladen hast"
-    )
-    
-    if uploaded_files:
-        create_team_analysis_from_files(uploaded_files)
+    create_team_analysis()
 
 st.divider()
 st.caption("© Flow-Analyse Pro - Integrierte psychologische Diagnostik für Veränderungsprozesse")
