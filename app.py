@@ -341,11 +341,11 @@ def generate_time_based_recommendation(time_val, skill, challenge, domain):
 def generate_domain_interpretation(domain, skill, challenge, time_val, flow_index, zone):
     time_info = TIME_PERCEPTION_SCALE[time_val]
     
-    report = f"**{domain}**\n"
+    report = f"{domain}\n"
     report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7 | "
     report += f"Zeitgefühl: {time_info['label']}\n\n"
     
-    report += "**Was das bedeutet:**\n"
+    report += "Was das bedeutet:\n"
     
     # 🔴 AKUTE UNTERFORDERUNG (z.B. 7/1)
     if zone == "Akute Unterforderung" or (skill - challenge >= 3):
@@ -402,13 +402,13 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
         report += f"Solche Phasen der Stabilität sind wertvoll – sie geben dir die Energie für anspruchsvollere Bereiche.\n"
     
     # Theorie leicht verständlich eingewoben
-    report += f"\n**Was dahinter steckt:**\n"
+    report += f"\nWas dahinter steckt:\n"
     report += f"• {DOMAINS[domain]['flow'].replace('Balance zwischen', 'Ausgleich von')}\n"
     report += f"• {DOMAINS[domain]['grawe'].replace('Bedürfnisse:', 'Hier geht es um dein Bedürfnis nach')}\n"
     report += f"• {DOMAINS[domain]['bischof'].replace('Bindungssystem -', 'Dein Wunsch nach')}\n"
     
     # Handlungsempfehlungen persönlich formuliert
-    report += f"\n**Was dir helfen könnte:**\n"
+    report += f"\nWas dir helfen könnte:\n"
     recommendations = generate_time_based_recommendation(time_val, skill, challenge, domain)
     for rec in recommendations.split('\n'):
         if rec.strip():
@@ -478,17 +478,17 @@ def generate_comprehensive_smart_report(data):
     
     report += "Basierend auf deinen Werten könntest du:\n\n"
     
-    report += "**SOFORT (diese Woche noch):**\n"
+    report += "SOFORT (diese Woche noch):\n"
     report += "• Nimm dir einen Bereich vor, der dir besonders am Herzen liegt\n"
     report += "• Überlege, was dir dort sofort Erleichterung bringen könnte\n"
     report += "• Sprich vielleicht mit einer Vertrauensperson darüber\n\n"
     
-    report += "**KURZFRISTIG (nächste 4 Wochen):**\n"
+    report += "KURZFRISTIG (nächste 4 Wochen):\n"
     report += "• Schau dir die konkreten Tipps für deine kritischen Bereiche an\n"
     report += "• Such dir Unterstützung, wo du sie brauchst\n"
     report += "• Feiere auch kleine Erfolge bewusst\n\n"
     
-    report += "**LANGFRISTIG (ab 3 Monaten):**\n"
+    report += "LANGFRISTIG (ab 3 Monaten):\n"
     report += "• Entwickle deine Stärken weiter\n"
     report += "• Sorge für mehr Ausgleich in anstrengenden Bereichen\n"
     report += "• Behalte dein Wohlbefinden im Blick\n\n"
@@ -513,14 +513,14 @@ def generate_comprehensive_smart_report(data):
             resources.append(f"• {domain}: Deine Fähigkeiten ({skill}/7) sind eine wertvolle Ressource")
     
     if strengths:
-        report += "**Das sind deine besonderen Stärken:**\n"
+        report += "Das sind deine besonderen Stärken:\n"
         report += "\n".join(strengths) + "\n\n"
     else:
-        report += "**Deine aktuelle Stärke:** Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
+        report += "Deine aktuelle Stärke: Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
         report += "Diese Selbstwahrnehmung ist eine wichtige Grundlage für jede Weiterentwicklung.\n\n"
     
     if resources:
-        report += "**Diese Ressourcen stehen dir zur Verfügung:**\n"
+        report += "Diese Ressourcen stehen dir zur Verfügung:\n"
         report += "\n".join(resources) + "\n\n"
     
     # Abschluss mit empowernder Botschaft
@@ -578,7 +578,7 @@ def create_team_analysis_from_df(df):
 
     # Anzahl der Teilnehmer
     num_participants = df['name'].nunique()
-    st.write(f"**Anzahl der Teilnehmer:** {num_participants}")
+    st.write(f"Anzahl der Teilnehmer: {num_participants}")
 
     # Durchschnittswerte pro Domäne berechnen
     domain_stats = df.groupby('domain').agg({
@@ -605,7 +605,7 @@ def create_team_analysis_from_df(df):
     domain_stats['zone'] = zones
 
     # Team-Übersicht anzeigen
-    st.write("**Team-Übersicht pro Domäne:**")
+    st.write("Team-Übersicht pro Domäne:")
     st.dataframe(domain_stats)
 
     # Visualisierung der Team-Ergebnisse
@@ -663,12 +663,12 @@ def create_team_analysis_from_df(df):
                 development_areas.append(domain)
 
     if strengths:
-        st.write("**🏆 Team-Stärken:**")
+        st.write("🏆 Team-Stärken:")
         for strength in strengths:
             st.write(f"- {strength}")
 
     if development_areas:
-        st.write("**📈 Entwicklungsbereiche:**")
+        st.write("📈 Entwicklungsbereiche:")
         for area in development_areas:
             st.write(f"- {area}")
 
@@ -680,12 +680,12 @@ def create_team_analysis_from_df(df):
         challenge = domain_stats.loc[domain, 'challenge']
 
         if challenge > skill:
-            st.write(f"**{domain}:** Das Team fühlt sich überfordert. Empfohlene Massnahmen:")
+            st.write(f"{domain}: Das Team fühlt sich überfordert. Empfohlene Massnahmen:")
             st.write(f"- Gezielte Schulungen und Training für das gesamte Team")
             st.write(f"- Klärung von Erwartungen und Prioritäten")
             st.write(f"- Gegenseitige Unterstützung und Erfahrungsaustausch fördern")
         else:
-            st.write(f"**{domain}:** Das Team ist unterfordert. Empfohlene Massnahmen:")
+            st.write(f"{domain}: Das Team ist unterfordert. Empfohlene Massnahmen:")
             st.write(f"- Neue, anspruchsvollere Aufgaben suchen")
             st.write(f"- Verantwortungsbereiche erweitern")
             st.write(f"- Innovative Projekte initiieren")
@@ -867,26 +867,26 @@ if page == "Einzelanalyse":
     
     # Zeiterlebens-Legende anzeigen
     with st.expander("ℹ️ Zeiterlebens-Skala erklärt", expanded=False):
-        st.write("**Wie empfindest du die Zeit in dieser Situation?**")
+        st.write("Wie empfindest du die Zeit in dieser Situation?")
         cols = st.columns(4)
         with cols[0]:
-            st.write("**-3:** Extreme Langeweile")
-            st.write("**-2:** Langeweile")
+            st.write("-3: Extreme Langeweile")
+            st.write("-2: Langeweile")
         with cols[1]:
-            st.write("**-1:** Entspannt")
-            st.write("**0:** Normal")
+            st.write("-1: Entspannt")
+            st.write("0: Normal")
         with cols[2]:
-            st.write("**+1:** Zeit fliesst")
-            st.write("**+2:** Zeit rennt")
+            st.write("+1: Zeit fliesst")
+            st.write("+2: Zeit rennt")
         with cols[3]:
-            st.write("**+3:** Stress")
+            st.write("+3: Stress")
     
     # Datenerfassung
     name = st.text_input("Name (optional)", key="name")
     
     # Domänen-Abfrage
     for domain, config in DOMAINS.items():
-        st.subheader(f"**{domain}**")
+        st.subheader(f"{domain}")
         with st.expander("❓ Frage erklärt"):
             st.markdown(config['explanation'])
         
@@ -987,7 +987,7 @@ else:  # Team-Analyse
     2. Sammle die Berichte und lade sie hier hoch.
     3. Die App aggregiert die hochgeladenen Dateien und erstellt die Team-Analyse.
     """)
-    st.markdown("**Hinweis:** Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
+    st.markdown("Hinweis: Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
 
     uploaded_files = st.file_uploader("🔼 Hochladen: JSON/CSV-Exporte (mehrere Dateien möglich)", accept_multiple_files=True, type=['json','csv'])
     use_db_fallback = st.checkbox("🔁 Falls keine Uploads vorhanden, DB-Daten verwenden (Fallback)", value=False)
