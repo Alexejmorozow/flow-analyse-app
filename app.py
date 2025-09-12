@@ -10,7 +10,7 @@ import matplotlib.colors as mcolors
 import tempfile
 import os
 import re
-from io import StringIO
+from io import StringIO, BytesIO
 import requests
 import json
 
@@ -184,7 +184,7 @@ def save_to_db(data):
         c.execute('''INSERT INTO responses 
                      (name, domain, skill, challenge, time_perception, timestamp)
                      VALUES (?,?,?,?,?,?)''',
-                  (data["Name"], domain, 
+                  (data.get("Name", ""), domain, 
                    data[f"Skill_{domain}"], 
                    data[f"Challenge_{domain}"], 
                    data[f"Time_{domain}"],
@@ -194,11 +194,11 @@ def save_to_db(data):
 
 def validate_data(data):
     for domain in DOMAINS:
-        if data[f"Skill_{domain}"] not in range(1, 8):
+        if data.get(f"Skill_{domain}", None) not in range(1, 8):
             return False
-        if data[f"Challenge_{domain}"] not in range(1, 8):
+        if data.get(f"Challenge_{domain}", None) not in range(1, 8):
             return False
-        if data[f"Time_{domain}"] not in range(-3, 4):
+        if data.get(f"Time_{domain}", None) not in range(-3, 4):
             return False
     return True
 
@@ -244,14 +244,15 @@ def create_flow_plot(data, domain_colors):
     ax.fill_between(x_vals, 1, flow_channel_lower, color='lightgray', alpha=0.3, label='Apathie')
     ax.fill_between(x_vals, flow_channel_upper, 7, color='lightcoral', alpha=0.3, label='Angst/Überlastung')
     
-    x = [data[f"Skill_{d}"] for d in DOMAINS]
-    y = [data[f"Challenge_{d}"] for d in DOMAINS]
-    time = [data[f"Time_{d}"] for d in DOMAINS]
+    x = [data.get(f"Skill_{d}", 4) for d in DOMAINS]
+    y = [data.get(f"Challenge_{d}", 4) for d in DOMAINS]
+    time = [data.get(f"Time_{d}", 0) for d in DOMAINS]
     colors = [domain_colors[d] for d in DOMAINS]
     
-    for (xi, yi, ti, color) in zip(x, y, time, colors):
+    for (xi, yi, ti, color, domain) in zip(x, y, time, colors, DOMAINS.keys()):
         ax.scatter(xi, yi, c=color, s=200, alpha=0.9, edgecolors='white', linewidths=1.5)
         ax.annotate(f"{ti}", (xi+0.1, yi+0.1), fontsize=9, fontweight='bold')
+        ax.annotate(domain, (xi+0.15, yi-0.25), fontsize=9, alpha=0.8)
     
     ax.set_xlim(0.5, 7.5)
     ax.set_ylim(0.5, 7.5)
@@ -264,8 +265,6 @@ def create_flow_plot(data, domain_colors):
     return fig
 
 def generate_time_based_recommendation(time_val, skill, challenge, domain):
-    """Generiert spezifische Empfehlungen basierend auf Zeiterleben"""
-    
     recommendations = {
         -3: [
             "Dringend neue Herausforderungen suchen",
@@ -336,7 +335,6 @@ def generate_time_based_recommendation(time_val, skill, challenge, domain):
     }
     
     all_recommendations = base_recommendations + domain_specific.get(domain, [])
-    # Personalisierte Formulierung
     personalized_recs = [rec.replace("Sie ", "Du ").replace("Ihre ", "Deine ").replace("Ihnen ", "dir ") for rec in all_recommendations]
     return "\n".join([f"• {rec}" for rec in personalized_recs])
 
@@ -426,7 +424,7 @@ def generate_comprehensive_smart_report(data):
     report += "=" * 80 + "\n\n"
     
     # Persönliche Ansprache
-    name = data['Name'] if data['Name'] else "Du"
+    name = data.get('Name', "") if data.get('Name', "") else "Du"
     report += f"Hallo {name}!\n\n"
     report += "Dies ist deine persönliche Auswertung. Sie zeigt, wie du dich aktuell in deiner Arbeit fühlst\n"
     report += "und wo du vielleicht Entlastung oder neue Herausforderungen brauchst.\n\n"
@@ -570,35 +568,25 @@ def reset_database():
     st.session_state.full_report_generated = False
     st.session_state.show_full_report = False
 
-def create_team_analysis():
-    """Erstellt eine Teamanalyse basierend auf allen gespeicherten Daten"""
-    st.subheader("👥 Team-Analyse")
-    
-    # Reset-Button
-    if st.button("🗑️ Alle Daten zurücksetzen", type="secondary", key="reset_button"):
-        if st.checkbox("❌ Ich bestätige, dass ich ALLE Daten unwiderruflich löschen möchte", key="confirm_delete"):
-            reset_database()
-            st.success("✅ Alle Daten wurden erfolgreich gelöscht!")
-            return True
-    
-    # Daten aus der Datenbank abrufen
-    df = get_all_data()
-    
+def create_team_analysis_from_df(df):
+    """Erstellt Team-Analyse aus DataFrame (gleiche Logik wie früher)"""
+    st.subheader("👥 Team-Analyse (aus hochgeladenen Dateien)")
+
     if df.empty:
-        st.info("Noch keine Daten für eine Teamanalyse verfügbar.")
+        st.info("Die übergebenen Daten sind leer.")
         return False
-    
+
     # Anzahl der Teilnehmer
     num_participants = df['name'].nunique()
     st.write(f"**Anzahl der Teilnehmer:** {num_participants}")
-    
+
     # Durchschnittswerte pro Domäne berechnen
     domain_stats = df.groupby('domain').agg({
         'skill': 'mean',
         'challenge': 'mean',
         'time_perception': 'mean'
     }).round(2)
-    
+
     # Flow-Index für jede Domäne berechnen
     flow_indices = []
     zones = []
@@ -612,29 +600,29 @@ def create_team_analysis():
         else:
             flow_indices.append(0)
             zones.append("Keine Daten")
-    
+
     domain_stats['flow_index'] = flow_indices
     domain_stats['zone'] = zones
-    
+
     # Team-Übersicht anzeigen
     st.write("**Team-Übersicht pro Domäne:**")
     st.dataframe(domain_stats)
-    
+
     # Visualisierung der Team-Ergebnisse
     fig, ax = plt.subplots(figsize=(12, 8))
-    
+
     # Flow-Kanal zeichnen
     x_vals = np.linspace(1, 7, 100)
     flow_channel_lower = np.maximum(x_vals - 1, 1)
     flow_channel_upper = np.minimum(x_vals + 1, 7)
-    
+
     ax.fill_between(x_vals, flow_channel_lower, flow_channel_upper, 
                    color='lightgreen', alpha=0.3, label='Flow-Kanal')
     ax.fill_between(x_vals, 1, flow_channel_lower, 
                    color='lightgray', alpha=0.3, label='Apathie')
     ax.fill_between(x_vals, flow_channel_upper, 7, 
                    color='lightcoral', alpha=0.3, label='Angst/Überlastung')
-    
+
     # Punkte für jede Domäne zeichnen
     for domain in DOMAINS.keys():
         if domain in domain_stats.index:
@@ -642,12 +630,12 @@ def create_team_analysis():
             challenge = domain_stats.loc[domain, 'challenge']
             time_perception = domain_stats.loc[domain, 'time_perception']
             color = DOMAINS[domain]['color']
-            
+
             ax.scatter(skill, challenge, c=color, s=200, alpha=0.9, 
                       edgecolors='white', linewidths=1.5, label=domain)
             ax.annotate(f"{time_perception:.1f}", (skill+0.1, challenge+0.1), 
                        fontsize=9, fontweight='bold')
-    
+
     ax.set_xlim(0.5, 7.5)
     ax.set_ylim(0.5, 7.5)
     ax.set_xlabel('Durchschnittliche Fähigkeiten (1-7)', fontsize=12)
@@ -657,15 +645,15 @@ def create_team_analysis():
     ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
-    
+
     st.pyplot(fig)
-    
+
     # Team-Stärken und Entwicklungsbereiche identifizieren
     st.subheader("📊 Team-Stärken und Entwicklungsbereiche")
-    
+
     strengths = []
     development_areas = []
-    
+
     for domain in DOMAINS.keys():
         if domain in domain_stats.index:
             flow_index = domain_stats.loc[domain, 'flow_index']
@@ -673,24 +661,24 @@ def create_team_analysis():
                 strengths.append(domain)
             elif flow_index <= 0.4:
                 development_areas.append(domain)
-    
+
     if strengths:
         st.write("**🏆 Team-Stärken:**")
         for strength in strengths:
             st.write(f"- {strength}")
-    
+
     if development_areas:
         st.write("**📈 Entwicklungsbereiche:**")
         for area in development_areas:
             st.write(f"- {area}")
-    
+
     # Empfehlungen für das Team
     st.subheader("💡 Empfehlungen für das Team")
-    
+
     for domain in development_areas:
         skill = domain_stats.loc[domain, 'skill']
         challenge = domain_stats.loc[domain, 'challenge']
-        
+
         if challenge > skill:
             st.write(f"**{domain}:** Das Team fühlt sich überfordert. Empfohlene Massnahmen:")
             st.write(f"- Gezielte Schulungen und Training für das gesamte Team")
@@ -701,10 +689,171 @@ def create_team_analysis():
             st.write(f"- Neue, anspruchsvollere Aufgaben suchen")
             st.write(f"- Verantwortungsbereiche erweitern")
             st.write(f"- Innovative Projekte initiieren")
-        
+
         st.write("")
-    
+
     return True
+
+# ===== NEUE FUNKTIONEN FÜR EXPORT / IMPORT =====
+def build_machine_readable_payload(data):
+    """
+    Baut eine maschinenlesbare Repräsentation (dict) mit nur numerischen Werten.
+    Struktur:
+    {
+      "Name": "Alex",
+      "created_at": "YYYY-MM-DDTHH:MM:SS",
+      "domains": {
+         "Team-Veränderungen": {"skill": 4, "challenge": 3, "time": 0},
+         ...
+      }
+    }
+    """
+    payload = {
+        "Name": data.get("Name", ""),
+        "created_at": datetime.now().isoformat(),
+        "domains": {}
+    }
+    for d in DOMAINS:
+        payload["domains"][d] = {
+            "skill": int(data.get(f"Skill_{d}", 4)),
+            "challenge": int(data.get(f"Challenge_{d}", 4)),
+            "time": int(data.get(f"Time_{d}", 0))
+        }
+    return payload
+
+def export_machine_readable_json(data):
+    payload = build_machine_readable_payload(data)
+    return json.dumps(payload, ensure_ascii=False, indent=2)
+
+def export_machine_readable_csv_bytes(data):
+    payload = build_machine_readable_payload(data)
+    rows = []
+    for d, vals in payload["domains"].items():
+        rows.append({
+            "Name": payload["Name"],
+            "created_at": payload["created_at"],
+            "domain": d,
+            "skill": vals["skill"],
+            "challenge": vals["challenge"],
+            "time": vals["time"]
+        })
+    df = pd.DataFrame(rows)
+    buf = BytesIO()
+    df.to_csv(buf, index=False, encoding='utf-8')
+    buf.seek(0)
+    return buf.getvalue()
+
+def parse_uploaded_report_file(uploaded_file):
+    """
+    Versucht, eine hochgeladene Datei (JSON oder CSV) in ein standardisiertes DataFrame zu bringen.
+    Erwartet Format wie export_machine_readable_payload bzw. CSV mit columns:
+    Name, created_at, domain, skill, challenge, time
+    """
+    filename = uploaded_file.name
+    content = uploaded_file.read()
+    # versuche JSON
+    try:
+        text = content.decode('utf-8') if isinstance(content, (bytes, bytearray)) else content
+        obj = json.loads(text)
+        # validierung einfach: muss keys 'domains' haben
+        if "domains" in obj:
+            rows = []
+            for d, vals in obj["domains"].items():
+                rows.append({
+                    "name": obj.get("Name", ""),
+                    "created_at": obj.get("created_at", ""),
+                    "domain": d,
+                    "skill": int(vals.get("skill", 0)),
+                    "challenge": int(vals.get("challenge", 0)),
+                    "time_perception": int(vals.get("time", vals.get("time_perception", 0)))
+                })
+            return pd.DataFrame(rows)
+    except Exception:
+        pass
+
+    # versuche CSV
+    try:
+        # pandas kann bytes direkt lesen
+        df = pd.read_csv(BytesIO(content))
+        # mögliche Spaltennamen normalisieren
+        cols = [c.lower() for c in df.columns]
+        mapping = {}
+        if 'domain' in cols and 'skill' in cols and 'challenge' in cols:
+            # normalisiere
+            df_columns = {c.lower(): c for c in df.columns}
+            df2 = pd.DataFrame()
+            df2['domain'] = df[df_columns['domain']]
+            # name optional
+            if 'name' in cols:
+                df2['name'] = df[df_columns['name']]
+            else:
+                df2['name'] = ""
+            if 'created_at' in cols:
+                df2['created_at'] = df[df_columns['created_at']]
+            else:
+                df2['created_at'] = ""
+            df2['skill'] = df[df_columns['skill']].astype(int)
+            df2['challenge'] = df[df_columns['challenge']].astype(int)
+            # zeit-spalte könnte 'time' oder 'time_perception' heissen
+            if 'time' in cols:
+                df2['time_perception'] = df[df_columns['time']].astype(int)
+            elif 'time_perception' in cols:
+                df2['time_perception'] = df[df_columns['time_perception']].astype(int)
+            else:
+                df2['time_perception'] = 0
+            return df2
+    except Exception:
+        pass
+
+    # falls nichts passte
+    return None
+
+def validate_uploaded_dataframe(df):
+    """Prüft, ob DataFrame die benötigten Spalten und gültige Werte hat."""
+    required_cols = {'domain', 'skill', 'challenge', 'time_perception'}
+    if not required_cols.issubset(set(df.columns.str.lower())) and not required_cols.issubset(set(df.columns)):
+        # aber wir erlauben 'time' statt 'time_perception' oder 'name' fehlt
+        available = set(df.columns.str.lower())
+        if not {'domain', 'skill', 'challenge'}.issubset(available):
+            return False
+    # einfache inhaltliche prüfung
+    try:
+        for col in ['skill', 'challenge', 'time_perception']:
+            if col in df.columns:
+                if df[col].dropna().apply(lambda x: int(x)).between(-100, 100).all() is False:
+                    return False
+        return True
+    except Exception:
+        return False
+
+def aggregate_uploaded_files_to_df(uploaded_files):
+    """Nimmt mehrere Dateien und erzeugt ein concatenated DataFrame"""
+    frames = []
+    errors = []
+    for f in uploaded_files:
+        parsed = parse_uploaded_report_file(f)
+        if parsed is None:
+            errors.append(f"{f.name}: unbekanntes Format")
+            continue
+        # normalisiere column names
+        parsed.columns = [c.lower() for c in parsed.columns]
+        # ensure correct columns
+        if 'time_perception' not in parsed.columns and 'time' in parsed.columns:
+            parsed = parsed.rename(columns={'time': 'time_perception'})
+        # fill missing
+        for req in ['name', 'domain', 'skill', 'challenge', 'time_perception']:
+            if req not in parsed.columns:
+                parsed[req] = "" if req in ['name', 'domain'] else 0
+        # cast numeric columns
+        parsed['skill'] = parsed['skill'].astype(int)
+        parsed['challenge'] = parsed['challenge'].astype(int)
+        parsed['time_perception'] = parsed['time_perception'].astype(int)
+        frames.append(parsed[['name', 'domain', 'skill', 'challenge', 'time_perception']])
+    if frames:
+        combined = pd.concat(frames, ignore_index=True)
+    else:
+        combined = pd.DataFrame(columns=['name', 'domain', 'skill', 'challenge', 'time_perception'])
+    return combined, errors
 
 # ===== STREAMLIT-UI =====
 st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
@@ -799,6 +948,7 @@ if page == "Einzelanalyse":
             
             st.text_area("Bericht", st.session_state.full_report_content, height=500, label_visibility="collapsed")
             
+            # originaler Download-Button (Text)
             st.download_button(
                 label="📥 Bericht herunterladen",
                 data=st.session_state.full_report_content,
@@ -806,14 +956,67 @@ if page == "Einzelanalyse":
                 mime="text/plain"
             )
 
+            # NEU: Maschinenlesbarer Export (JSON & CSV)
+            st.markdown("---")
+            st.subheader("🔁 Maschinenlesbarer Export")
+            mr_json = export_machine_readable_json(st.session_state.current_data)
+            mr_csv = export_machine_readable_csv_bytes(st.session_state.current_data)
+
+            st.download_button(
+                label="📄 Export: JSON (für Team-Import)",
+                data=mr_json,
+                file_name=f"flow_export_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.json",
+                mime="application/json"
+            )
+            st.download_button(
+                label="📄 Export: CSV (für Team-Import)",
+                data=mr_csv,
+                file_name=f"flow_export_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.csv",
+                mime="text/csv"
+            )
+
 else:  # Team-Analyse
     st.title("👥 Team-Analyse")
     st.markdown("""
-    Diese Analyse zeigt aggregierte Daten aller Teilnehmer und hilft dabei, 
-    teamweite Stärken und Entwicklungsbereiche zu identifizieren.
-    """)
+    Diese Analyse basiert primär auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
     
-    create_team_analysis()
+    Workflow:
+    1. Jede Person exportiert im Bereich 'Persönlicher Bericht' ihren JSON/CSV-Export.
+    2. Der Manager sammelt diese Dateien und lädt sie hier hoch.
+    3. Die App aggregiert die hochgeladenen Dateien und erstellt die Team-Analyse.
+    """)
+    st.markdown("**Hinweis:** Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
+
+    uploaded_files = st.file_uploader("🔼 Hochladen: JSON/CSV-Exporte (mehrere Dateien möglich)", accept_multiple_files=True, type=['json','csv'])
+    use_db_fallback = st.checkbox("🔁 Falls keine Uploads vorhanden, DB-Daten verwenden (Fallback)", value=False)
+
+    df_combined = pd.DataFrame()
+    errors = []
+
+    if uploaded_files:
+        with st.spinner("Dateien werden verarbeitet..."):
+            df_combined, errors = aggregate_uploaded_files_to_df(uploaded_files)
+            if errors:
+                st.warning("Einige Dateien konnten nicht geparst werden:")
+                for e in errors:
+                    st.write(f"- {e}")
+
+    if df_combined.empty and use_db_fallback:
+        st.info("Es werden DB-Daten verwendet, da keine Uploads vorliegen und Fallback aktiv ist.")
+        df_combined = get_all_data()
+        # Umbenennung: DB hat 'time_perception' column already
+
+    if df_combined.empty:
+        st.info("Noch keine hochgeladenen Dateien. Bitte lade die JSON/CSV-Exporte der Teammitglieder hoch.")
+        # zeige trotzdem Möglichkeit, DB manuell zurückzusetzen
+        if st.button("🗑️ Alle DB-Daten zurücksetzen", type="secondary", key="reset_button_team"):
+            if st.checkbox("❌ Ich bestätige, dass ich ALLE DB-Daten unwiderruflich löschen möchte", key="confirm_delete_team"):
+                reset_database()
+                st.success("✅ Alle DB-Daten wurden gelöscht!")
+    else:
+        # Validierung (leicht)
+        st.success(f"✅ {df_combined['name'].nunique()} Teilnehmer, {len(df_combined)} Zeilen verarbeitet.")
+        create_team_analysis_from_df(df_combined)
 
 st.divider()
 st.caption("© Flow-Analyse Pro - Integrierte psychologische Diagnostik für Veränderungsprozesse")
