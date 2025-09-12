@@ -480,20 +480,20 @@ def generate_comprehensive_smart_report(data):
     report += "WAS JETZT FÜR DICH DRAN IST\n"
     report += "-" * 80 + "\n\n"
 
-    report += "Dein hoher Wert zeigt: Du bist momentan gut im Fluss und meisterst vieles mit Leichtigkeit.\n"
+    report += "Deine Werte zeigen dir auf wo du momentan gut im Fluss und wo du vielleicht Unterstützung brauchst.\n"
     report += "Diese Phase bietet dir die Chance, bewusst wahrzunehmen, was dir besonders gelingt und Energie gibt.\n\n"
     
     report += "Basierend auf deinen Werten könntest du:\n\n"
     
-    report += "DIESE WOCHE KÖNNTEST DU:\n"
+    report += "HEUTE:\n"
     report += "• Dir einen Bereich aussuchen, in dem du besonders erfolgreich bist, und ihn bewusst geniessen\n"
-    report += "• Überlege, was dir dort sofort Erleichterung bringen könnte\n"
-    report += "• Sprich vielleicht mit einer Vertrauensperson darüber\n\n"
+    report += "• Überlege, welche kleine Handlung dir in herausfordernden Bereichen rasch Erleichterung und Klarheit verschaffen kann\n"
+    report += "• Manchmal kann es bereichernd sein, Gedanken oder Erfahrungen mit jemandem zu teilen, dem du vertraust.\n\n"
     
     report += "KURZFRISTIG (nächste 4 Wochen):\n"
     report += "• Schau dir die konkreten Tipps für deine kritischen Bereiche an\n"
     report += "• Such dir Unterstützung, wo du sie brauchst\n"
-    report += "• Feiere auch kleine Erfolge bewusst\n\n"
+    report += "• Vielleicht bemerkst du, wie die kleinen Momente des Gelingens aufleuchten, und je mehr du sie wahrnimmst, desto leichter wird es, ihnen Raum zu geben.\n\n"
     
     report += "LANGFRISTIG (ab 3 Monaten):\n"
     report += "• Entwickle deine Stärken weiter\n"
