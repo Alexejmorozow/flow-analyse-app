@@ -249,17 +249,33 @@ def create_flow_plot(data, domain_colors):
     time = [data.get(f"Time_{d}", 0) for d in DOMAINS]
     colors = [domain_colors[d] for d in DOMAINS]
     
+    # Erstelle Scatter-Plots mit eindeutigen Labels für die Legende
+    scatter_plots = []
+    labels_added = set()
+    
     for (xi, yi, ti, color, domain) in zip(x, y, time, colors, DOMAINS.keys()):
-        ax.scatter(xi, yi, c=color, s=200, alpha=0.9, edgecolors='white', linewidths=1.5)
+        if domain not in labels_added:
+            scatter = ax.scatter(xi, yi, c=color, s=200, alpha=0.9, 
+                               edgecolors='white', linewidths=1.5, label=domain)
+            scatter_plots.append(scatter)
+            labels_added.add(domain)
+        else:
+            ax.scatter(xi, yi, c=color, s=200, alpha=0.9, 
+                      edgecolors='white', linewidths=1.5)
+        
         ax.annotate(f"{ti}", (xi+0.1, yi+0.1), fontsize=9, fontweight='bold')
         ax.annotate(domain, (xi+0.15, yi-0.25), fontsize=9, alpha=0.8)
     
     ax.set_xlim(0.5, 7.5)
     ax.set_ylim(0.5, 7.5)
-    ax.set_xlabel('Fähigkeiten (1-7)')
-    ax.set_ylabel('Herausforderungen (1-7)')
-    ax.set_title('Flow-Kanal nach Csikszentmihalyi')
-    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5)
+    ax.set_xlabel('Fähigkeiten (1-7)', fontsize=12)
+    ax.set_ylabel('Herausforderungen (1-7)', fontsize=12)
+    ax.set_title('Flow-Kanal nach Csikszentmihalyi', fontsize=14, fontweight='bold')
+    ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis')
+    
+    # LEGENDE HINZUFÜGEN - das war das fehlende Element!
+    ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     return fig
