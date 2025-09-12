@@ -109,7 +109,7 @@ TIME_PERCEPTION_SCALE = {
         "description": "Zeit vergeht ruhig und gleichmässig - leichte Unterforderung",
         "psychological_meaning": "Entspannung bei guter Kontrolle",
         "bischof": "Balance mit leichter Sicherheitsdominanz",
-        "grawe": "Grundkonsistenz mit Entwicklungspotential"
+        "grawe": "Grundkonsistenz mit Entwicklungpotenzial"
     },
     0: {
         "label": "Normales Zeitgefühl",
@@ -150,12 +150,18 @@ if 'confirmed' not in st.session_state:
     st.session_state.confirmed = False
 if 'submitted' not in st.session_state:
     st.session_state.submitted = False
-if 'full_report_generated' not in st.session_state:
-    st.session_state.full_report_generated = False
-if 'full_report_content' not in st.session_state:
-    st.session_state.full_report_content = ""
-if 'show_full_report' not in st.session_state:
-    st.session_state.show_full_report = False
+if 'personal_report_generated' not in st.session_state:
+    st.session_state.personal_report_generated = False
+if 'personal_report_content' not in st.session_state:
+    st.session_state.personal_report_content = ""
+if 'show_personal_report' not in st.session_state:
+    st.session_state.show_personal_report = False
+if 'machine_report_generated' not in st.session_state:
+    st.session_state.machine_report_generated = False
+if 'machine_report_content' not in st.session_state:
+    st.session_state.machine_report_content = ""
+if 'show_machine_report' not in st.session_state:
+    st.session_state.show_machine_report = False
 if 'analysis_started' not in st.session_state:
     st.session_state.analysis_started = False
 if 'database_reset' not in st.session_state:
@@ -227,7 +233,7 @@ def calculate_flow(skill, challenge):
         explanation = "Rückzugszone: Geringes Engagement in beiden Dimensionen"
     else:
         zone = "Stabile Passung"
-        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotential"
+        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotenzial"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
@@ -352,7 +358,7 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
     # 🔴 AKUTE UNTERFORDERUNG (z.B. 7/1)
     if zone == "Akute Unterforderung" or (skill - challenge >= 3):
         report += f"Hier schätzt du deine Fähigkeiten sehr hoch ein, doch im Alltag fehlt oft die passende Herausforderung. \n"
-        report += f"Viele alltägliche Dinge wirken schnell monoton, und man hat das Gefühl, jeden Tag wiederholt sich dasselbe. \n"
+        report += f"Viele alltägliche Dinge wirken schnell monoton, und man hat das Gefühl, jeden день wiederholt sich dasselbe. \n"
         report += f"Dabei sind die Dinge oft komplexer, als sie auf den ersten Blick erscheinen. Selbst hinter ganz gewöhnlichen \n"
         report += f"Abläufen können erstaunlich komplexe Prozesse stecken.\n\n"
         
@@ -458,7 +464,7 @@ def generate_comprehensive_smart_report(data):
         
     else:
         report += f"Dein Wert von {avg_flow:.2f} sagt: Momentan ist vieles ziemlich anstrengend für dich. 💭\n\n"
-        report += "Vielleicht fühlst du dich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
+        report += "Vielleicht fühlst du sich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
         report += "Das ist okay - viele Menschen erleben solche Phasen. Wichtig ist, dass du jetzt auf dich achtest.\n\n"
     
     # Detaillierte Domain-Analysen
@@ -518,7 +524,7 @@ def generate_comprehensive_smart_report(data):
         report += "**Das sind deine besonderen Stärken:**\n"
         report += "\n".join(strengths) + "\n\n"
     else:
-        report += "**Deine aktuelle Stärke:** Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
+        report += "**Deine aktuelle Stärke**: Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
         report += "Diese Selbstwahrnehmung ist eine wichtige Grundlage für jede Weiterentwicklung.\n\n"
     
     if resources:
@@ -549,6 +555,20 @@ def generate_comprehensive_smart_report(data):
     
     return report
 
+def generate_machine_readable_report(data):
+    """Erstellt einen maschinenlesbaren Bericht für die Team-Analyse"""
+    report = f"FLOW_ANALYSE_DATA|{data.get('Name', 'Unbekannt')}|{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_val = data[f"Time_{domain}"]
+        flow_index, zone, _ = calculate_flow(skill, challenge)
+        
+        report += f"DOMAIN|{domain}|SKILL|{skill}|CHALLENGE|{challenge}|TIME|{time_val}|FLOW_INDEX|{flow_index:.3f}|ZONE|{zone}\n"
+    
+    return report
+
 def get_all_data():
     """Holt alle Daten aus der Datenbank für die Teamanalyse"""
     conn = sqlite3.connect(DB_NAME)
@@ -567,8 +587,10 @@ def reset_database():
     st.session_state.database_reset = True
     st.session_state.submitted = False
     st.session_state.analysis_started = False
-    st.session_state.full_report_generated = False
-    st.session_state.show_full_report = False
+    st.session_state.personal_report_generated = False
+    st.session_state.show_personal_report = False
+    st.session_state.machine_report_generated = False
+    st.session_state.show_machine_report = False
 
 def create_team_analysis():
     """Erstellt eine Teamanalyse basierend auf allen gespeicherten Daten"""
@@ -783,28 +805,56 @@ if page == "Einzelanalyse":
         fig = create_flow_plot(st.session_state.current_data, domain_colors)
         st.pyplot(fig)
         
-        # Nur noch Gesamtbericht-Button
-        if st.button("📊 Persönlichen Bericht erstellen", type="primary", key="generate_full_report"):
-            st.session_state.show_full_report = True
-            st.session_state.full_report_generated = False
-            st.rerun()
+        # Zwei separate Buttons für die unterschiedlichen Berichte
+        col1, col2 = st.columns(2)
         
-        # Gesamtbericht anzeigen
-        if st.session_state.get('show_full_report', False):
+        with col1:
+            if st.button("💭 Deinen persönlichen Bericht erstellen", type="primary", key="generate_personal_report"):
+                st.session_state.show_personal_report = True
+                st.session_state.personal_report_generated = False
+                
+        with col2:
+            if st.button("📊 Maschinenlesbaren Bericht erstellen", type="secondary", key="generate_machine_report"):
+                st.session_state.show_machine_report = True
+                st.session_state.machine_report_generated = False
+        
+        # Persönlichen Bericht anzeigen
+        if st.session_state.get('show_personal_report', False):
             st.subheader("📄 Dein persönlicher Flow-Bericht")
-            if not st.session_state.full_report_generated:
+            if not st.session_state.personal_report_generated:
                 report = generate_comprehensive_smart_report(st.session_state.current_data)
-                st.session_state.full_report_content = report
-                st.session_state.full_report_generated = True
+                st.session_state.personal_report_content = report
+                st.session_state.personal_report_generated = True
             
-            st.text_area("Bericht", st.session_state.full_report_content, height=500, label_visibility="collapsed")
+            st.text_area("Persönlicher Bericht", st.session_state.personal_report_content, height=500, label_visibility="collapsed")
             
             st.download_button(
-                label="📥 Bericht herunterladen",
-                data=st.session_state.full_report_content,
-                file_name=f"flow_bericht_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
-                mime="text/plain"
+                label="📥 Persönlichen Bericht herunterladen",
+                data=st.session_state.personal_report_content,
+                file_name=f"flow_bericht_persoenlich_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
+                mime="text/plain",
+                key="download_personal"
             )
+        
+        # Maschinenlesbaren Bericht anzeigen
+        if st.session_state.get('show_machine_report', False):
+            st.subheader("📊 Maschinenlesbarer Bericht (für Team-Analyse)")
+            if not st.session_state.machine_report_generated:
+                report = generate_machine_readable_report(st.session_state.current_data)
+                st.session_state.machine_report_content = report
+                st.session_state.machine_report_generated = True
+            
+            st.text_area("Maschinenlesbarer Bericht", st.session_state.machine_report_content, height=200, label_visibility="collapsed")
+            
+            st.download_button(
+                label="📥 Maschinenlesbaren Bericht herunterladen",
+                data=st.session_state.machine_report_content,
+                file_name=f"flow_bericht_maschine_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
+                mime="text/plain",
+                key="download_machine"
+            )
+            
+            st.info("💡 Dieser Bericht kann für die Team-Analyse hochgeladen werden.")
 
 else:  # Team-Analyse
     st.title("👥 Team-Analyse")
