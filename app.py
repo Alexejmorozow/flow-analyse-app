@@ -548,26 +548,6 @@ def generate_comprehensive_smart_report(data):
     report += "=" * 80
     
     return report
-    def generate_machine_readable_report(data):
-    """Erstellt einen maschinenlesbaren Bericht als JSON"""
-    import json
-    report_dict = {}
-    report_dict["Name"] = data.get("Name", "")
-    report_dict["Domains"] = {}
-    
-    for domain in DOMAINS:
-        skill = data[f"Skill_{domain}"]
-        challenge = data[f"Challenge_{domain}"]
-        time_val = data[f"Time_{domain}"]
-        flow_index, zone, explanation = calculate_flow(skill, challenge)
-        report_dict["Domains"][domain] = {
-            "Skill": skill,
-            "Challenge": challenge,
-            "TimePerception": time_val,
-            "FlowIndex": round(flow_index, 2),
-            "Zone": zone,
-            "Explanation": e
-
 
 def get_all_data():
     """Holt alle Daten aus der Datenbank für die Teamanalyse"""
@@ -727,13 +707,6 @@ def create_team_analysis():
     return True
 
 # ===== STREAMLIT-UI =====
-st.download_button(
-    label="📥 Maschinenlesbarer Bericht (JSON) herunterladen",
-    data=generate_machine_readable_report(st.session_state.current_data),
-    file_name=f"flow_bericht_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.json",
-    mime="application/json"
-)
-
 st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
 init_db()
 
