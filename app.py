@@ -40,7 +40,7 @@ Positiv erlebt: Du gehst die Umstellung gelassen an, weil du schon oft neue Abl�
 Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt."""
     },
     "Kompetenzanforderungen / Weiterbildung": {
-        "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierations",
+        "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierungen",
         "color": "#06D6A0",
         "bischof": "Explorationssystem - Kompetenzerweiterung und Wachstum",
         "grawe": "Bedürfnisse: Selbstwerterhöhung, Kompetenzerleben, Kontrolle",
@@ -64,13 +64,13 @@ Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest
 }
 
 TIME_PERCEPTION_SCALE = {
-    -3: {"label": "Extreme Langeweile"},
-    -2: {"label": "Langeweile"},
-    -1: {"label": "Entspanntes Zeitgefühl"},
-    0: {"label": "Normales Zeitgefühl"},
-    1: {"label": "Zeit fliesst positiv"},
-    2: {"label": "Zeit rennt - Wachsamkeit"},
-    3: {"label": "Stress - Zeit rast"}
+    -3: "Extreme Langeweile",
+    -2: "Langeweile",
+    -1: "Entspanntes Zeitgefühl",
+    0: "Normales Zeitgefühl",
+    1: "Zeit fliesst positiv",
+    2: "Zeit rennt - Wachsamkeit",
+    3: "Stress - Zeit rast"
 }
 
 # ===== SESSION STATE INITIALISIERUNG =====
@@ -97,7 +97,7 @@ def calculate_flow(skill, challenge):
         zone = "Stabile Passung"
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
-    return flow_index, zone, None
+    return flow_index, zone
 
 def create_flow_plot(data, domain_colors):
     fig, ax = plt.subplots(figsize=(10, 7))
@@ -111,7 +111,7 @@ def create_flow_plot(data, domain_colors):
         x = data[f"Skill_{domain}"]
         y = data[f"Challenge_{domain}"]
         ax.scatter(x, y, color=domain_colors[domain], s=150, edgecolors='white', linewidths=1.5)
-        ax.annotate(f"{data[f'Time_{domain}']}", (x+0.1,y+0.1), fontsize=9, fontweight='bold')
+        ax.annotate(f"{TIME_PERCEPTION_SCALE[data[f'Time_{domain}']]}", (x+0.1,y+0.1), fontsize=9, fontweight='bold')
     ax.set_xlim(0.5,7.5)
     ax.set_ylim(0.5,7.5)
     ax.set_xlabel("Fähigkeiten")
@@ -128,10 +128,27 @@ def generate_machine_readable_report(data):
         skill = data[f"Skill_{domain}"]
         challenge = data[f"Challenge_{domain}"]
         time_val = data[f"Time_{domain}"]
-        flow_index, zone, _ = calculate_flow(skill, challenge)
+        flow_index, zone = calculate_flow(skill, challenge)
         report += f"DOMAIN|{domain}|SKILL|{skill}|CHALLENGE|{challenge}|TIME|{time_val}|FLOW_INDEX|{flow_index:.3f}|ZONE|{zone}\n"
     return report
 
+def generate_personal_report(data):
+    report = f"Flow-Analyse für {data.get('Name','Unbekannt')} ({datetime.now().strftime('%Y-%m-%d')})\n\n"
+    for domain, info in DOMAINS.items():
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_val = data[f"Time_{domain}"]
+        flow_index, zone = calculate_flow(skill, challenge)
+        report += f"---\nDomain: {domain}\n"
+        report += f"Fähigkeit: {skill} / Herausforderung: {challenge} / Zeitwahrnehmung: {TIME_PERCEPTION_SCALE[time_val]}\n"
+        report += f"Flow-Zone: {zone} (Index: {flow_index:.3f})\n\n"
+        report += f"BISCHOF-System: {info['bischof']}\n"
+        report += f"GRAWE-Bedürfnisse: {info['grawe']}\n"
+        report += f"Flow-Erklärung: {info['flow']}\n"
+        report += f"Beispiel & Beschreibung:\n{info['explanation']}\n\n"
+    return report
+
+# ===== PARSING TEAM-REPORTS =====
 def parse_machine_report(file_content):
     lines = file_content.decode("utf-8").splitlines()
     data_rows = []
@@ -163,7 +180,7 @@ def create_team_analysis_from_upload(df):
     zones = []
     for domain in DOMAINS.keys():
         if domain in domain_stats.index:
-            flow_idx, zone, _ = calculate_flow(domain_stats.loc[domain,'skill'], domain_stats.loc[domain,'challenge'])
+            flow_idx, zone = calculate_flow(domain_stats.loc[domain,'skill'], domain_stats.loc[domain,'challenge'])
             flow_indices.append(flow_idx)
             zones.append(zone)
         else:
@@ -176,7 +193,8 @@ def create_team_analysis_from_upload(df):
     fig, ax = plt.subplots(figsize=(10,7))
     x_vals = domain_stats['skill']
     y_vals = domain_stats['challenge']
-    ax.scatter(x_vals, y_vals, s=200, c=list(DOMAINS[d]['color'] for d in domain_stats.index))
+    colors = [DOMAINS[d]['color'] for d in domain_stats.index]
+    ax.scatter(x_vals, y_vals, s=200, c=colors)
     for i, domain in enumerate(domain_stats.index):
         ax.annotate(domain, (x_vals[i]+0.1, y_vals[i]+0.1))
     ax.plot([0,7],[0,7],'k--',alpha=0.3)
@@ -215,10 +233,13 @@ with tab[0]:
         # Flow-Diagramm anzeigen
         fig = create_flow_plot(st.session_state.current_data, domain_colors)
         st.pyplot(fig)
-        # Bericht generieren
-        report = generate_machine_readable_report(st.session_state.current_data)
-        st.download_button("💾 Maschinenlesbaren Bericht herunterladen", data=report, file_name=f"flow_report_{name}.txt", mime="text/plain")
-        st.success("Einzelanalyse abgeschlossen. **Keine automatische Speicherung mehr in DB.**")
+        # Ausführlicher persönlicher Bericht
+        personal_report = generate_personal_report(st.session_state.current_data)
+        st.download_button("💾 Persönlichen Bericht herunterladen", data=personal_report, file_name=f"flow_report_personal_{name}.txt", mime="text/plain")
+        # Maschinenlesbarer Report
+        machine_report = generate_machine_readable_report(st.session_state.current_data)
+        st.download_button("💾 Maschinenlesbaren Bericht herunterladen", data=machine_report, file_name=f"flow_report_machine_{name}.txt", mime="text/plain")
+        st.success("Einzelanalyse abgeschlossen. **Keine automatische Speicherung.**")
 
 # -------- TEAM-ANALYSE --------
 with tab[1]:
