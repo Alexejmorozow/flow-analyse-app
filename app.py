@@ -908,73 +908,21 @@ if page == "Einzelanalyse":
     name = st.text_input("Name (optional)", key="name")
     
     # Domänen-Abfrage
-# Domänen-Abfrage
-for domain, config in DOMAINS.items():
-    st.subheader(f"{domain}")
-    with st.expander("❓ Frage erklärt"):
-        st.markdown(config['explanation'])
-    
-    cols = st.columns(3)
-    with cols[0]:
-        skill_help = {
-            1: "Sehr geringe Fähigkeiten - Braucht viel Unterstützung",
-            2: "Geringe Fähigkeiten - Benötigt Einarbeitung", 
-            3: "Grundlegende Fähigkeiten - Kann einfache Aufgaben bewältigen",
-            4: "Durchschnittliche Fähigkeiten - Solide Kenntnisse",
-            5: "Gute Fähigkeiten - Kann komplexere Aufgaben lösen",
-            6: "Sehr gute Fähigkeiten - Hohe Kompetenz",
-            7: "Exzellente Fähigkeiten - Optimaler Bereich, kann andere anleiten"
-        }
-        skill = st.slider(
-            "Fähigkeiten (1-7)", 
-            1, 7, 4, 
-            key=f"skill_{domain}",
-            help="Bewege den Slider für detaillierte Beschreibungen"
-        )
-        st.caption(f"💡 {skill_help[skill]}")
+    for domain, config in DOMAINS.items():
+        st.subheader(f"{domain}")
+        with st.expander("❓ Frage erklärt"):
+            st.markdown(config['explanation'])
         
-    with cols[1]:
-        challenge_help = {
-            1: "Sehr geringe Herausforderung - Routineaufgaben",
-            2: "Geringe Herausforderung - Einfache Aufgaben",
-            3: "Grundlegende Herausforderung - Standardanforderungen", 
-            4: "Durchschnittliche Herausforderung - Angemessene Anforderungen",
-            5: "Hohe Herausforderung - Komplexe Aufgaben",
-            6: "Sehr hohe Herausforderung - Anspruchsvolle Situationen",
-            7: "Maximale Herausforderung - Optimal bei exzellenten Fähigkeiten"
-        }
-        challenge = st.slider(
-            "Herausforderung (1-7)", 
-            1, 7, 4, 
-            key=f"challenge_{domain}",
-            help="Bewege den Slider für detaillierte Beschreibungen"
-        )
-        st.caption(f"💡 {challenge_help[challenge]}")
-        
-    with cols[2]:
-        time_help = {
-            -3: "Extreme Langeweile - Zeit steht still, starke Unterforderung",
-            -2: "Langeweile - Zeit vergeht langsam, deutliche Unterforderung", 
-            -1: "Entspannt - Zeit vergeht ruhig, leichte Unterforderung",
-            0: "Normal - Zeitgefühl entspricht Realität, optimale Passung",
-            1: "Zeit fliesst - Angenehm schnell, leichte positive Aktivierung",
-            2: "Zeit rennt - Sehr schnell, erste Stresssignale, hohe Aktivierung",
-            3: "Stress - Zeitgefühl gestört, Überforderung, Kontrollverlust"
-        }
-        time_perception = st.slider(
-            "Zeitempfinden (-3 bis +3)", 
-            -3, 3, 0, 
-            key=f"time_{domain}",
-            help="Bewege den Slider für detaillierte Beschreibungen"
-        )
-        st.caption(f"💡 {time_help[time_perception]}")
-    
-    # Die Daten speichern (wichtig - diese Zeilen müssen bleiben!)
-    st.session_state.current_data.update({
-        f"Skill_{domain}": skill,
-        f"Challenge_{domain}": challenge,
-        f"Time_{domain}": time_perception
-    })
+        cols = st.columns(3)
+        with cols[0]:
+            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}",
+                             help="1 = sehr gering, 7 = sehr hoch")
+        with cols[1]:
+            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}",
+                                 help="1 = sehr gering, 7 = sehr hoch")
+        with cols[2]:
+            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}",
+                                       help="-3 = extreme Langeweile, +3 = Stress")
         
         st.session_state.current_data.update({
             f"Skill_{domain}": skill,
