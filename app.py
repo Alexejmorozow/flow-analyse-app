@@ -427,6 +427,9 @@ def generate_comprehensive_smart_report(data):
     name = data.get('Name', "") if data.get('Name', "") else "Du"
     report += f"Hallo {name}!\n\n"
     report += "Dies ist deine persönliche Auswertung. Sie zeigt, wie du dich aktuell in deiner Arbeit fühlst\n"
+    report += "Bedenke, dass dies nur eine Momentaufnahme ist\n"
+    report += "Menschen und Situationen verändern sich fortlaufend\n"
+    report += "Dieser kleine Bericht kann dir zeigen, wo du im Moment im Alltag Erfolge feierst\n"
     report += "und wo du vielleicht Entlastung oder neue Herausforderungen brauchst.\n\n"
     
     report += "GEMEINSAM GESCHAUT: DREI BLICKE AUF DEINE ARBEITSSITUATION\n"
@@ -447,17 +450,18 @@ def generate_comprehensive_smart_report(data):
     if avg_flow >= 0.7:
         report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig gut! 🎉\n\n"
         report += "Du findest offenbar eine gute Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
-        report += "Das ist nicht selbstverständlich - geniesse dieses gute Gefühl!\n\n"
+        report += "Das ist etwas Besonderes. Nimm dir einen Moment, dieses Gefühl wahrzunehmen und wertzuschätzen.\n\n"
         
     elif avg_flow >= 0.5:
-        report += f"Dein Wert von {avg_flow:.2f} zeigt: Grundsätzlich kommst du gut zurecht, aber es gibt Luft nach oben. 🔄\n\n"
-        report += "An manchen Tagen läuft es sicher super, an anderen spürst du vielleicht, dass etwas nicht ganz rund läuft.\n"
+        report += f"Dein Wert von {avg_flow:.2f} zeigt: Du gehst die meisten Herausforderungen bereits sehr gut an und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
+        report += "An manchen Tagen fühlst du dich sicher und im Fluss, an anderen merkst du vielleicht kleine Stolpersteine.\n"
         report += "Das ist völlig normal - schauen wir gemeinsam, wo genau du ansetzen kannst.\n\n"
         
     else:
         report += f"Dein Wert von {avg_flow:.2f} sagt: Momentan ist vieles ziemlich anstrengend für dich. 💭\n\n"
         report += "Vielleicht fühlst du dich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
-        report += "Das ist okay - viele Menschen erleben solche Phasen. Wichtig ist, dass du jetzt auf dich achtest.\n\n"
+        report += "Es zeigt aber auch, dass du sensibel wahrnimmst, was dich beansprucht. Wichtig ist: Dieser Zustand sollte kein Dauerzustand sein.\n"
+        report += "Wichtig ist, dass wir genau hinschauen, wo aktuell Belastungen in deinem Berufsleben liegen.\n\n"
     
     # Detaillierte Domain-Analysen
     report += "WO DU STEHST: BEREICH FÜR BEREICH\n"
@@ -475,11 +479,14 @@ def generate_comprehensive_smart_report(data):
     # Integrierte Handlungsstrategie
     report += "WAS JETZT FÜR DICH DRAN IST\n"
     report += "-" * 80 + "\n\n"
+
+    report += "Dein hoher Wert zeigt: Du bist momentan gut im Fluss und meisterst vieles mit Leichtigkeit.\n"
+    report += "Diese Phase bietet dir die Chance, bewusst wahrzunehmen, was dir besonders gelingt und Energie gibt.\n\n"
     
     report += "Basierend auf deinen Werten könntest du:\n\n"
     
-    report += "SOFORT (diese Woche noch):\n"
-    report += "• Nimm dir einen Bereich vor, der dir besonders am Herzen liegt\n"
+    report += "DIESE WOCHE KÖNNTEST DU:\n"
+    report += "• Dir einen Bereich aussuchen, in dem du besonders erfolgreich bist, und ihn bewusst geniessen\n"
     report += "• Überlege, was dir dort sofort Erleichterung bringen könnte\n"
     report += "• Sprich vielleicht mit einer Vertrauensperson darüber\n\n"
     
