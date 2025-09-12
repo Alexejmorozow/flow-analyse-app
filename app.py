@@ -24,7 +24,7 @@ DOMAINS = {
         "flow": "Balance zwischen Vertrautheit (Fähigkeit) und Neuem (Herausforderung)",
         "explanation": """In deinem Arbeitsalltag verändern sich Teams ständig: neue Kollegen kommen hinzu, Rollen verschieben sich, manchmal fallen Personen aus.
         
-Beispiel: Ein Mitarbeiter sagt kurzfzeitig ab.
+Beispiel: Ein Mitarbeiter ruft morgens an und sagt kurzfristig ab.
 
 Positiv erlebt: Du bleibst ruhig, weil du Erfahrung hast und vertraust, dass Aufgaben kompetent verteilt werden.
 
@@ -38,7 +38,7 @@ Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich spät
         "flow": "Passung zwischen professionellen Kompetenzen und Anforderungen",
         "explanation": """Der Betreuungsbedarf der Klienten kann sich verändern, z. B. durch gesundheitliche Verschlechterungen oder neue Anforderungen.
 
-Beispiel: Ein Klient benötigt plötzlich mehr Unterstützung im Alltag.
+Beispiel: Ein Klient benötigt plötzlich mehr Unterstützung im Alltag und zeigt Verhaltensauffälligkeiten.
 
 Positiv erlebt: Du spürst, dass du die Situation gut einschätzen kannst, weil du Erfahrung mit ähnlichen Fällen hast und weisst, wie du angemessen reagieren kannst.
 
@@ -54,7 +54,7 @@ Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränder
 
 Beispiel: Ein neues digitales Dokumentationssystem wird eingeführt.
 
-Positiv erlebt: Du gehst die Umstellung gelassen an, weil du schon oft neue Abläufe gelernt hast und dir vertraut ist, dass Schulungen helfen.
+Positiv erlebt: Du begegnest der Umstellung mit Gelassenheit, weil du auf deine bisherigen Lernerfolge vertraust und weisst, dass du dir neue Abläufe schnell aneignen kannst – sei es durch Schulungen oder deine eigene Auffassungsgabe.
 
 Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt."""
     },
