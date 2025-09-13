@@ -945,10 +945,22 @@ for domain, config in DOMAINS.items():
         f"Time_{domain}": time_perception
     })
 
-    st.session_state.current_data["Name"] = name
+# DIESE ZWEI ZEILEN MÜSSEN AUSSERHALB DER FOR-SCHLEIFE SEIN (KEINE EINRÜCKUNG)
+st.session_state.current_data["Name"] = name
 
 st.divider()
 confirmed = st.checkbox("✅ Bewertungen bestätigen", key="global_confirm")
+
+# Hauptanalyse-Button (KEINE EINRÜCKUNG)
+if st.button("🚀 Analyse starten", disabled=not confirmed, type="primary"):
+    if not validate_data(st.session_state.current_data):
+        st.error("Bitte alle Werte korrekt ausfüllen.")
+        st.stop()
+    
+    save_to_db(st.session_state.current_data)
+    st.session_state.submitted = True
+    st.session_state.analysis_started = True
+    st.rerun()
 
     # Hauptanalyse-Button
     if st.button("🚀 Analyse starten", disabled=not confirmed, type="primary"):
