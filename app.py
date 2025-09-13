@@ -109,7 +109,7 @@ TIME_PERCEPTION_SCALE = {
         "description": "Zeit vergeht ruhig und gleichmässig - leichte Unterforderung",
         "psychological_meaning": "Entspannung bei guter Kontrolle",
         "bischof": "Balance mit leichter Sicherheitsdominanz",
-        "grawe": "Grundkonsistenz mit Entwicklungpotenzial"
+        "grawe": "Grundkonsistenz mit Entwicklungspotential"
     },
     0: {
         "label": "Normales Zeitgefühl",
@@ -141,37 +141,6 @@ TIME_PERCEPTION_SCALE = {
     }
 }
 
-# Tooltip-Beschreibungen für die Slider
-SKILL_DESCRIPTIONS = {
-    1: "Sehr geringe Fähigkeiten, brauche viel Unterstützung",
-    2: "Geringe Fähigkeiten, benötige Anleitung",  
-    3: "Grundlegende Fähigkeiten, noch unsicher",
-    4: "Durchschnittliche Fähigkeiten, komme zurecht",
-    5: "Gute Fähigkeiten, handle selbstständig",
-    6: "Sehr gute Fähigkeiten, kann andere anleiten",
-    7: "Exzellente Fähigkeiten, könnte andere schulen"
-}
-
-CHALLENGE_DESCRIPTIONS = {
-    1: "Keine Herausforderung, völlig routiniert",
-    2: "Minimale Herausforderung, fast automatisch",
-    3: "Leichte Herausforderung, wenig Anstrengung",
-    4: "Moderate Herausforderung, angemessene Anforderung",
-    5: "Deutliche Herausforderung, benötige Konzentration",
-    6: "Grosse Herausforderung, starke Beanspruchung",  
-    7: "Extreme Herausforderung, maximale Anstrengung"
-}
-
-TIME_DESCRIPTIONS = {
-    -3: "Extreme Langeweile: Zeit scheint stillzustehen",
-    -2: "Langeweile: Zeit vergeht sehr langsam",
-    -1: "Entspannt: Zeit vergeht ruhig und gleichmässig",
-    0: "Normal: Zeitwahrnehmung entspricht der Realzeit",
-    1: "Zeit fliesst: Zeit vergeht angenehm schnell",
-    2: "Zeit rennt: Zeit vergeht sehr schnell, erste Stresssignale",
-    3: "Stress"
-}
-
 DB_NAME = "flow_data.db"
 
 # ===== INITIALISIERUNG =====
@@ -196,7 +165,6 @@ if 'database_reset' not in st.session_state:
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-
     c.execute('''CREATE TABLE IF NOT EXISTS responses
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   name TEXT,
@@ -259,7 +227,7 @@ def calculate_flow(skill, challenge):
         explanation = "Rückzugszone: Geringes Engagement in beiden Dimensionen"
     else:
         zone = "Stabile Passung"
-        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotenzial"
+        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotential"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
@@ -474,7 +442,7 @@ def generate_comprehensive_smart_report(data):
     # Persönliche Ansprache
     name = data.get('Name', "") if data.get('Name', "") else "Du"
     report += f"Hallo {name}!\n\n"
-    report += "Dies ist deine persönliche Auswertung. Sie zeigt, wie du sich aktuell in deiner Arbeit fühlst\n"
+    report += "Dies ist deine persönliche Auswertung. Sie zeigt, wie du dich aktuell in deiner Arbeit fühlst\n"
     report += "Bedenke, dass dies nur eine Momentaufnahme ist\n"
     report += "Menschen und Situationen verändern sich fortlaufend\n"
     report += "Dieser kleine Bericht kann dir zeigen, wo du im Moment im Alltag Erfolge feierst\n"
@@ -507,7 +475,7 @@ def generate_comprehensive_smart_report(data):
         
     else:
         report += f"Dein Wert von {avg_flow:.2f} sagt: Momentan ist vieles ziemlich anstrengend für dich. 💭\n\n"
-        report += "Vielleicht fühlst du sich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
+        report += "Vielleicht fühlst du dich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
         report += "Es zeigt aber auch, dass du sensibel wahrnimmst, was dich beansprucht. Wichtig ist: Dieser Zustand sollte kein Dauerzustand sein.\n"
         report += "Wichtig ist, dass wir genau hinschauen, wo aktuell Belastungen in deinem Berufsleben liegen.\n\n"
     
@@ -617,8 +585,7 @@ def reset_database():
     c.execute("DELETE FROM responses")
     conn.commit()
     conn.close()
-    st.session_state.database_reset
- = True
+    st.session_state.database_reset = True
     st.session_state.submitted = False
     st.session_state.analysis_started = False
     st.session_state.full_report_generated = False
@@ -884,8 +851,7 @@ def validate_uploaded_dataframe(df):
 
 def aggregate_uploaded_files_to_df(uploaded_files):
     """Nimmt mehrere Dateien und erzeugt ein concatenated DataFrame"""
-  
-  frames = []
+    frames = []
     errors = []
     for f in uploaded_files:
         parsed = parse_uploaded_report_file(f)
@@ -950,13 +916,13 @@ if page == "Einzelanalyse":
         cols = st.columns(3)
         with cols[0]:
             skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}",
-                             help="\n".join([f"{k}: {v}" for k, v in SKILL_DESCRIPTIONS.items()]))
+                             help="1 = sehr gering, 7 = sehr hoch")
         with cols[1]:
             challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}",
-                                 help="\n".join([f"{k}: {v}" for k, v in CHALLENGE_DESCRIPTIONS.items()]))
+                                 help="1 = sehr gering, 7 = sehr hoch")
         with cols[2]:
             time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}",
-                                       help="\n".join([f"{k}: {v}" for k, v in TIME_DESCRIPTIONS.items()]))
+                                       help="-3 = extreme Langeweile, +3 = Stress")
         
         st.session_state.current_data.update({
             f"Skill_{domain}": skill,
