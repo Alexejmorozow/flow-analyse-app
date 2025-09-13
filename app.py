@@ -196,6 +196,7 @@ if 'database_reset' not in st.session_state:
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
+
     c.execute('''CREATE TABLE IF NOT EXISTS responses
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   name TEXT,
@@ -394,66 +395,63 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
     
     report += "Was das bedeutet:\n"
     
-    # Domänenspezifische Textbausteine basierend auf der Zone/Passung
-    domain_text_blocks = {
-        "Team-Veränderungen": {
-            "Akute Überforderung": "Veränderungen im Team können dein Gefühl nach Sicherheit und Vertrautem stark erschüttern, weil gewohnte Abläufe und Rollen ins Wanken geraten. Gerade jetzt ist es wichtig, deine eigenen Grenzen wahrzunehmen und offen zu kommunizieren. Vereinbare mit Kolleg:innen kleine, machbare Schritte und nutze den Austausch, um gemeinsam wieder Stabilität zu gewinnen.",
-            "Überforderung": "Veränderungen im Team können dein Gefühl nach Sicherheit und Vertrautem stark erschüttern, weil gewohnte Abläufe und Rollen ins Wanken geraten. Gerade jetzt ist es wichtig, deine eigenen Grenzen wahrzunehmen und offen zu kommunizieren. Vereinbare mit Kolleg:innen kleine, machbare Schritte und nutze den Austausch, um gemeinsam wieder Stabilität zu gewinnen.",
-            "Flow - Optimale Passung": "Im Moment scheinen dein Neugier-System und dein Gefühl nach Sicherheit und Vertrautem gut im Gleichgewicht zu sein: Veränderungen bringen frischen Wind, ohne dich zu überfordern. Diese Phase eignet sich perfekt, um deine Stärken einzubringen und anderen Sicherheit zu vermitteln – so kann im Team ein Flow-Zustand entstehen.",
-            "Unterforderung": "Wenn sich im Team wenig bewegt, kann dein Neugier-System unterfordert sein. Überlege, ob du neue Aufgaben übernehmen kannst, wie z.B. die Moderation einer Teamsitzung oder das Einarbeiten neuer Kolleg:innen. So bringst du neue Energie ins Team und bleibst selbst motiviert.",
-            "Akute Unterforderung": "Wenn sich im Team wenig bewegt, kann dein Neugier-System unterfordert sein. Überlege, ob du neue Aufgaben übernehmen kannst, wie z.B. die Moderation einer Teamsitzung oder das Einarbeiten neuer Kolleg:innen. So bringst du neue Energie ins Team und bleibst selbst motiviert."
-        },
-        "Veränderungen im Betreuungsbedarf der Klient:innen": {
-            "Akute Überforderung": "Wenn sich der Betreuungsbedarf stark verändert, kann das Gefühl entstehen, nicht mehr allen Anforderungen gerecht zu werden. Dein Gefühl nach Sicherheit und Vertrautem sucht in solchen Momenten nach Halt und klaren Strukturen. Nimm dir Zeit, dich Schritt für Schritt einzuarbeiten, und kläre frühzeitig Zuständigkeiten im Team, um Sicherheit zu gewinnen.",
-            "Überforderung": "Wenn sich der Betreuungsbedarf stark verändert, kann das Gefühl entstehen, nicht mehr allen Anforderungen gerecht zu werden. Dein Gefühl nach Sicherheit und Vertrautem sucht in solchen Momenten nach Halt und klaren Strukturen. Nimm dir Zeit, dich Schritt für Schritt einzuarbeiten, und kläre frühzeitig Zuständigkeiten im Team, um Sicherheit zu gewinnen.",
-            "Flow - Optimale Passung": "Aktuell scheinen deine Kompetenzen gut zu den Bedürfnissen der Klient:innen zu passen. Dein Neugier-System ist aktiviert und motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Balance ermöglicht dir, sowohl Sicherheit als auch kreative Impulse weiterzugeben.",
-            "Unterforderung": "Wenn sich die Betreuungssituation sehr routiniert anfühlt, kann dein Neugier-System unbefriedigt bleiben. Vielleicht kannst du neue Angebote oder kreative Projekte einbringen, um sowohl dich selbst als auch die Klient:innen zu inspirieren.",
-            "Akute Unterforderung": "Wenn sich die Betreuungssituation sehr routiniert anfühlt, kann dein Neugier-System unbefriedigt bleiben. Vielleicht kannst du neue Angebote oder kreative Projekte einbringen, um sowohl dich selbst als auch die Klient:innen zu inspirieren."
-        },
-        "Prozess- oder Verfahrensänderungen": {
-            "Akute Überforderung": "Neue Prozesse können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil bekannte Strukturen wegfallen. Versuche, dich auf die wichtigsten Schritte zu konzentrieren und priorisiere gemeinsam mit deinem Team, was zuerst umgesetzt werden soll. Klare Checklisten oder kurze Schulungen können dir helfen, wieder Stabilität zu spüren.",
-            "Überforderung": "Neue Prozesse können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil bekannte Strukturen wegfallen. Versuche, dich auf die wichtigsten Schritte zu konzentrieren und priorisiere gemeinsam mit deinem Team, was zuerst umgesetzt werden soll. Klare Checklisten oder kurze Schulungen können dir helfen, wieder Stabilität zu spüren.",
-            "Flow - Optimale Passung": "Du hast die neuen Abläufe gut integriert. Dein Gefühl nach Sicherheit und Vertrautem gibt dir Halt, während dein Neugier-System offen für Neues bleibt. Nutze diese Stärke, um Kolleg:innen zu unterstützen, die sich noch unsicher fühlen – so profitiert das ganze Team.",
-            "Unterforderung": "Wenn dir aktuelle Prozesse sehr leichtfallen, kann dein Neugier-System nach zusätzlichen Impulsen verlangen. Vielleicht kannst du dich aktiv an Optimierungsprojekten beteiligen oder neue Ideen für Abläufe entwickeln, die das Team voranbringen.",
-            "Akute Unterforderung": "Wenn dir aktuelle Prozesse sehr leichtfallen, kann dein Neugier-System nach zusätzlichen Impulsen verlangen. Vielleicht kannst du dich aktiv an Optimierungsprojekten beteiligen oder neue Ideen für Abläufe entwickeln, die das Team voranbringen."
-        },
-        "Kompetenzanforderungen / Weiterbildung": {
-            "Akute Überforderung": "Wenn die Anforderungen deine aktuellen Fähigkeiten übersteigen, reagiert dein Gefühl nach Sicherheit und Vertrautem oft mit Stress. Plane dein Lernen in kleinen, machbaren Etappen und suche dir Unterstützung – zum Beispiel durch Supervision oder Lernpartnerschaften. So kann dein Neugier-System schrittweise aktiv werden, anstatt in Überforderung zu erstarren.",
-            "Überforderung": "Wenn die Anforderungen deine aktuellen Fähigkeiten übersteigen, reagiert dein Gefühl nach Sicherheit und Vertrautem oft mit Stress. Plane dein Lernen in kleinen, machbaren Etappen und suche dir Unterstützung – zum Beispiel durch Supervision oder Lernpartnerschaften. So kann dein Neugier-System schrittweise aktiv werden, anstatt in Überforderung zu erstarren.",
-            "Flow - Optimale Passung": "Im Moment passt dein Können optimal zu den Anforderungen. Dein Neugier-System ist motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Phase ist ideal, um dein Wissen bewusst auszubauen und es mit Kolleg:innen zu teilen.",
-            "Unterforderung": "Wenn du dich fachlich unterfordert fühlst, braucht dein Neugier-System neue Anreize. Sprich mit deiner Leitung über Weiterbildungen oder zusätzliche Verantwortungsbereiche, die dich wachsen lassen und dir neue Perspektiven eröffnen.",
-            "Akute Unterforderung": "Wenn du dich fachlich unterfordert fühlst, braucht dein Neugier-System neue Anreize. Sprich mit deiner Leitung über Weiterbildungen oder zusätzliche Verantwortungsbereiche, die dich wachsen lassen und dir neue Perspektiven eröffnen."
-        },
-        "Interpersonelle Veränderungen": {
-            "Akute Überforderung": "Zwischenmenschliche Spannungen oder Veränderungen können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil vertraute Signale fehlen. Achte darauf, Konflikte frühzeitig anzusprechen und dir, wenn nötig, Unterstützung von außen zu holen – zum Beispiel durch Supervision oder Mediation. Klare Kommunikation schafft wieder Stabilität.",
-            "Überforderung": "Zwischenmenschliche Spannungen oder Veränderungen können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil vertraute Signale fehlen. Achte darauf, Konflikte frühzeitig anzusprechen und dir, wenn nötig, Unterstützung von außen zu holen – zum Beispiel durch Supervision oder Mediation. Klare Kommunikation schafft wieder Stabilität.",
-            "Flow - Optimale Passung": "Aktuell erlebst du ein stimmiges Miteinander im Team. Dein Neugier-System ist aktiv, weil der Austausch inspiriert, während dein Gefühl nach Sicherheit und Vertrautem dir Geborgenheit gibt. Nutze diese Phase, um Beziehungen bewusst zu stärken und eine stabile Basis für künftige Herausforderungen zu schaffen.",
-            "Unterforderung": "Wenn es zwischenmenschlich sehr ruhig ist, kann dein Neugier-System nach neuen Impulsen suchen. Vielleicht kannst du deine sozialen Fähigkeiten einbringen, indem du Kolleg:innen in schwierigen Situationen unterstützt oder Teamentwicklungsprojekte aktiv mitgestaltest.",
-            "Akute Unterforderung": "Wenn es zwischenmenschlich sehr ruhig ist, kann dein Neugier-System nach neuen Impulsen suchen. Vielleicht kannst du deine sozialen Fähigkeiten einbringen, indem du Kolleg:innen in schwierigen Situationen unterstützt oder Teamentwicklungsprojekte aktiv mitgestaltest."
-        }
-    }
+    # 🔴 AKUTE UNTERFORDERUNG (z.B. 7/1)
+    if zone == "Akute Unterforderung" or (skill - challenge >= 3):
+        report += f"Hier schätzt du deine Fähigkeiten sehr hoch ein, doch im Alltag fehlt oft die passende Herausforderung. \n"
+        report += f"Viele alltägliche Dinge wirken schnell monoton, und man hat das Gefühl, jeden Tag wiederholt sich dasselbe. \n"
+        report += f"Dabei sind die Dinge oft komplexer, als sie auf den ersten Blick erscheinen. Selbst hinter ganz gewöhnlichen \n"
+        report += f"Abläufen können erstaunlich komplexe Prozesse stecken.\n\n"
+        
+        report += f"Vielleicht hast du eine besonders gute Auffassungsgabe und könntest andere davon profitieren lassen, \n"
+        report += f"indem du Mentorenrollen übernimmst. Sprich das doch einmal mit deiner oder deinem Vorgesetzten an.\n\n"
+        
+        report += f"*Wenn man eine einfache Blume lange und genau betrachtet, kann man die Gesetzmässigkeiten des gesamten \n"
+        report += f"Universums erkennen – eine Erinnerung daran, dass auch im Alltäglichen viel Tiefe steckt.*\n"
     
-    # Fallback-Text für den Fall, dass eine Zone nicht definiert ist
-    fallback_text = {
-        "Akute Überforderung": f"Hier erlebst du die Anforderungen als sehr hoch, während du dir deine Fähigkeiten noch im Aufbau vorstellst. Das kann das Gefühl geben, ständig am Limit zu sein und nie wirklich durchatmen zu können.",
-        "Überforderung": f"Die Anforderungen sind hier spürbar hoch für dich. Das kann herausfordernd sein, aber auch eine Chance, dich weiterzuentwickeln.",
-        "Flow - Optimale Passung": f"Perfekt! Hier findest du die ideale Balance zwischen dem, was du kannst und was von dir gefordert wird.",
-        "Unterforderung": f"Du bringst gute Fähigkeiten mit, könntest aber noch mehr gefordert werden. Manchmal fehlt der letzte Kick, der aus Routineaufgaben echte Entwicklungsmöglichkeiten macht.",
-        "Akute Unterforderung": f"Hier schätzt du deine Fähigkeiten sehr hoch ein, doch im Alltag fehlt oft die passende Herausforderung. Viele alltägliche Dinge wirken schnell monoton.",
-        "Stabile Passung": f"Hier findest du eine gute Grundbalance. Die Aufgaben passen zu dem, was du kannst, und du kommst gut zurecht.",
-        "Apathie": f"Hier zeigen sowohl Fähigkeiten als auch Herausforderungen ein niedriges Niveau. Es fehlt an Engagement und Stimulation."
-    }
+    # 🔴 AKUTE ÜBERFORDERUNG (z.B. 2/7)  
+    elif zone == "Akute Überforderung" or (challenge - skill >= 3):
+        report += f"Hier erlebst du die Anforderungen als sehr hoch, während du dir deine Fähigkeiten noch im Aufbau vorstellst. \n"
+        report += f"Das kann das Gefühl geben, ständig am Limit zu sein und nie wirklich durchatmen zu können.\n\n"
+        
+        report += f"Vergiss nicht: Auch die erfahrensten Kolleg:innen haben mal klein angefangen. Jede Überforderung ist \n"
+        report += f"ein Zeichen dafür, dass du wächst – auch wenn es sich im Moment anstrengend anfühlt.\n\n"
+        
+        report += f"Such dir gezielt Unterstützung bei Themen, die dir schwerfallen. Oft reicht schon ein kurzer Austausch, \n"
+        report += f"um wieder klarer zu sehen.\n"
     
-    # Wähle den passenden Textbaustein aus
-    if domain in domain_text_blocks and zone in domain_text_blocks[domain]:
-        report += domain_text_blocks[domain][zone] + "\n\n"
-    elif zone in fallback_text:
-        report += fallback_text[zone] + "\n\n"
+    # 🟢 FLOW (optimale Passung)
+    elif zone == "Flow - Optimale Passung":
+        report += f"Perfekt! Hier findest du die ideale Balance zwischen dem, was du kannst und was von dir gefordert wird. \n"
+        report += f"Du arbeitest engagiert und spürst, dass deine Fähigkeiten genau dort gebraucht werden, wo sie
+ hingehören.\n\n"
+        
+        report += f"Geniesse diese Momente bewusst. Sie zeigen dir, wofür sich die ganze Mühe lohnt.\n"
+    
+    # 🟡 UNTERFORDERUNG (z.B. 6/3)
+    elif zone == "Unterforderung" or (skill - challenge >= 2):
+        report += f"Du bringst gute Fähigkeiten mit, könntest aber noch mehr gefordert werden. Manchmal fehlt der letzte Kick, \n"
+        report += f"der aus Routineaufgaben echte Entwicklungsmöglichkeiten macht.\n\n"
+        
+        report += f"Vielleicht findest du Wege, deine Aufgaben etwas anspruchsvoller zu gestalten oder übernimmst zusätzliche \n"
+        report += f"Verantwortung in Bereichen, die dich interessieren.\n"
+    
+    # 🟡 ÜBERFORDERUNG (z.B. 4/6)  
+    elif zone == "Überforderung" or (challenge - skill >= 2):
+        report += f"Die Anforderungen sind hier spürbar hoch für dich. Das kann herausfordernd sein, aber auch eine Chance, \n"
+        report += f"dich weiterzuentwickeln.\n\n"
+        
+        report += f"Nimm dir Zeit, die neuen Herausforderungen Schritt für Schritt zu meistern. Niemand erwartet, \n"
+        report += f"dass du alles sofort perfekt beherrschst.\n"
+    
+    # 🟢 STABILE PASSUNG (z.B. 5/3, 4/4)
     else:
-        report += "Deine aktuelle Situation in diesem Bereich zeigt eine besondere Konstellation.\n\n"
+        report += f"Hier findest du eine gute Grundbalance. Die Aufgaben passen zu dem, was du kannst, und du kommst \n"
+        report += f"gut zurecht. Vielleicht ist hier nicht alles spektakulär, aber es läuft stabil und verlässlich.\n\n"
+        
+        report += f"Solche Phasen der Stabilität sind wertvoll – sie geben dir die Energie für anspruchsvollere Bereiche.\n"
     
     # Theorie leicht verständlich eingewoben
-    report += f"Was dahinter steckt:\n"
+    report += f"\nWas dahinter steckt:\n"
     report += f"• {DOMAINS[domain]['flow'].replace('Balance zwischen', 'Ausgleich von')}\n"
     report += f"• {DOMAINS[domain]['grawe'].replace('Bedürfnisse:', 'Hier geht es um dein Bedürfnis nach')}\n"
     report += f"• {DOMAINS[domain]['bischof'].replace('Bindungssystem -', 'Dein Wunsch nach')}\n"
@@ -620,7 +618,8 @@ def reset_database():
     c.execute("DELETE FROM responses")
     conn.commit()
     conn.close()
-    st.session_state.database_reset = True
+    st.session_state.database_reset
+ = True
     st.session_state.submitted = False
     st.session_state.analysis_started = False
     st.session_state.full_report_generated = False
@@ -886,7 +885,8 @@ def validate_uploaded_dataframe(df):
 
 def aggregate_uploaded_files_to_df(uploaded_files):
     """Nimmt mehrere Dateien und erzeugt ein concatenated DataFrame"""
-    frames = []
+  
+  frames = []
     errors = []
     for f in uploaded_files:
         parsed = parse_uploaded_report_file(f)
