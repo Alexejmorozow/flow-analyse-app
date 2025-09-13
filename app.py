@@ -904,10 +904,8 @@ if page == "Einzelanalyse":
         with cols[3]:
             st.write("+3: Stress")
     
-    # Datenerfassung
-    name = st.text_input("Name (optional)", key="name")
-    
-   for domain, config in DOMAINS.items():
+# Domänen-Abfrage
+for domain, config in DOMAINS.items():
     st.subheader(f"{domain}")
     with st.expander("❓ Frage erklärt"):
         st.markdown(config['explanation'])
