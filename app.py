@@ -1047,22 +1047,45 @@ else:  # Team-Analyse
 
     uploaded_files = st.file_uploader("🔼 Hochladen: JSON/CSV-Exporte (mehrere Dateien möglich)", accept_multiple_files=True, type=['json','csv'])
     use_db_fallback = st.checkbox("🔁 Falls keine Uploads vorhanden, DB-Daten verwenden (Fallback)", value=False)
+    
 
-    df_combined = pd.DataFrame()
-    errors = []
+        # Gesamtbericht anzeigen
+        if st.session_state.get('show_full_report', False):
+            st.subheader("📄 Dein persönlicher Flow-Bericht")
+            if not st.session_state.full_report_generated:
+                report = generate_comprehensive_smart_report(st.session_state.current_data)
+                st.session_state.full_report_content = report
+                st.session_state.full_report_generated = True
+            
+            st.text_area("Bericht", st.session_state.full_report_content, height=500, label_visibility="collapsed")
+            
+            # originaler Download-Button (Text)
+            st.download_button(
+                label="📥 Bericht herunterladen",
+                data=st.session_state.full_report_content,
+                file_name=f"flow_bericht_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
+                mime="text/plain"
+            )
 
-    if uploaded_files:
-        with st.spinner("Dateien werden verarbeitet..."):
-            df_combined, errors = aggregate_uploaded_files_to_df(uploaded_files)
-            if errors:
-                st.warning("Einige Dateien konnten nicht geparst werden:")
-                for e in errors:
-                    st.write(f"- {e}")
+            # NEU: Maschinenlesbarer Export (JSON & CSV) - NUR WENN BERICHT BEREITS GENERIERT
+            if st.session_state.full_report_generated:
+                st.markdown("---")
+                st.subheader("🔁 Maschinenlesbarer Export")
+                mr_json = export_machine_readable_json(st.session_state.current_data)
+                mr_csv = export_machine_readable_csv_bytes(st.session_state.current_data)
 
-    if df_combined.empty and use_db_fallback:
-        st.info("Es werden DB-Daten verwendet, da keine Uploads vorliegen und Fallback aktiv ist.")
-        df_combined = get_all_data()
-        # Umbenennung: DB hat 'time_perception' column already
+                st.download_button(
+                    label="📄 Export: JSON (für Team-Import)",
+                    data=mr_json,
+                    file_name=f"flow_export_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.json",
+                    mime="application/json"
+                )
+                st.download_button(
+                    label="📄 Export: CSV (für Team-Import)",
+                    data=mr_csv,
+                    file_name=f"flow_export_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.csv",
+                    mime="text/csv"
+                )
 
     if df_combined.empty:
         st.info("Noch keine hochgeladenen Dateien. Bitte lade die JSON/CSV-Exporte der Teammitglieder hoch.")
