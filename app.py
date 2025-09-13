@@ -945,7 +945,7 @@ for domain, config in DOMAINS.items():
         f"Time_{domain}": time_perception
     })
 
-st.session_state.current_data["Name"] = name
+    st.session_state.current_data["Name"] = name
 
 st.divider()
 confirmed = st.checkbox("✅ Bewertungen bestätigen", key="global_confirm")
