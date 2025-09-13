@@ -907,7 +907,7 @@ if page == "Einzelanalyse":
     # Datenerfassung
     name = st.text_input("Name (optional)", key="name")
     
-    # Domänen-Abfrage (MUSS EINGERÜCKT SEIN!)
+    # Domänen-Abfrage
     for domain, config in DOMAINS.items():
         st.subheader(f"{domain}")
         with st.expander("❓ Frage erklärt"):
@@ -915,60 +915,15 @@ if page == "Einzelanalyse":
         
         cols = st.columns(3)
         with cols[0]:
-            skill_help = {
-                1: "Sehr geringe Fähigkeiten - Braucht viel Unterstützung",
-                2: "Geringe Fähigkeiten - Benötigt Einarbeitung", 
-                3: "Grundlegende Fähigkeiten - Kann einfache Aufgaben bewältigen",
-                4: "Durchschnittliche Fähigkeiten - Solide Kenntnisse",
-                5: "Gute Fähigkeiten - Kann komplexere Aufgaben lösen",
-                6: "Sehr gute Fähigkeiten - Hohe Kompetenz",
-                7: "Exzellente Fähigkeiten - Optimaler Bereich, kann andere anleiten"
-            }
-            skill = st.slider(
-                "Fähigkeiten (1-7)", 
-                1, 7, 4, 
-                key=f"skill_{domain}",
-                help="Bewege den Slider für detaillierte Beschreibungen"
-            )
-            st.caption(f"💡 {skill_help[skill]}")
-            
+            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}",
+                             help="1 = sehr gering, 7 = sehr hoch")
         with cols[1]:
-            challenge_help = {
-                1: "Sehr geringe Herausforderung - Routineaufgaben",
-                2: "Geringe Herausforderung - Einfache Aufgaben",
-                3: "Grundlegende Herausforderung - Standardanforderungen", 
-                4: "Durchschnittliche Herausforderung - Angemessene Anforderungen",
-                5: "Hohe Herausforderung - Komplexe Aufgaben",
-                6: "Sehr hohe Herausforderung - Anspruchsvolle Situationen",
-                7: "Maximale Herausforderung - Optimal bei exzellenten Fähigkeiten"
-            }
-            challenge = st.slider(
-                "Herausforderung (1-7)", 
-                1, 7, 4, 
-                key=f"challenge_{domain}",
-                help="Bewege den Slider für detaillierte Beschreibungen"
-            )
-            st.caption(f"💡 {challenge_help[challenge]}")
-            
+            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}",
+                                 help="1 = sehr gering, 7 = sehr hoch")
         with cols[2]:
-            time_help = {
-                -3: "Extreme Langeweile - Zeit steht still, starke Unterforderung",
-                -2: "Langeweile - Zeit vergeht langsam, deutliche Unterforderung", 
-                -1: "Entspannt - Zeit vergeht ruhig, leichte Unterforderung",
-                0: "Normal - Zeitgefühl entspricht Realität, optimale Passung",
-                1: "Zeit fliesst - Angenehm schnell, leichte positive Aktivierung",
-                2: "Zeit rennt - Sehr schnell, erste Stresssignale, hohe Aktivierung",
-                3: "Stress - Zeitgefühl gestört, Überforderung, Kontrollverlust"
-            }
-            time_perception = st.slider(
-                "Zeitempfinden (-3 bis +3)", 
-                -3, 3, 0, 
-                key=f"time_{domain}",
-                help="Bewege den Slider für detaillierte Beschreibungen"
-            )
-            st.caption(f"💡 {time_help[time_perception]}")
+            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}",
+                                       help="-3 = extreme Langeweile, +3 = Stress")
         
-        # Die Daten speichern (RICHTIG EINGERÜCKT)
         st.session_state.current_data.update({
             f"Skill_{domain}": skill,
             f"Challenge_{domain}": challenge,
@@ -1017,6 +972,18 @@ if page == "Einzelanalyse":
             st.text_area("Bericht", st.session_state.full_report_content, height=500, label_visibility="collapsed")
             
             # originaler Download-Button (Text)
+            st.download_button(
+                label="📥 Bericht herunterladen",
+                data=st.session_state.full_report_content,
+                file_name=f"flow_bericht_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
+                mime="text/plain"
+            )
+
+            # NEU: Maschinenlesbarer Export (JSON & CSV)
+            st.markdown("---")
+            st.subheader("🔁 Maschinenlesbarer Export")
+            mr_json = export_machine_readable_json(st.session_state.current_data)
+            mr_csv = export_machine_readable_csv_bytes(st.session_state.current_data)
 
             st.download_button(
                 label="📄 Export: JSON (für Team-Import)",
@@ -1047,45 +1014,22 @@ else:  # Team-Analyse
 
     uploaded_files = st.file_uploader("🔼 Hochladen: JSON/CSV-Exporte (mehrere Dateien möglich)", accept_multiple_files=True, type=['json','csv'])
     use_db_fallback = st.checkbox("🔁 Falls keine Uploads vorhanden, DB-Daten verwenden (Fallback)", value=False)
-    
 
-        # Gesamtbericht anzeigen
-        if st.session_state.get('show_full_report', False):
-            st.subheader("📄 Dein persönlicher Flow-Bericht")
-            if not st.session_state.full_report_generated:
-                report = generate_comprehensive_smart_report(st.session_state.current_data)
-                st.session_state.full_report_content = report
-                st.session_state.full_report_generated = True
-            
-            st.text_area("Bericht", st.session_state.full_report_content, height=500, label_visibility="collapsed")
-            
-            # originaler Download-Button (Text)
-            st.download_button(
-                label="📥 Bericht herunterladen",
-                data=st.session_state.full_report_content,
-                file_name=f"flow_bericht_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.txt",
-                mime="text/plain"
-            )
+    df_combined = pd.DataFrame()
+    errors = []
 
-            # NEU: Maschinenlesbarer Export (JSON & CSV) - NUR WENN BERICHT BEREITS GENERIERT
-            if st.session_state.full_report_generated:
-                st.markdown("---")
-                st.subheader("🔁 Maschinenlesbarer Export")
-                mr_json = export_machine_readable_json(st.session_state.current_data)
-                mr_csv = export_machine_readable_csv_bytes(st.session_state.current_data)
+    if uploaded_files:
+        with st.spinner("Dateien werden verarbeitet..."):
+            df_combined, errors = aggregate_uploaded_files_to_df(uploaded_files)
+            if errors:
+                st.warning("Einige Dateien konnten nicht geparst werden:")
+                for e in errors:
+                    st.write(f"- {e}")
 
-                st.download_button(
-                    label="📄 Export: JSON (für Team-Import)",
-                    data=mr_json,
-                    file_name=f"flow_export_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.json",
-                    mime="application/json"
-                )
-                st.download_button(
-                    label="📄 Export: CSV (für Team-Import)",
-                    data=mr_csv,
-                    file_name=f"flow_export_{name if name else 'unbenannt'}_{datetime.now().strftime('%Y%m%d')}.csv",
-                    mime="text/csv"
-                )
+    if df_combined.empty and use_db_fallback:
+        st.info("Es werden DB-Daten verwendet, da keine Uploads vorliegen und Fallback aktiv ist.")
+        df_combined = get_all_data()
+        # Umbenennung: DB hat 'time_perception' column already
 
     if df_combined.empty:
         st.info("Noch keine hochgeladenen Dateien. Bitte lade die JSON/CSV-Exporte der Teammitglieder hoch.")
