@@ -904,63 +904,36 @@ if page == "Einzelanalyse":
         with cols[3]:
             st.write("+3: Stress")
     
-# Domänen-Abfrage
-for domain, config in DOMAINS.items():
-    st.subheader(f"{domain}")
-    with st.expander("❓ Frage erklärt"):
-        st.markdown(config['explanation'])
+    # Datenerfassung
+    name = st.text_input("Name (optional)", key="name")
     
-    cols = st.columns(3)
-    with cols[0]:
-        skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}",
-                         help="1 = Sehr geringe Fähigkeiten, brauche viel Unterstützung\n"
-                              "2 = Geringe Fähigkeiten, benötige Anleitung\n"
-                              "3 = Grundlegende Fähigkeiten, noch unsicher\n"
-                              "4 = Durchschnittliche Fähigkeiten, komme zurecht\n"
-                              "5 = Gute Fähigkeiten, handle selbstständig\n"
-                              "6 = Sehr gute Fähigkeiten, kann andere anleiten\n"
-                              "7 = Exzellente Fähigkeiten, könnte andere schulen")
-    with cols[1]:
-        challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}",
-                             help="1 = Keine Herausforderung, völlig routiniert\n"
-                                  "2 = Minimale Herausforderung, fast automatisch\n"
-                                  "3 = Leichte Herausforderung, wenig Anstrengung\n"
-                                  "4 = Moderate Herausforderung, angemessene Anforderung\n"
-                                  "5 = Deutliche Herausforderung, benötige Konzentration\n"
-                                  "6 = Grosse Herausforderung, starke Beanspruchung\n"
-                                  "7 = Extreme Herausforderung, maximale Anstrengung")
-    with cols[2]:
-        time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}",
-                                   help="-3 = Extreme Langeweile: Zeit scheint stillzustehen\n"
-                                        "-2 = Langeweile: Zeit vergeht sehr langsam\n"
-                                        "-1 = Entspannt: Zeit vergeht ruhig und gleichmässig\n"
-                                        "0 = Normal: Zeitwahrnehmung entspricht der Realzeit\n"
-                                        "+1 = Zeit fliesst: Zeit vergeht angenehm schnell\n"
-                                        "+2 = Zeit rennt: Zeit vergeht sehr schnell, erste Stresssignale\n"
-                                        "+3 = Stress: Zeitgefühl ist gestört, Überforderung")
+    # Domänen-Abfrage
+    for domain, config in DOMAINS.items():
+        st.subheader(f"{domain}")
+        with st.expander("❓ Frage erklärt"):
+            st.markdown(config['explanation'])
+        
+        cols = st.columns(3)
+        with cols[0]:
+            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}",
+                             help="1 = sehr gering, 7 = sehr hoch")
+        with cols[1]:
+            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}",
+                                 help="1 = sehr gering, 7 = sehr hoch")
+        with cols[2]:
+            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}",
+                                       help="-3 = extreme Langeweile, +3 = Stress")
+        
+        st.session_state.current_data.update({
+            f"Skill_{domain}": skill,
+            f"Challenge_{domain}": challenge,
+            f"Time_{domain}": time_perception
+        })
     
-    st.session_state.current_data.update({
-        f"Skill_{domain}": skill,
-        f"Challenge_{domain}": challenge,
-        f"Time_{domain}": time_perception
-    })
-
-# DIESE ZWEI ZEILEN MÜSSEN AUSSERHALB DER FOR-SCHLEIFE SEIN (KEINE EINRÜCKUNG)
-st.session_state.current_data["Name"] = name
-
-st.divider()
-confirmed = st.checkbox("✅ Bewertungen bestätigen", key="global_confirm")
-
-# Hauptanalyse-Button (KEINE EINRÜCKUNG)
-if st.button("🚀 Analyse starten", disabled=not confirmed, type="primary"):
-    if not validate_data(st.session_state.current_data):
-        st.error("Bitte alle Werte korrekt ausfüllen.")
-        st.stop()
+    st.session_state.current_data["Name"] = name
     
-    save_to_db(st.session_state.current_data)
-    st.session_state.submitted = True
-    st.session_state.analysis_started = True
-    st.rerun()
+    st.divider()
+    confirmed = st.checkbox("✅ Bewertungen bestätigen", key="global_confirm")
 
     # Hauptanalyse-Button
     if st.button("🚀 Analyse starten", disabled=not confirmed, type="primary"):
