@@ -422,8 +422,7 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
     # 🟢 FLOW (optimale Passung)
     elif zone == "Flow - Optimale Passung":
         report += f"Perfekt! Hier findest du die ideale Balance zwischen dem, was du kannst und was von dir gefordert wird. \n"
-        report += f"Du arbeitest engagiert und spürst, dass deine Fähigkeiten genau dort gebraucht werden, wo sie
- hingehören.\n\n"
+        report += f"Du arbeitest engagiert und spürst, dass deine Fähigkeiten genau dort gebraucht werden, wo sie hingehören.\n\n"
         
         report += f"Geniesse diese Momente bewusst. Sie zeigen dir, wofür sich die ganze Mühe lohnt.\n"
     
