@@ -1059,8 +1059,7 @@ def create_enhanced_team_analysis(df):
 def validate_and_prepare_data(df):
     """Zentrale Datenvalidierung und -vorbereitung"""
     if df.empty:
-        return None, "Keine Daten
- verfügbar"
+        return None, "Keine Daten verfügbar"
     
     # Spalten-Normalisierung
     df.columns = df.columns.str.lower()
