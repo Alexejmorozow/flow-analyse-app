@@ -31,7 +31,7 @@ Positiv erlebt: Du bleibst ruhig, weil du Erfahrung hast und vertraust, dass Auf
 Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich später herausstellt, dass alles in Ordnung ist.""",
         "textbausteine": {
             "Überforderung": "Veränderungen im Team können dein Gefühl nach Sicherheit und Vertrautem stark erschüttern, weil gewohnte Abläufe und Rollen ins Wanken geraten. Gerade jetzt ist es wichtig, deine eigenen Grenzen wahrzunehmen und offen zu kommunizieren. Vereinbare mit Kolleg:innen kleine, machbare Schritte und nutze den Austausch, um gemeinsam wieder Stabilität zu gewinnen.",
-            "Ideale Passung": "Im Moment scheinen dein Neugier-System und dein Gefühl nach Sicherheit und Vertrautem gut im Gleichgewicht zu sein: Veränderungen bringen frischen Wind, ohne dich zu überfordern. Diese Phase eignet sich perfekt, um deine Stärken einzubringen und anderen Sicherheit zu vermitteln – so kann im Team ein Flow-Zustand entstehen.",
+            "Ideale Passung": "Im Moment scheinen dein Neugier-System und dein Gefühl nach Sicherheit und Vertrautem good im Gleichgewicht zu sein: Veränderungen bringen frischen Wind, ohne dich zu überfordern. Diese Phase eignet sich perfekt, um deine Stärken einzubringen und anderen Sicherheit zu vermitteln – so kann im Team ein Flow-Zustand entstehen.",
             "Unterforderung": "Wenn sich im Team wenig bewegt, kann dein Neugier-System unterfordert sein. Überlege, ob du neue Aufgaben übernehmen kannst, wie z.B. die Moderation einer Teamsitzung oder das Einarbeiten neuer Kolleg:innen. So bringst du neue Energie ins Team und bleibst selbst motiviert."
         }
     },
@@ -50,7 +50,7 @@ Positiv erlebt: Du spürst, dass du die Situation gut einschätzen kannst, weil 
 Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränderung löst Stress aus, weil du Angst hast, etwas falsch zu machen.""",
         "textbausteine": {
             "Überforderung": "Wenn sich der Betreuungsbedarf stark verändert, kann das Gefühl entstehen, nicht mehr allen Anforderungen gerecht zu werden. Dein Gefühl nach Sicherheit und Vertrautem sucht in solchen Momenten nach Halt und klaren Strukturen. Nimm dir Zeit, dich Schritt für Schritt einzuarbeiten, und kläre frühzeitig Zuständigkeiten im Team, um Sicherheit zu gewinnen.",
-            "Ideale Passung": "Aktuell scheinen deine Kompetenzen gut zu den Bedürfnissen der Klient:innen zu passen. Dein Neugier-System ist aktiviert und motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Balance ermöglicht dir, sowohl Sicherheit als auch kreative Impulse weiterzugeben.",
+            "Ideale Passung": "Aktuell scheinen deine Kompetenzen good zu den Bedürfnissen der Klient:innen zu passen. Dein Neugier-System ist aktiviert und motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Balance ermöglicht dir, sowohl Sicherheit als auch kreative Impulse weiterzugeben.",
             "Unterforderung": "Wenn sich die Betreuungssituation sehr routiniert anfühlt, kann dein Neugier-System unbefriedigt bleiben. Vielleicht kannst du neue Angebote oder kreative Projekte einbringen, um sowohl dich selbst als auch die Klient:innen zu inspirieren."
         }
     },
@@ -69,7 +69,7 @@ Positiv erlebt: Du begegnest der Umstellung mit Gelassenheit, weil du auf deine 
 Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt.""",
         "textbausteine": {
             "Überforderung": "Neue Prozesse können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil bekannte Strukturen wegfallen. Versuche, dich auf die wichtigsten Schritte zu konzentrieren und priorisiere gemeinsam mit deinem Team, was zuerst umgesetzt werden soll. Klare Checklisten oder kurze Schulungen können dir helfen, wieder Stabilität zu spüren.",
-            "Ideale Passung": "Du hast die neuen Abläufe gut integriert. Dein Gefühl nach Sicherheit und Vertrautem gibt dir Halt, während dein Neugier-System offen für Neues bleibt. Nutze diese Stärke, um Kolleg:innen zu unterstützen, die sich noch unsicher fühlen – so profitiert das ganze Team.",
+            "Ideale Passung": "Du hast die neuen Abläufe good integriert. Dein Gefühl nach Sicherheit und Vertrautem gibt dir Halt, während dein Neugier-System offen für Neues bleibt. Nutze diese Stärke, um Kolleg:innen zu unterstützen, die sich noch unsicher fühlen – so profitiert das ganze Team.",
             "Unterforderung": "Wenn dir aktuelle Prozesse sehr leichtfallen, kann dein Neugier-System nach zusätzlichen Impulsen verlangen. Vielleicht kannst du dich aktiv an Optimierungsprojekten beteiligen oder neue Ideen für Abläufe entwickeln, die das Team voranbringen."
         }
     },
@@ -85,7 +85,7 @@ Beispiel: Du sollst eine neue Aufgabe übernehmen, z. B. eine Schulung für Koll
 
 Positiv erlebt: Du fühlst dich sicher und neugierig, weil du ähnliche Aufgaben bereits gemeistert hast und dein Wissen anwenden kannst.
 
-Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforderungen nicht gerecht zu werden, selbst wenn du später die Aufgabe gut bewältigst.""",
+Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforderungen nicht gerecht zu werden, selbst wenn du später die Aufgabe good bewältigst.""",
         "textbausteine": {
             "Überforderung": "Wenn die Anforderungen deine aktuellen Fähigkeiten übersteigen, reagiert dein Gefühl nach Sicherheit und Vertrautem oft mit Stress. Plane dein Lernen in kleinen, machbaren Etappen und suche dir Unterstützung – zum Beispiel durch Supervision oder Lernpartnerschaften. So kann dein Neugier-System schrittweise aktiv werden, anstatt in Überforderung zu erstarren.",
             "Ideale Passung": "Im Moment passt dein Können optimal zu den Anforderungen. Dein Neugier-System ist motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Phase ist ideal, um dein Wissen bewusst auszubauen und es mit Kolleg:innen zu teilen.",
@@ -102,7 +102,7 @@ Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforder
 
 Beispiel: Ein Konflikt zwischen Kollegen entsteht oder eine neue Leitungskraft übernimmt.
 
-Positiv erlebt: Du spürst, dass du gut damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weisst, wie man Spannungen aushält.
+Positiv erlebt: Du spürst, dass du good damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weisst, wie man Spannungen aushält.
 
 Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt.""",
         "textbausteine": {
@@ -283,7 +283,7 @@ def calculate_flow(skill, challenge):
         explanation = "Rückzugszone: Geringes Engagement in beiden Dimensionen"
     else:
         zone = "Stabile Passung"
-        explanation = "Grundbalance: Angemessene Passung mit Entwicklungspotenzial"
+        explanation = "Grundbalance: Angemessene Passung mit Entwicklungpotenzial"
     
     proximity = 1 - (abs(diff) / 6)
     flow_index = proximity * (mean_level / 7)
@@ -482,7 +482,7 @@ def generate_comprehensive_smart_report(data):
     
     report += "Wir schauen gemeinsam auf drei Ebenen:\n"
     report += "• Flow-Ebene: Wie gut passen deine Fähigkeiten zu den Aufgaben?\n"
-    report += "• Bedürfnis-Ebene: Was brauchst du, um dich wohlzufühlen?\n"
+    report += "• Bedürfnis-Ebene: What brauchst du, um dich wohlzufühlen?\n"
     report += "• Balance-Ebene: Wie gelingt dir der Ausgleich zwischen Sicherheit und Neuem?\n\n"
     
     # Gesamtbewertung persönlich und emotional
@@ -493,12 +493,12 @@ def generate_comprehensive_smart_report(data):
     report += "-" * 80 + "\n\n"
     
     if avg_flow >= 0.7:
-        report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig gut! 🎉\n\n"
-        report += "Du findest offenbar eine gute Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
+        report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig good! 🎉\n\n"
+        report += "Du findest offenbar eine goode Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
         report += "Das ist etwas Besonderes. Nimm dir einen Moment, dieses Gefühl wahrzunehmen und wertzuschätzen.\n\n"
         
     elif avg_flow >= 0.5:
-        report += f"Dein Wert von {avg_flow:.2f} zeigt: Du gehst die meisten Herausforderungen bereits sehr gut an und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
+        report += f"Dein Wert von {avg_flow:.2f} zeigt: Du gehst die meisten Herausforderungen bereits sehr good an und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
         report += "An manchen Tagen fühlst du dich sicher und im Fluss, an anderen merkst du vielleicht kleine Stolpersteine.\n"
         report += "Das ist völlig normal - schauen wir gemeinsam, wo genau du ansetzen kannst.\n\n"
         
@@ -525,10 +525,10 @@ def generate_comprehensive_smart_report(data):
     report += "WAS JETZT FÜR DICH DRAN IST\n"
     report += "-" * 80 + "\n\n"
 
-    report += "Deine Werte zeigen dir auf wo du momentan gut im Fluss und wo du vielleicht Unterstützung brauchst.\n"
+    report += "Deine Werte zeigen dir auf wo du momentan good im Fluss und wo du vielleicht Unterstützung brauchst.\n"
     report += "Diese Phase bietet dir die Chance, bewusst wahrzunehmen, was dir besonders gelingt und Energie gibt.\n\n"
     
-    report += "Basierend auf deinen Werten könntest du:\n\n"
+    report += "Basierend auf deinen Werte könntest du:\n\n"
     
     report += "HEUTE:\n"
     report += "• Dir einen Bereich aussuchen, in dem du besonders erfolgreich bist, und ihn bewusst geniessen\n"
@@ -584,19 +584,6 @@ def generate_comprehensive_smart_report(data):
     report += "in denen sich Passung und Herausforderungen verändern. Wichtig ist, dass du:\n\n"
     report += "• Auf dein Bauchgefühl hörst\n"
     report += "• Dir Unterstützung holst, wenn du sie brauchst\n"
-    report += "• Deine Erfolge bewusst wahrnimmst\n"
-    report += "• Weisst, dass du nicht alleine bist\n\n"
-    
-    report += "Du bringst wertvolle Erfahrungen und Fähigkeiten mit. Manchmal geht es darum,\n"
-    report += "sie dort einzusetzen, wo sie am meisten Wirkung entfalten können.\n\n"
-    
-    report += "Alles Gute auf deinem Weg! 🌟\n\n"
-    
-    report += "=" * 80 + "\n"
-    report += "Deine Flow-Analyse - Stärkenorientiert und ressourcenbasiert\n"
-    report += "Erstellt am " + datetime.now().strftime("%d.%m.%Y") + "\n"
-    report += "=" * 80
-    
     return report
 
 def get_all_data():
@@ -899,13 +886,193 @@ def aggregate_uploaded_files_to_df(uploaded_files):
         # cast numeric columns
         parsed['skill'] = parsed['skill'].astype(int)
         parsed['challenge'] = parsed['challenge'].astype(int)
-        parsed['time_perception'] = parsed['time_perception'].astype(int)
-        frames.append(parsed[['name', 'domain', 'skill', 'challenge', 'time_perception']])
-    if frames:
-        combined = pd.concat(frames, ignore_index=True)
-    else:
-        combined = pd.DataFrame(columns=['name', 'domain', 'skill', 'challenge', 'time_perception'])
-    return combined, errors
+        parsed['time_perception'] = parsed['time_perception'].ast
+    # ===== KORRIGIERTE FUNKTION FÜR DIE CHANGE-BEREITSCHAFTS-ANALYSE =====
+def calculate_team_cbi_analysis(df):
+    """
+    Führt eine tiefgehende Analyse der Team-Daten durch und berechnet den
+    Changebereitschafts-Index (CBI) nach der exakten Formel:
+    CBI = (Anzahl Flow-Zustände + Anzahl Unterforderung) / Gesamtanzahl - Anteil Überforderung
+    """
+    if df.empty:
+        return None
+    
+    analysis_results = {
+        'domain_means': {},
+        'domain_std': {},
+        'time_distribution': {i: 0 for i in range(-3, 4)},
+        'flow_states': {'flow': 0, 'underchallenge': 0, 'overchallenge': 0, 'apathy': 0},
+        'cbi_score': 0,
+        'cbi_interpretation': "",
+        'participant_count': df['name'].nunique(),
+        'total_observations': len(df)
+    }
+    
+    # Berechne Durchschnitt und Standardabweichung für jede Domäne
+    for domain in DOMAINS:
+        domain_data = df[df['domain'] == domain]
+        if not domain_data.empty:
+            analysis_results['domain_means'][domain] = {
+                'skill': round(domain_data['skill'].mean(), 2),
+                'challenge': round(domain_data['challenge'].mean(), 2),
+                'time_perception': round(domain_data['time_perception'].mean(), 2)
+            }
+            analysis_results['domain_std'][domain] = {
+                'skill': round(domain_data['skill'].std(), 2),
+                'challenge': round(domain_data['challenge'].std(), 2),
+                'time_perception': round(domain_data['time_perception'].std(), 2)
+            }
+    
+    # Analysiere Zeitwahrnehmungs-Verteilung
+    for time_val in df['time_perception']:
+        if time_val in analysis_results['time_distribution']:
+            analysis_results['time_distribution'][time_val] += 1
+    
+    # Analysiere Flow-Zustände für jede Person-Domänen-Kombination
+    for _, row in df.iterrows():
+        flow_index, zone, _ = calculate_flow(row['skill'], row['challenge'])
+        
+        if zone == "Flow - Optimale Passung":
+            analysis_results['flow_states']['flow'] += 1
+        elif "Unterforderung" in zone:
+            analysis_results['flow_states']['underchallenge'] += 1
+        elif "Überforderung" in zone:
+            analysis_results['flow_states']['overchallenge'] += 1
+        elif "Apathie" in zone:
+            analysis_results['flow_states']['apathy'] += 1
+    
+    # Berechne den Changebereitschafts-Index (CBI) nach der exakten Formel
+    total_observations = len(df)
+    flow_count = analysis_results['flow_states']['flow']
+    underchallenge_count = analysis_results['flow_states']['underchallenge']
+    overchallenge_count = analysis_results['flow_states']['overchallenge']
+    
+    if total_observations > 0:
+        # EXAKTE FORMEL: CBI = (Flow + Unterforderung)/Gesamt - Überforderung/Gesamt
+        cbi = (flow_count + underchallenge_count) / total_observations - (overchallenge_count / total_observations)
+        analysis_results['cbi_score'] = round(cbi, 2)
+        
+        # Interpretation des CBI gemäß der Grafik
+        if cbi > 0.5:
+            analysis_results['cbi_interpretation'] = "✅ **CBI > 0,5: Gute Basis für Change-Prozesse** - Das Team ist offen für Neues und Veränderungen können positiv aufgenommen werden."
+        elif cbi >= 0:
+            analysis_results['cbi_interpretation'] = "⚠️ **CBI zwischen 0 und 0,5: Vorsichtige Implementierung** - Veränderungen sollten vorsichtig und gut begleitet eingeführt werden."
+        else:
+            analysis_results['cbi_interpretation'] = "❌ **CBI < 0: Starke Widerstände** - Arbeiten Sie zuerst an Sicherheit und Stabilität, bevor größere Veränderungen umgesetzt werden."
+    
+    return analysis_results
+
+# ===== ERGÄNZUNG: DETAILIERTE CBI-ANZEIGE =====
+def display_cbi_details(analysis_results):
+    """
+    Zeigt die detaillierte Berechnung des CBI an
+    """
+    if not analysis_results:
+        return
+    
+    st.subheader("🧮 Detaillierte CBI-Berechnung")
+    
+    total_obs = analysis_results['total_observations']
+    flow = analysis_results['flow_states']['flow']
+    under = analysis_results['flow_states']['underchallenge']
+    over = analysis_results['flow_states']['overchallenge']
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Gesamtbewertungen", total_obs)
+    with col2:
+        st.metric("Flow-Zustände", flow, delta=f"{flow/total_obs*100:.1f}%")
+    with col3:
+        st.metric("Unterforderung", under, delta=f"{under/total_obs*100:.1f}%")
+    with col4:
+        st.metric("Überforderung", over, delta=f"-{over/total_obs*100:.1f}%")
+    
+    # Formel visualisieren
+    st.latex(r"""
+    \text{CBI} = \frac{\text{Flow} + \text{Unterforderung}}{\text{Gesamt}} - \frac{\text{Überforderung}}{\text{Gesamt}}
+    """)
+    
+    st.latex(fr"""
+    \text{{CBI}} = \frac{{{flow} + {under}}}{{{total_obs}}} - \frac{{{over}}}{{{total_obs}}} = {analysis_results['cbi_score']}
+    """)
+    
+    st.caption("Die Formel gewichtet Überforderung stärker negativ, da sie oft akut blockierender wirkt als Unterforderung.")
+
+# ===== MODIFIZIERTE ERWEITERTE TEAM-ANALYSE =====
+def create_enhanced_team_analysis(df):
+    """
+    Erstellt eine erweiterte Team-Analyse mit Changebereitschafts-Index (CBI)
+    """
+    st.subheader("🧠 Erweiterte Team-Analyse: Changebereitschafts-Index (CBI)")
+    
+    if df.empty:
+        st.info("Keine Daten für die erweiterte Analyse verfügbar.")
+        return False
+    
+    # Führe die erweiterte Analyse durch
+    analysis_results = calculate_team_cbi_analysis(df)
+    
+    if not analysis_results:
+        st.error("Analyse konnte nicht durchgeführt werden.")
+        return False
+    
+    # Zeige den Changebereitschafts-Index an
+    st.metric("Changebereitschafts-Index (CBI)", 
+              f"{analysis_results['cbi_score']}",
+              help="CBI = (Flow + Unterforderung)/Gesamt - Überforderung/Gesamt")
+    
+    # Interpretation des CBI
+    st.info(analysis_results['cbi_interpretation'])
+    
+    # Detaillierte CBI-Berechnung anzeigen
+    display_cbi_details(analysis_results)
+    
+    # Zeitwahrnehmungs-Verteilung anzeigen
+    st.subheader("⏰ Zeitwahrnehmungs-Verteilung")
+    time_data = analysis_results['time_distribution']
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.bar(time_data.keys(), time_data.values(), color='skyblue')
+    ax.set_xlabel('Zeitwahrnehmung (-3 bis +3)')
+    ax.set_ylabel('Anzahl Bewertungen')
+    ax.set_title('Verteilung der Zeitwahrnehmung im Team')
+    ax.grid(True, alpha=0.3)
+    st.pyplot(fig)
+    
+    return True
+
+# ===== OPTIMIERTE FUNKTIONEN (Redundanzen entfernt) =====
+def validate_and_prepare_data(df):
+    """Zentrale Datenvalidierung und -vorbereitung"""
+    if df.empty:
+        return None, "Keine Daten verfügbar"
+    
+    # Spalten-Normalisierung
+    df.columns = df.columns.str.lower()
+    
+    # Pflichtspalten prüfen
+    required = ['domain', 'skill', 'challenge']
+    if not all(col in df.columns for col in required):
+        return None, "Fehlende Pflichtspalten"
+    
+    # Numerische Konvertierung
+    for col in ['skill', 'challenge', 'time_perception']:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
+    
+    return df, None
+
+def get_cached_flow(skill, challenge, domain):
+    """Gecachte Flow-Berechnung für bessere Performance"""
+    cache_key = f"{domain}_{skill}_{challenge}"
+    if 'flow_cache' not in st.session_state:
+        st.session_state.flow_cache = {}
+    
+    if cache_key not in st.session_state.flow_cache:
+        flow_index, zone, explanation = calculate_flow(skill, challenge)
+        st.session_state.flow_cache[cache_key] = (flow_index, zone, explanation)
+    
+    return st.session_state.flow_cache[cache_key]
 
 # ===== STREAMLIT-UI =====
 st.set_page_config(layout="wide", page_title="Flow-Analyse Pro")
@@ -1051,7 +1218,7 @@ else:  # Team-Analyse
     st.markdown("""
     Diese Analyse basiert auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
    
-    Du kannst sie nach dem Schritt „Persönlichen Bericht erstellen“ in der Einzelanalyse herunterladen.
+    Du kannst sie nach dem Schritt „Persönlichen Bericht erstellen" in der Einzelanalyse herunterladen.
     
     Workflow:
     1. Jede Person exportiert im Bereich 'Persönlicher Bericht' ihren JSON/CSV-Export.
@@ -1077,7 +1244,6 @@ else:  # Team-Analyse
     if df_combined.empty and use_db_fallback:
         st.info("Es werden DB-Daten verwendet, da keine Uploads vorliegen und Fallback aktiv ist.")
         df_combined = get_all_data()
-        # Umbenennung: DB hat 'time_perception' column already
 
     if df_combined.empty:
         st.info("Noch keine hochgeladenen Dateien. Bitte lade die JSON/CSV-Exporte der Teammitglieder hoch.")
@@ -1087,9 +1253,20 @@ else:  # Team-Analyse
                 reset_database()
                 st.success("✅ Alle DB-Daten wurden gelöscht!")
     else:
-        # Validierung (leicht)
-        st.success(f"✅ {df_combined['name'].nunique()} Teilnehmer, {len(df_combined)} Zeilen verarbeitet.")
-        create_team_analysis_from_df(df_combined)
+        # Validierung der Daten
+        df_combined, error_msg = validate_and_prepare_data(df_combined)
+        if error_msg:
+            st.error(f"Datenvalidierungsfehler: {error_msg}")
+        else:
+            # Erfolgsmeldung
+            st.success(f"✅ {df_combined['name'].nunique()} Teilnehmer, {len(df_combined)} Zeilen verarbeitet.")
+            
+            # Standard Team-Analyse
+            create_team_analysis_from_df(df_combined)
+            
+            # Erweiterte CBI-Analyse
+            with st.expander("🧠 Erweiterte Change-Bereitschafts-Analyse", expanded=True):
+                create_enhanced_team_analysis(df_combined)
 
 st.divider()
 st.caption("© Flow-Analyse Pro - Integrierte psychologische Diagnostik für Veränderungsprozesse")
