@@ -917,40 +917,21 @@ page = st.sidebar.radio("Seite auswählen:", ["Einzelanalyse", "Team-Analyse"])
 if page == "Einzelanalyse":
     st.title("🌊 Flow-Analyse Pro")
     
-# Theoretischer Hintergrund erklärt
-with st.expander("🧠 Theoretischer Hintergrund dieser Analyse", expanded=False):
-    st.markdown("""
-    **Warum wir handeln, wie wir fühlen und was uns antreibt**
-    
-    Diese Analyse basiert auf drei psychologischen Theorien, die zusammen ein umfassendes Bild menschlichen Erlebens und Verhaltens geben:
-
-    **🌱 Grawes Konsistenztheorie**  
-    Menschen streben nach innerer Stimmigkeit. Vier Grundbedürfnisse leiten uns:
-    - **Bindung**: Nähe und Sicherheit in Beziehungen
-    - **Orientierung/Kontrolle**: Verstehen und Einfluss haben  
-    - **Selbstwerterhöhung**: Als kompetent und wertvoll erleben
-    - **Lustgewinn/Unlustvermeidung**: Angenehmes suchen, Unangenehmes meiden
-
-    **🔄 Bischofs Zürcher Modell**  
-    Drei Motivsysteme wirken zusammen:
-    - **Bindungssystem**: Sicherheit durch Vertrautheit
-    - **Explorationssystem**: Neugier und Wachstum  
-    - **Orientierungssystem**: Struktur und Kontrolle
-
-    **🌊 Csíkszentmihályis Flow-Theorie**
-    Optimales Erleben entsteht, wenn:
-    - Fähigkeiten und Herausforderungen im Gleichgewicht sind
-    - Klare Ziele und direktes Feedback vorhanden sind
-    - Handlung und Bewusstsein verschmelzen
-
-    **🎯 Was dir diese Analyse bietet:**
-    - Verstehe deine aktuellen Bedürfnis-Balancen
-    - Erkenne wo Flow entsteht oder blockiert wird  
-    - Finde Ansatzpunkte für mehr Wohlbefinden im Arbeitsalltag
-    - Nutze deine Stärken bewusster
-
-    *Die Bewertung ist eine Momentaufnahme - sie zeigt Möglichkeiten, nicht Endurteile.*
-    """)
+    # Zeiterlebens-Legende anzeigen
+    with st.expander("ℹ️ Zeiterlebens-Skala erklärt", expanded=False):
+        st.write("Wie empfindest du die Zeit in dieser Situation?")
+        cols = st.columns(4)
+        with cols[0]:
+            st.write("-3: Extreme Langeweile")
+            st.write("-2: Langeweile")
+        with cols[1]:
+            st.write("-1: Entspannt")
+            st.write("0: Normal")
+        with cols[2]:
+            st.write("+1: Zeit fliesst")
+            st.write("+2: Zeit rennt")
+        with cols[3]:
+            st.write("+3: Stress")
     
     # Datenerfassung
     name = st.text_input("Name (optional)", key="name")
