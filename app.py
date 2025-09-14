@@ -107,7 +107,8 @@ Positiv erlebt: Du spürst, dass du good damit umgehen kannst, weil du Erfahrung
 Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt.""",
         "textbausteine": {
             "Überforderung": "Zwischenmenschliche Spannungen oder Veränderungen können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil vertraute Signale fehlen. Achte darauf, Konflikte frühzeitig anzusprechen und dir, wenn nötig, Unterstützung von aussen zu holen – zum Beispiel durch Supervision oder Mediation. Klare Kommunikation schafft wieder Stabilität.",
-            "Ideale Passung": "Aktuell erlebst du ein stimmiges Miteinander im Team. Dein Neugier-System ist aktiv, weil der Austausch inspiriert, während dein Gefühl nach Sicherheit und Vertrautem dir Geborgenheit gibt. Nutze diese Phase, um Beziehungen bewusst zu stärken und eine stabile Basis für künftige Herausforderungen zu schaffen.",
+            "Ideale Passung": "Aktuell erlebst du ein stimmiges Miteinander im Team. Dein Neugier-System ist aktiv, weil der Austausch inspiriert, während dein Gefühl nach Sicherheit und Vertrautem dir Geborgenheit gibt. Nutze diese Phase,
+ um Beziehungen bewusst zu stärken und eine stabile Basis für künftige Herausforderungen zu schaffen.",
             "Unterforderung": "Wenn es zwischenmenschlich sehr ruhig ist, kann dein Neugier-System nach neuen Impulsen suchen. Vielleicht kannst du deine sozialen Fähigkeiten einbringen, indem du Kolleg:innen in schwierigen Situationen unterstützt oder Teamentwicklungsprojekte aktiv mitgestaltest."
         }
     }
@@ -339,7 +340,8 @@ def create_flow_plot(data, domain_colors):
 def generate_time_based_recommendation(time_val, skill, challenge, domain):
     recommendations = {
         -3: [
-            "Dringend neue Herausforderungen suchen",
+            "Dringend neue Herausforderungen
+ suchen",
             "Tätigkeitsprofil erweitern oder anpassen",
             "Supervision zur Motivationsklärung nutzen"
         ],
@@ -556,7 +558,8 @@ def generate_comprehensive_smart_report(data):
     
     for domain in DOMAINS:
         skill = data[f"Skill_{domain}"]
-        challenge = data[f"Challenge_{domain}"]
+        challenge
+ = data[f"Challenge_{domain}"]
         flow_index, zone, _ = calculate_flow(skill, challenge)
         
         if flow_index >= 0.6:  # Stärken identifizieren
@@ -821,7 +824,8 @@ def parse_uploaded_report_file(uploaded_file):
             # normalisiere
             df_columns = {c.lower(): c for c in df.columns}
             df2 = pd.DataFrame()
-            df2['domain'] = df[df_columns['domain']]
+            df2['domain']
+ = df[df_columns['domain']]
             # name optional
             if 'name' in cols:
                 df2['name'] = df[df_columns['name']]
@@ -1059,7 +1063,8 @@ def create_enhanced_team_analysis(df):
 def validate_and_prepare_data(df):
     """Zentrale Datenvalidierung und -vorbereitung"""
     if df.empty:
-        return None, "Keine Daten verfügbar"
+        return None, "Keine Daten
+ verfügbar"
     
     # Spalten-Normalisierung
     df.columns = df.columns.str.lower()
@@ -1180,62 +1185,37 @@ if page == "Einzelanalyse":
             
             with st.popover("⚡ Herausforderungs-Level", use_container_width=True):
                 if challenge <= 2:
-                    color = "#FFD166"  # Gelb für zu wenig Herausforderung
-                    icon = "😴"
+                    color = "#06D6A0"
+                    icon = "🟢"
                 elif challenge <= 4:
-                    color = "#4ECDC4"   # Türkis für angemessen
-                    icon = "😊" 
+                    color = "#FFD166" 
+                    icon = "🟡"
                 else:
-                    color = "#A78AFF"   # Lila für hohe (positive!) Herausforderung
-                    icon = "🚀"
+                    color = "#FF6B6B"
+                    icon = "🔴"
                 
                 st.markdown(f"<h3 style='color: {color}'>{icon} {challenge}/7</h3>", unsafe_allow_html=True)
                 st.markdown(f"**{CHALLENGE_DESCRIPTIONS[challenge]}**")
                 st.progress(challenge/7)
 
-with cols[2]:
-    time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}")
-    
-    with st.popover("⏰ Dein Zeiterleben", use_container_width=True):
-        if time_perception == -3:    # 🐌🐌 Extrem langsam
-            color = "#FF6B6B"
-            icon = "🐌🐌"
-            status = "Extreme Langeweile"
-        elif time_perception == -2:
-            color = "#FF6B6B" 
-            icon = "🐌"
-            status = "Langeweile"
-        elif time_perception == -1:
-            color = "#4ECDC4"
-            icon = "🚶"
-            status = "Entspannt"
-        elif time_perception == 0:
-            color = "#4ECDC4"
-            icon = "👣"
-            status = "Normal"
-        elif time_perception == 1:
-            color = "#FFD166"
-            icon = "🚴"
-            status = "Zeit fliesst"
-        elif time_perception == 2:
-            color = "#FF6B6B"
-            icon = "🏃"
-            status = "Zeit rennt"
-        else:  # +3 ⚡💥🔥 Extrem schnell
-            color = "#FF6B6B" 
-            icon = "💥🔥⚡"
-            status = "Extremer Stress"
-        
-        st.markdown(f"<h3 style='color: {color}'>{icon} {time_perception} - {status}</h3>", unsafe_allow_html=True)
-        st.markdown(f"**{TIME_DESCRIPTIONS[time_perception]}**")
-        time_info = TIME_PERCEPTION_SCALE[time_perception]
-        st.caption(f"Psychologisch: {time_info['psychological_meaning']}")
-        
-        st.session_state.current_data.update({
-            f"Skill_{domain}": skill,
-            f"Challenge_{domain}": challenge,
-            f"Time_{domain}": time_perception
-        })
+        with cols[2]:
+            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}")
+            
+            with st.popover("⏰ Dein Zeiterleben", use_container_width=True):
+                if time_perception <= -2:
+                    color = "#FF6B6B"
+                    icon = "🐌"
+                elif time_perception <= 0:
+                    color = "#4ECDC4"
+                    icon = "🚶"
+                else:
+                    color = "#FF6B6B" 
+                    icon = "⚡"
+                
+                st.markdown(f"<h3 style='color: {color}'>{icon} {time_perception}</h3>", unsafe_allow_html=True)
+                st.markdown(f"**{TIME_DESCRIPTIONS[time_perception]}**")
+                time_info = TIME_PERCEPTION_SCALE[time_perception]
+                st.caption(f"Psychologisch: {time_info['psychological_meaning']}")
         
         st.session_state.current_data.update({
             f"Skill_{domain}": skill,
@@ -1321,7 +1301,8 @@ else:  # Team-Analyse
     Workflow:
     1. Jede Person exportiert im Bereich 'Persönlicher Bericht' ihren JSON/CSV-Export.
     2. Sammle die Berichte und lade sie hier hoch.
-    3. Die App aggregiert die hochgeladenen Dateien und erstellt die Team-Analyse.
+    3. Die App aggregiert die hochgeladenen
+ Dateien und erstellt die Team-Analyse.
     """)
     st.markdown("Hinweis: Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
 
