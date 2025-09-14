@@ -1193,24 +1193,43 @@ if page == "Einzelanalyse":
                 st.markdown(f"**{CHALLENGE_DESCRIPTIONS[challenge]}**")
                 st.progress(challenge/7)
 
-        with cols[2]:
-            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}")
-            
-            with st.popover("⏰ Dein Zeiterleben", use_container_width=True):
-                if time_perception <= -2:
-                    color = "#FF6B6B"
-                    icon = "🐌"
-                elif time_perception <= 0:
-                    color = "#4ECDC4"
-                    icon = "🚶"
-                else:
-                    color = "#FF6B6B" 
-                    icon = "⚡"
-                
-                st.markdown(f"<h3 style='color: {color}'>{icon} {time_perception}</h3>", unsafe_allow_html=True)
-                st.markdown(f"**{TIME_DESCRIPTIONS[time_perception]}**")
-                time_info = TIME_PERCEPTION_SCALE[time_perception]
-                st.caption(f"Psychologisch: {time_info['psychological_meaning']}")
+with cols[2]:
+    time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}")
+    
+    with st.popover("⏰ Dein Zeiterleben", use_container_width=True):
+        if time_perception == -3:    # 🐌🐌 Extrem langsam
+            color = "#FF6B6B"
+            icon = "🐌🐌"
+            status = "Extreme Langeweile"
+        elif time_perception == -2:
+            color = "#FF6B6B" 
+            icon = "🐌"
+            status = "Langeweile"
+        elif time_perception == -1:
+            color = "#4ECDC4"
+            icon = "🚶"
+            status = "Entspannt"
+        elif time_perception == 0:
+            color = "#4ECDC4"
+            icon = "👣"
+            status = "Normal"
+        elif time_perception == 1:
+            color = "#FFD166"
+            icon = "🚴"
+            status = "Zeit fliesst"
+        elif time_perception == 2:
+            color = "#FF6B6B"
+            icon = "🏃"
+            status = "Zeit rennt"
+        else:  # +3 ⚡💥🔥 Extrem schnell
+            color = "#FF6B6B" 
+            icon = "💥🔥⚡"
+            status = "Extremer Stress"
+        
+        st.markdown(f"<h3 style='color: {color}'>{icon} {time_perception} - {status}</h3>", unsafe_allow_html=True)
+        st.markdown(f"**{TIME_DESCRIPTIONS[time_perception]}**")
+        time_info = TIME_PERCEPTION_SCALE[time_perception]
+        st.caption(f"Psychologisch: {time_info['psychological_meaning']}")
         
         st.session_state.current_data.update({
             f"Skill_{domain}": skill,
