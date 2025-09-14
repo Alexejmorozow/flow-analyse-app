@@ -1116,19 +1116,18 @@ with st.expander("🧠 Theoretischer Hintergrund dieser Analyse", expanded=False
                 mime="text/csv"
             )
 
-    else:  # Team-Analyse
-    st.title("👥 Team-Analyse")
-    st.markdown("""
-    Diese Analyse basiert auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
+        else:  # Team-Analyse
+        st.title("👥 Team-Analyse")
+        st.markdown("""
+        Diese Analyse basiert auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
    
-    Du kannst sie nach dem Schritt „Persönlichen Bericht erstellen“ in der Einzelanalyse herunterladen.
+        Du kannst sie nach dem Schritt „Persönlichen Bericht erstellen“ in der Einzelanalyse herunterladen.
     
-    Workflow:
-    1. Jede Person exportiert im Bereich 'Persönlicher Bericht' ihren JSON/CSV-Export.
-    2. Sammle die Berichte und lade sie hier hoch.
-    3. Die App aggregiert die hochgeladenen Dateien und erstellt die Team-Analyse.
-    """)
-    st.markdown("Hinweis: Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
+        Workflow:
+        1. Jede Person exportiert im Bereich 'Persönlicher Bericht' ihren JSON/CSV-Export.
+        2. Sammle die Berichte und lade sie hier hoch.
+        3. Die App aggregiert die hochgeladenen Dateien und erstellt die Team-Analyse.   """)
+        st.markdown("Hinweis: Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
 
     uploaded_files = st.file_uploader("🔼 Hochladen: JSON/CSV-Exporte (mehrere Dateien möglich)", accept_multiple_files=True, type=['json','csv'])
     use_db_fallback = st.checkbox("🔁 Falls keine Uploads vorhanden, DB-Daten verwenden (Fallback)", value=False)
