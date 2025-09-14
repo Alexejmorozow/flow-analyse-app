@@ -33,11 +33,6 @@ Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich spät
             "Überforderung": "Veränderungen im Team können dein Gefühl nach Sicherheit und Vertrautem stark erschüttern, weil gewohnte Abläufe und Rollen ins Wanken geraten. Gerade jetzt ist es wichtig, deine eigenen Grenzen wahrzunehmen und offen zu kommunizieren. Vereinbare mit Kolleg:innen kleine, machbare Schritte und nutze den Austausch, um gemeinsam wieder Stabilität zu gewinnen.",
             "Ideale Passung": "Im Moment scheinen dein Neugier-System und dein Gefühl nach Sicherheit und Vertrautem gut im Gleichgewicht zu sein: Veränderungen bringen frischen Wind, ohne dich zu überfordern. Diese Phase eignet sich perfekt, um deine Stärken einzubringen und anderen Sicherheit zu vermitteln – so kann im Team ein Flow-Zustand entstehen.",
             "Unterforderung": "Wenn sich im Team wenig bewegt, kann dein Neugier-System unterfordert sein. Überlege, ob du neue Aufgaben übernehmen kannst, wie z.B. die Moderation einer Teamsitzung oder das Einarbeiten neuer Kolleg:innen. So bringst du neue Energie ins Team und bleibst selbst motiviert."
-        },
-        "strength_text": {
-            "description": "Du bringst eine ausgeprägte Fähigkeit mit, dich in Teamsituationen einzubringen und Dynamiken schnell zu verstehen.",
-            "importance": "Dein starkes Gefühl nach Sicherheit und Vertrautem gibt nicht nur dir selbst Halt, sondern wirkt auch stabilisierend auf andere.",
-            "action": "Nutze diese Stärke bewusst, indem du Kolleg:innen Orientierung bietest, etwa bei Umstrukturierungen oder bei der Einarbeitung neuer Teammitglieder."
         }
     },
     "Veränderungen im Betreuungsbedarf der Klient:innen": {
@@ -57,11 +52,6 @@ Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränder
             "Überforderung": "Wenn sich der Betreuungsbedarf stark verändert, kann das Gefühl entstehen, nicht mehr allen Anforderungen gerecht zu werden. Dein Gefühl nach Sicherheit und Vertrautem sucht in solchen Momenten nach Halt und klaren Strukturen. Nimm dir Zeit, dich Schritt für Schritt einzuarbeiten, und kläre frühzeitig Zuständigkeiten im Team, um Sicherheit zu gewinnen.",
             "Ideale Passung": "Aktuell scheinen deine Kompetenzen gut zu den Bedürfnissen der Klient:innen zu passen. Dein Neugier-System ist aktiviert und motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Balance ermöglicht dir, sowohl Sicherheit als auch kreative Impulse weiterzugeben.",
             "Unterforderung": "Wenn sich die Betreuungssituation sehr routiniert anfühlt, kann dein Neugier-System unbefriedigt bleiben. Vielleicht kannst du neue Angebote oder kreative Projekte einbringen, um sowohl dich selbst als auch die Klient:innen zu inspirieren."
-        },
-        "strength_text": {
-            "description": "Deine Fähigkeiten im Umgang mit wechselnden Bedürfnissen der Klient:innen sind eine große Ressource.",
-            "importance": "Du kannst flexibel reagieren und gleichzeitig eine verlässliche Basis bieten – eine Fähigkeit, die für die Lebensqualität der Klient:innen und die Stabilität im Team von zentraler Bedeutung ist.",
-            "action": "Nutze diese Stärke, indem du dein Wissen teilst und Kolleg:innen bei komplexen Situationen begleitest."
         }
     },
     "Prozess- oder Verfahrensänderungen": {
@@ -78,14 +68,9 @@ Positiv erlebt: Du begegnest der Umstellung mit Gelassenheit, weil du auf deine 
 
 Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt.""",
         "textbausteine": {
-            "Überforderung": "Neue Prozesse können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil bekannte Strukturen wegfallen. Versuche, dich auf die wichtigsten Schritte zu konzentriereren und priorisiere gemeinsam mit deinem Team, was zuerst umgesetzt werden soll. Klare Checklisten oder kurze Schulungen können dir helfen, wieder Stabilität zu spüren.",
+            "Überforderung": "Neue Prozesse können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil bekannte Strukturen wegfallen. Versuche, dich auf die wichtigsten Schritte zu konzentrieren und priorisiere gemeinsam mit deinem Team, was zuerst umgesetzt werden soll. Klare Checklisten oder kurze Schulungen können dir helfen, wieder Stabilität zu spüren.",
             "Ideale Passung": "Du hast die neuen Abläufe gut integriert. Dein Gefühl nach Sicherheit und Vertrautem gibt dir Halt, während dein Neugier-System offen für Neues bleibt. Nutze diese Stärke, um Kolleg:innen zu unterstützen, die sich noch unsicher fühlen – so profitiert das ganze Team.",
             "Unterforderung": "Wenn dir aktuelle Prozesse sehr leichtfallen, kann dein Neugier-System nach zusätzlichen Impulsen verlangen. Vielleicht kannst du dich aktiv an Optimierungsprojekten beteiligen oder neue Ideen für Abläufe entwickeln, die das Team voranbringen."
-        },
-        "strength_text": {
-            "description": "Du hast eine besondere Stärke darin, neue Prozesse zu verstehen und dich schnell auf Veränderungen einzustellen.",
-            "importance": "Dein Neugier-System macht dich offen für Neues, während dein Gefühl nach Sicherheit und Vertrautem dafür sorgt, dass du Strukturen schaffst, die anderen Orientierung geben.",
-            "action": "Diese Kompetenz macht dich zu einer wertvollen Begleitperson bei Veränderungen im Team oder in der Organisation."
         }
     },
     "Kompetenzanforderungen / Weiterbildung": {
@@ -105,11 +90,6 @@ Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforder
             "Überforderung": "Wenn die Anforderungen deine aktuellen Fähigkeiten übersteigen, reagiert dein Gefühl nach Sicherheit und Vertrautem oft mit Stress. Plane dein Lernen in kleinen, machbaren Etappen und suche dir Unterstützung – zum Beispiel durch Supervision oder Lernpartnerschaften. So kann dein Neugier-System schrittweise aktiv werden, anstatt in Überforderung zu erstarren.",
             "Ideale Passung": "Im Moment passt dein Können optimal zu den Anforderungen. Dein Neugier-System ist motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Phase ist ideal, um dein Wissen bewusst auszubauen und es mit Kolleg:innen zu teilen.",
             "Unterforderung": "Wenn du dich fachlich unterfordert fühlst, braucht dein Neugier-System neue Anreizes. Sprich mit deiner Leitung über Weiterbildungen oder zusätzliche Verantwortungsbereiche, die dich wachsen lassen und dir neue Perspektiven eröffnen."
-        },
-        "strength_text": {
-            "description": "Du hast ein hohes Kompetenzniveau, das dich befähigt, selbst anspruchsvolle Aufgaben souverän zu meistern.",
-            "importance": "Diese Stärke ermöglicht dir nicht nur, selbst erfolgreich zu arbeiten, sondern auch, andere anzuleiten oder Wissen weiterzugeben.",
-            "action": "Nutze diese Fähigkeit bewusst, um Lernprozesse im Team zu fördern – zum Beispiel durch Mentoring oder das Einbringen deiner Expertise in Projekten."
         }
     },
     "Interpersonelle Veränderungen": {
@@ -124,16 +104,11 @@ Beispiel: Ein Konflikt zwischen Kollegen entsteht oder eine neue Leitungskraft �
 
 Positiv erlebt: Du spürst, dass du gut damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weisst, wie man Spannungen aushält.
 
-Negativ erlebt: Du fühlst sich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt.""",
+Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt.""",
         "textbausteine": {
             "Überforderung": "Zwischenmenschliche Spannungen oder Veränderungen können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil vertraute Signale fehlen. Achte darauf, Konflikte frühzeitig anzusprechen und dir, wenn nötig, Unterstützung von außen zu holen – zum Beispiel durch Supervision oder Mediation. Klare Kommunikation schafft wieder Stabilität.",
             "Ideale Passung": "Aktuell erlebst du ein stimmiges Miteinander im Team. Dein Neugier-System ist aktiv, weil der Austausch inspiriert, während dein Gefühl nach Sicherheit und Vertrautem dir Geborgenheit gibt. Nutze diese Phase, um Beziehungen bewusst zu stärken und eine stabile Basis für künftige Herausforderungen zu schaffen.",
             "Unterforderung": "Wenn es zwischenmenschlich sehr ruhig ist, kann dein Neugier-System nach neuen Impulsen suchen. Vielleicht kannst du deine sozialen Fähigkeiten einbringen, indem du Kolleg:innen in schwierigen Situationen unterstützt oder Teamentwicklungsprojekte aktiv mitgestaltest."
-        },
-        "strength_text": {
-            "description": "Du verfügst über eine ausgeprägte soziale Kompetenz und kannst dich gut in andere hineinversetzen.",
-            "importance": "Dein starkes Gefühl nach Sicherheit und Vertrautem gibt dir die innere Stabilität, auch bei zwischenmenschlichen Veränderungen klar und konstruktiv zu handeln.",
-            "action": "Diese Stärke kannst du nutzen, um Brücken zu bauen, Konflikte zu entschärfen und das Miteinander im Team aktiv zu gestalten."
         }
     }
 }
@@ -204,7 +179,7 @@ SKILL_DESCRIPTIONS = {
 
 CHALLENGE_DESCRIPTIONS = {
     1: "Keine Herausforderung, völlig routiniert",
-    2: "Minimale Herausforderung, almost automatisch",
+    2: "Minimale Herausforderung, fast automatisch",
     3: "Leichte Herausforderung, wenig Anstrengung",
     4: "Moderate Herausforderung, angemessene Anforderung",
     5: "Deutliche Herausforderung, benötige Konzentration",
@@ -219,7 +194,7 @@ TIME_DESCRIPTIONS = {
     0: "Normal: Zeitwahrnehmung entspricht der Realzeit",
     1: "Zeit fliesst: Zeit vergeht angenehm schnell",
     2: "Zeit rennt: Zeit vergeht sehr schnell, erste Stresssignale",
-    3: "Stress: Zeitgefühl ist gestört"
+    3: "Stress"
 }
 
 DB_NAME = "flow_data.db"
@@ -354,7 +329,7 @@ def create_flow_plot(data, domain_colors):
     ax.set_title('Flow-Kanal nach Csikszentmihalyi', fontsize=14, fontweight='bold')
     ax.plot([1, 7], [1, 7], 'k--', alpha=0.5, label='Ideales Flow-Verhältnis')
     
-    # LEGENDE HINZUFÜGEN
+    # LEGENDE HINZUFÜGEN - das war das fehlende Element!
     ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
     
     ax.grid(True, alpha=0.3)
@@ -434,61 +409,6 @@ def generate_time_based_recommendation(time_val, skill, challenge, domain):
     all_recommendations = base_recommendations + domain_specific.get(domain, [])
     personalized_recs = [rec.replace("Sie ", "Du ").replace("Ihre ", "Deine ").replace("Ihnen ", "dir ") for rec in all_recommendations]
     return "\n".join([f"• {rec}" for rec in personalized_recs])
-
-def identify_top_strengths(data):
-    """Identifiziert die Domänen mit den höchsten Fähigkeitswerten"""
-    strengths = []
-    for domain in DOMAINS:
-        skill = data.get(f"Skill_{domain}", 0)
-        strengths.append((domain, skill))
-    
-    # Sortiere nach Fähigkeiten (absteigend)
-    strengths.sort(key=lambda x: x[1], reverse=True)
-    
-    # Finde die höchsten Werte (können mehrere sein bei Gleichstand)
-    top_score = strengths[0][1] if strengths else 0
-    top_domains = [domain for domain, score in strengths if score == top_score and score >= 5]
-    
-    return top_domains, top_score
-
-def generate_strengths_analysis(data):
-    """Generiert eine stärkenorientierte Analyse der Top-Ressourcen"""
-    top_domains, top_score = identify_top_strengths(data)
-    
-    if not top_domains or top_score < 5:
-        return "Deine aktuellen Stärken zeigen sich in deiner Reflexionsfähigkeit und deinem Bewusstsein für deine Arbeitssituation. Diese Selbstwahrnehmung ist eine wichtige Grundlage für jede Weiterentwicklung."
-    
-    analysis = "🌟 DEINE BESONDEREN STÄRKEN\n"
-    analysis += "=" * 50 + "\n\n"
-    
-    analysis += f"Deine höchsten Fähigkeitswerte ({top_score}/7) zeigen sich in folgenden Bereichen:\n\n"
-    
-    for domain in top_domains:
-        strength_config = DOMAINS[domain]["strength_text"]
-        analysis += f"🏆 {domain}:\n"
-        analysis += f"• {strength_config['description']}\n"
-        analysis += f"• {strength_config['importance']}\n"
-        analysis += f"• {strength_config['action']}\n\n"
-    
-    # Verbindender Abschlusstext
-    analysis += "💪 WIE DU DIESE STÄRKEN NUTZEN KANNST\n"
-    analysis += "-" * 40 + "\n\n"
-    analysis += "Diese Stärken sind wertvolle Ressourcen, die dir helfen können:\n\n"
-    analysis += "• Auch mit herausfordernden Bereichen besser umzugehen\n"
-    analysis += "• Nicht nur dich selbst zu stabilisieren, sondern auch dein Team zu unterstützen\n"
-    analysis += "• Stress zu reduzieren und mehr Flow-Momente zu erleben\n\n"
-    analysis += "Überlege dir bewusst, wie du diese Fähigkeiten gezielt einsetzen kannst –\n"
-    analysis += "etwa durch Wissensaustausch, Mentoring oder aktive Teamentwicklung.\n\n"
-    
-    # Theoretische Einbettung
-    analysis += "🧠 THEORETISCHER HINTERGRUND\n"
-    analysis += "-" * 40 + "\n\n"
-    analysis += "Nach Grawe's Konsistenztheorie stärkt das bewusste Nutzen deiner Stärken:\n"
-    analysis += "• Dein Selbstwertgefühl (Selbstwerterhöhung)\n"
-    analysis += "• Dein Kompetenzerleben durch erfolgreiche Anwendung\n"
-    analysis += "• Positive Beziehungserfahrungen durch unterstützendes Handeln\n\n"
-    
-    return analysis
 
 def generate_domain_interpretation(domain, skill, challenge, time_val, flow_index, zone):
     time_info = TIME_PERCEPTION_SCALE[time_val]
@@ -579,7 +499,7 @@ def generate_comprehensive_smart_report(data):
         
     elif avg_flow >= 0.5:
         report += f"Dein Wert von {avg_flow:.2f} zeigt: Du gehst die meisten Herausforderungen bereits sehr gut an und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
-        report += "An manchen Tagen fühlst du sich sicher und im Fluss, an anderen merkst du vielleicht kleine Stolpersteine.\n"
+        report += "An manchen Tagen fühlst du dich sicher und im Fluss, an anderen merkst du vielleicht kleine Stolpersteine.\n"
         report += "Das ist völlig normal - schauen wir gemeinsam, wo genau du ansetzen kannst.\n\n"
         
     else:
@@ -625,24 +545,34 @@ def generate_comprehensive_smart_report(data):
     report += "• Sorge für mehr Ausgleich in anstrengenden Bereichen\n"
     report += "• Behalte dein Wohlbefinden im Blick\n\n"
     
-    # STÄRKEN UND RESSOURCEN - NEU mit stärkenorientierter Analyse
+    # Stärken und Ressourcen am Ende
     report += "=" * 60 + "\n"
-    report += "🌟 DEINE STÄRKEN UND RESSOURCEN\n"
+    report += "DEINE STÄRKEN UND RESSOURCEN\n"
     report += "=" * 60 + "\n\n"
     
-    # Stärkenanalyse einfügen
-    strengths_analysis = generate_strengths_analysis(data)
-    report += strengths_analysis + "\n\n"
-    
-    # Zusätzlich noch Ressourcen auflisten
+    # Stärken aus der Analyse extrahieren
+    strengths = []
     resources = []
+    
     for domain in DOMAINS:
         skill = data[f"Skill_{domain}"]
-        if skill >= 5:
+        challenge = data[f"Challenge_{domain}"]
+        flow_index, zone, _ = calculate_flow(skill, challenge)
+        
+        if flow_index >= 0.6:  # Stärken identifizieren
+            strengths.append(f"• {domain}: Du bringst hier besondere Kompetenzen mit (Fähigkeiten: {skill}/7)")
+        if skill >= 5:  # Ressourcen identifizieren
             resources.append(f"• {domain}: Deine Fähigkeiten ({skill}/7) sind eine wertvolle Ressource")
     
+    if strengths:
+        report += "Das sind deine besonderen Stärken:\n"
+        report += "\n".join(strengths) + "\n\n"
+    else:
+        report += "Deine aktuelle Stärke: Selbst in anspruchsvollen Situationen reflektierst du deine Arbeitssituation.\n"
+        report += "Diese Selbstwahrnehmung ist eine wichtige Grundlage für jede Weiterentwicklung.\n\n"
+    
     if resources:
-        report += "📋 WEITERE RESSOURCEN:\n"
+        report += "Diese Ressourcen stehen dir zur Verfügung:\n"
         report += "\n".join(resources) + "\n\n"
     
     # Abschluss mit empowernder Botschaft
@@ -987,40 +917,21 @@ page = st.sidebar.radio("Seite auswählen:", ["Einzelanalyse", "Team-Analyse"])
 if page == "Einzelanalyse":
     st.title("🌊 Flow-Analyse Pro")
     
-# Theoretischer Hintergrund statt Zeiterlebens-Skala
-with st.expander("🧠 Theoretischer Hintergrund dieser Analyse", expanded=False):
-    st.markdown("""
-    **Warum wir handeln, wie wir fühlen und was uns antreibt**
-    
-    Diese Analyse basiert auf drei psychologischen Theorien, die zusammen ein umfassendes Bild menschlichen Erlebens und Verhaltens geben:
-
-    ** Grawes Konsistenztheorie**  
-    Menschen streben nach innerer Stimmigkeit. Vier Grundbedürfnisse leiten uns:
-    - **Bindung**: Nähe und Sicherheit in Beziehungen
-    - **Orientierung/Kontrolle**: Verstehen und Einfluss haben  
-    - **Selbstwerterhöhung**: Als kompetent und wertvoll erleben
-    - **Lustgewinn/Unlustvermeidung**: Angenehmes suchen, Unangenehmes meiden
-
-    ** Bischofs Zürcher Modell der sozialen Motivation**  
-    Drei Motivsysteme wirken zusammen:
-    - **Bindungssystem**: Sicherheit durch Vertrautheit
-    - **Explorationssystem**: Neugier und Wachstum  
-    - **Orientierungssystem**: Struktur und Kontrolle
-
-    ** Csíkszentmihályis Flow-Theorie**
-    Optimales Erleben entsteht, wenn:
-    - Fähigkeiten und Herausforderungen im Gleichgewicht sind
-    - Klare Ziele und direktes Feedback vorhanden sind
-    - Handlung und Bewusstsein verschmelzen
-
-    ** Was dir diese Analyse bietet:**
-    - Verstehe deine aktuellen Bedürfnis-Balancen
-    - Erkenne wo Flow entsteht oder blockiert wird  
-    - Finde Ansatzpunkte für mehr Wohlbefinden im Arbeitsalltag
-    - Nutze deine Stärken bewusster
-
-    *Die Bewertung ist eine Momentaufnahme - sie zeigt Möglichkeiten, nicht Endurteile.*
-    """)
+    # Zeiterlebens-Legende anzeigen
+    with st.expander("ℹ️ Zeiterlebens-Skala erklärt", expanded=False):
+        st.write("Wie empfindest du die Zeit in dieser Situation?")
+        cols = st.columns(4)
+        with cols[0]:
+            st.write("-3: Extreme Langeweile")
+            st.write("-2: Langeweile")
+        with cols[1]:
+            st.write("-1: Entspannt")
+            st.write("0: Normal")
+        with cols[2]:
+            st.write("+1: Zeit fliesst")
+            st.write("+2: Zeit rennt")
+        with cols[3]:
+            st.write("+3: Stress")
     
     # Datenerfassung
     name = st.text_input("Name (optional)", key="name")
@@ -1116,18 +1027,19 @@ with st.expander("🧠 Theoretischer Hintergrund dieser Analyse", expanded=False
                 mime="text/csv"
             )
 
-        else:  # Team-Analyse
-        st.title("👥 Team-Analyse")
-        st.markdown("""
-        Diese Analyse basiert auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
+else:  # Team-Analyse
+    st.title("👥 Team-Analyse")
+    st.markdown("""
+    Diese Analyse basiert auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
    
-        Du kannst sie nach dem Schritt „Persönlichen Bericht erstellen“ in der Einzelanalyse herunterladen.
+    Du kannst sie nach dem Schritt „Persönlichen Bericht erstellen“ in der Einzelanalyse herunterladen.
     
-        Workflow:
-        1. Jede Person exportiert im Bereich 'Persönlicher Bericht' ihren JSON/CSV-Export.
-        2. Sammle die Berichte und lade sie hier hoch.
-        3. Die App aggregiert die hochgeladenen Dateien und erstellt die Team-Analyse.   """)
-        st.markdown("Hinweis: Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
+    Workflow:
+    1. Jede Person exportiert im Bereich 'Persönlicher Bericht' ihren JSON/CSV-Export.
+    2. Sammle die Berichte und lade sie hier hoch.
+    3. Die App aggregiert die hochgeladenen Dateien und erstellt die Team-Analyse.
+    """)
+    st.markdown("Hinweis: Nur wenn du explizit DB-Daten verwenden möchtest, aktiviere den Fallback unten (nicht empfohlen).")
 
     uploaded_files = st.file_uploader("🔼 Hochladen: JSON/CSV-Exporte (mehrere Dateien möglich)", accept_multiple_files=True, type=['json','csv'])
     use_db_fallback = st.checkbox("🔁 Falls keine Uploads vorhanden, DB-Daten verwenden (Fallback)", value=False)
