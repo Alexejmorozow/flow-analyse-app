@@ -107,8 +107,7 @@ Positiv erlebt: Du spürst, dass du good damit umgehen kannst, weil du Erfahrung
 Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt.""",
         "textbausteine": {
             "Überforderung": "Zwischenmenschliche Spannungen oder Veränderungen können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil vertraute Signale fehlen. Achte darauf, Konflikte frühzeitig anzusprechen und dir, wenn nötig, Unterstützung von aussen zu holen – zum Beispiel durch Supervision oder Mediation. Klare Kommunikation schafft wieder Stabilität.",
-            "Ideale Passung": "Aktuell erlebst du ein stimmiges Miteinander im Team. Dein Neugier-System ist aktiv, weil der Austausch inspiriert, während dein Gefühl nach Sicherheit und Vertrautem dir Geborgenheit gibt. Nutze diese Phase,
- um Beziehungen bewusst zu stärken und eine stabile Basis für künftige Herausforderungen zu schaffen.",
+            "Ideale Passung": "Aktuell erlebst du ein stimmiges Miteinander im Team. Dein Neugier-System ist aktiv, weil der Austausch inspiriert, während dein Gefühl nach Sicherheit und Vertrautem dir Geborgenheit gibt. Nutze diese Phase, um Beziehungen bewusst zu stärken und eine stabile Basis für künftige Herausforderungen zu schaffen.",
             "Unterforderung": "Wenn es zwischenmenschlich sehr ruhig ist, kann dein Neugier-System nach neuen Impulsen suchen. Vielleicht kannst du deine sozialen Fähigkeiten einbringen, indem du Kolleg:innen in schwierigen Situationen unterstützt oder Teamentwicklungsprojekte aktiv mitgestaltest."
         }
     }
