@@ -874,19 +874,33 @@ def aggregate_uploaded_files_to_df(uploaded_files):
         if parsed is None:
             errors.append(f"{f.name}: unbekanntes Format")
             continue
+        
         # normalisiere column names
         parsed.columns = [c.lower() for c in parsed.columns]
+        
         # ensure correct columns
         if 'time_perception' not in parsed.columns and 'time' in parsed.columns:
             parsed = parsed.rename(columns={'time': 'time_perception'})
-        # fill missing
+        
+        # fill missing columns
         for req in ['name', 'domain', 'skill', 'challenge', 'time_perception']:
             if req not in parsed.columns:
-                parsed[req] = "" if req in ['name', 'domain'] else 0
-        # cast numeric columns
+                if req in ['name', 'domain']:
+                    parsed[req] = ""
+                else:
+                    parsed[req] = 0
+        
+        # cast numeric columns - KORREKTUR HIER
         parsed['skill'] = parsed['skill'].astype(int)
         parsed['challenge'] = parsed['challenge'].astype(int)
-        parsed['time_perception'] = parsed['time_perception'].ast
+        parsed['time_perception'] = parsed['time_perception'].astype(int)  # Hier war der Fehler
+        
+        frames.append(parsed)
+    
+    if frames:
+        return pd.concat(frames, ignore_index=True), errors
+    else:
+        return pd.DataFrame(), errors
     # ===== KORRIGIERTE FUNKTION FÜR DIE CHANGE-BEREITSCHAFTS-ANALYSE =====
 def calculate_team_cbi_analysis(df):
     """
