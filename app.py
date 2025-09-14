@@ -556,8 +556,7 @@ def generate_comprehensive_smart_report(data):
     
     for domain in DOMAINS:
         skill = data[f"Skill_{domain}"]
-        challenge
- = data[f"Challenge_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
         flow_index, zone, _ = calculate_flow(skill, challenge)
         
         if flow_index >= 0.6:  # Stärken identifizieren
