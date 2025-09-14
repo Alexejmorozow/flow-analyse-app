@@ -1157,14 +1157,60 @@ if page == "Einzelanalyse":
         
         cols = st.columns(3)
         with cols[0]:
-            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}",
-                             help="\n".join([f"{k}: {v}" for k, v in SKILL_DESCRIPTIONS.items()]))
+            skill = st.slider("Fähigkeiten (1-7)", 1, 7, 4, key=f"skill_{domain}")
+            
+            with st.popover("🎯 Fähigkeiten-Level", use_container_width=True):
+                # Farbige Darstellung
+                if skill <= 2:
+                    color = "#FF6B6B"
+                    icon = "🔴"
+                elif skill <= 4:
+                    color = "#FFD166"
+                    icon = "🟡"  
+                else:
+                    color = "#06D6A0"
+                    icon = "🟢"
+                
+                st.markdown(f"<h3 style='color: {color}'>{icon} {skill}/7</h3>", unsafe_allow_html=True)
+                st.markdown(f"**{SKILL_DESCRIPTIONS[skill]}**")
+                st.progress(skill/7)
+
         with cols[1]:
-            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}",
-                                 help="\n".join([f"{k}: {v}" for k, v in CHALLENGE_DESCRIPTIONS.items()]))
+            challenge = st.slider("Herausforderung (1-7)", 1, 7, 4, key=f"challenge_{domain}")
+            
+            with st.popover("⚡ Herausforderungs-Level", use_container_width=True):
+                if challenge <= 2:
+                    color = "#06D6A0"
+                    icon = "🟢"
+                elif challenge <= 4:
+                    color = "#FFD166" 
+                    icon = "🟡"
+                else:
+                    color = "#FF6B6B"
+                    icon = "🔴"
+                
+                st.markdown(f"<h3 style='color: {color}'>{icon} {challenge}/7</h3>", unsafe_allow_html=True)
+                st.markdown(f"**{CHALLENGE_DESCRIPTIONS[challenge]}**")
+                st.progress(challenge/7)
+
         with cols[2]:
-            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}",
-                                       help="\n".join([f"{k}: {v}" for k, v in TIME_DESCRIPTIONS.items()]))
+            time_perception = st.slider("Zeitempfinden (-3 bis +3)", -3, 3, 0, key=f"time_{domain}")
+            
+            with st.popover("⏰ Dein Zeiterleben", use_container_width=True):
+                if time_perception <= -2:
+                    color = "#FF6B6B"
+                    icon = "🐌"
+                elif time_perception <= 0:
+                    color = "#4ECDC4"
+                    icon = "🚶"
+                else:
+                    color = "#FF6B6B" 
+                    icon = "⚡"
+                
+                st.markdown(f"<h3 style='color: {color}'>{icon} {time_perception}</h3>", unsafe_allow_html=True)
+                st.markdown(f"**{TIME_DESCRIPTIONS[time_perception]}**")
+                time_info = TIME_PERCEPTION_SCALE[time_perception]
+                st.caption(f"Psychologisch: {time_info['psychological_meaning']}")
         
         st.session_state.current_data.update({
             f"Skill_{domain}": skill,
