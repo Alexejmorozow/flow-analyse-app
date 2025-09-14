@@ -1130,6 +1130,19 @@ if page == "Einzelanalyse":
         - Finde Ansatzpunkte für mehr Wohlbefinden im Arbeitsalltag
         - Nutze deine Stärken bewusster
 
+        🎯 Wichtiger Hinweis zum Ausfüllen:
+
+        Bewerte nicht nur mathematisch, sondern frage dich:
+        "Wie fühlt sich diese Situation für mich an?"
+
+        Bei hohen Fähigkeiten + niedrigen Herausforderungen:
+        → Fühlt es sich nach Langeweile (-2/-3) oder nach souveräner Gelassenheit (0/-1) an?
+
+        Bei niedrigen Fähigkeiten + hohen Herausforderungen:
+        → Fühlt es sich nach überwältigendem Stress (+3) oder nach wachsender Kompetenz (+1/+2) an?
+
+        Der Zeitslider gibt deinem Erleben eine Stimme!
+
         *Die Bewertung ist eine Momentaufnahme - sie zeigt Möglichkeiten, nicht Endurteile.*
         """)
     
