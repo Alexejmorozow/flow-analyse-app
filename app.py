@@ -821,8 +821,7 @@ def parse_uploaded_report_file(uploaded_file):
             # normalisiere
             df_columns = {c.lower(): c for c in df.columns}
             df2 = pd.DataFrame()
-            df2['domain']
- = df[df_columns['domain']]
+            df2['domain'] = df[df_columns['domain']]
             # name optional
             if 'name' in cols:
                 df2['name'] = df[df_columns['name']]
