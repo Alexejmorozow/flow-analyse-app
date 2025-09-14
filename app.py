@@ -1180,14 +1180,14 @@ if page == "Einzelanalyse":
             
             with st.popover("⚡ Herausforderungs-Level", use_container_width=True):
                 if challenge <= 2:
-                    color = "#06D6A0"
-                    icon = "🟢"
+                    color = "#FFD166"  # Gelb für zu wenig Herausforderung
+                    icon = "😴"
                 elif challenge <= 4:
-                    color = "#FFD166" 
-                    icon = "🟡"
+                    color = "#4ECDC4"   # Türkis für angemessen
+                    icon = "😊" 
                 else:
-                    color = "#FF6B6B"
-                    icon = "🔴"
+                    color = "#A78AFF"   # Lila für hohe (positive!) Herausforderung
+                    icon = "🚀"
                 
                 st.markdown(f"<h3 style='color: {color}'>{icon} {challenge}/7</h3>", unsafe_allow_html=True)
                 st.markdown(f"**{CHALLENGE_DESCRIPTIONS[challenge]}**")
@@ -1211,6 +1211,12 @@ if page == "Einzelanalyse":
                 st.markdown(f"**{TIME_DESCRIPTIONS[time_perception]}**")
                 time_info = TIME_PERCEPTION_SCALE[time_perception]
                 st.caption(f"Psychologisch: {time_info['psychological_meaning']}")
+        
+        st.session_state.current_data.update({
+            f"Skill_{domain}": skill,
+            f"Challenge_{domain}": challenge,
+            f"Time_{domain}": time_perception
+        })
         
         st.session_state.current_data.update({
             f"Skill_{domain}": skill,
