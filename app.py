@@ -1116,7 +1116,7 @@ with st.expander("🧠 Theoretischer Hintergrund dieser Analyse", expanded=False
                 mime="text/csv"
             )
 
-else:  # Team-Analyse
+    else:  # Team-Analyse
     st.title("👥 Team-Analyse")
     st.markdown("""
     Diese Analyse basiert auf manuell hochgeladenen, maschinenlesbaren Einzelergebnissen.
