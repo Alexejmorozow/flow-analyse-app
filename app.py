@@ -339,8 +339,7 @@ def create_flow_plot(data, domain_colors):
 def generate_time_based_recommendation(time_val, skill, challenge, domain):
     recommendations = {
         -3: [
-            "Dringend neue Herausforderungen
- suchen",
+            "Dringend neue Herausforderungen suchen",
             "Tätigkeitsprofil erweitern oder anpassen",
             "Supervision zur Motivationsklärung nutzen"
         ],
