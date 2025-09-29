@@ -464,6 +464,12 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
 def generate_comprehensive_smart_report(data):
     """Erstellt einen persönlichen, emotional intelligenten Bericht"""
     
+    report = "=" * 80 + "\n"
+    report += "🌊 DEINE PERSÖNLICHE FLOW-ANALYSE\n"
+    report += "=" * 80 + "\n\n"
+    
+    # ... [der gesamte existierende Code bis zu den Stärken] ...
+
     # Stärken und Ressourcen am Ende
     report += "=" * 60 + "\n"
     report += "DEINE STÄRKEN UND RESSOURCEN\n"
@@ -494,9 +500,9 @@ def generate_comprehensive_smart_report(data):
         report += "Diese Ressourcen stehen dir zur Verfügung:\n"
         report += "\n".join(resources) + "\n\n"
 
-    # ====== HIER DEN NEUEN CODE EINFÜGEN ======
+    # ====== NEUER CODE - KORRIGIERTE VERSION ======
     
-    # System-Aktivität berechnen
+    # System-Aktivität berechnen (als separate Funktion außerhalb)
     def calculate_system_activity(data):
         systems = {
             "Bindung": 0,      # Team + Interpersonelle Veränderungen
@@ -524,10 +530,11 @@ def generate_comprehensive_smart_report(data):
         # Normalisieren auf 0-1 Skala
         total_domains = len(DOMAINS)
         for system in systems:
-            systems[system] = systems[system] / total_domains
+            systems[system] = round(systems[system] / total_domains, 2)
         
         return systems
 
+    # System-Aktivität berechnen (AUF DIESER EBENE)
     systems = calculate_system_activity(data)
     
     # NEUER ABSCHNITT: SYSTEMISCHE PERSPEKTIVE
@@ -539,6 +546,8 @@ def generate_comprehensive_smart_report(data):
 
     # Positive Verstärkung für jedes System
     active_systems = []
+    
+    # Bindungssystem
     if systems["Bindung"] >= 0.7:
         report += "🌱 **Dein Sicherheits-Mitarbeiter leistet hervorragende Arbeit!**\n"
         report += "   ✓ Schafft stabile Beziehungen und Vertrauen\n"
@@ -550,7 +559,13 @@ def generate_comprehensive_smart_report(data):
         report += "   - Klarheit und Vorhersehbarkeit\n" 
         report += "   - Vertraute Menschen und Routinen\n"
         report += "   - Das Gefühl, geschützt und aufgehoben zu sein\n\n"
+    else:
+        report += "🌱 **Dein Sicherheits-Mitarbeiter braucht mehr Aufmerksamkeit:**\n"
+        report += "   - Mehr Stabilität und vertraute Abläufe\n"
+        report += "   - Zeit für Beziehungspflege im Team\n"
+        report += "   - Klare Rückmeldungen und Sicherheit\n\n"
 
+    # Autonomiesystem
     if systems["Autonomie"] >= 0.7:
         report += "💪 **Dein Autonomie-Mitarbeiter ist ein wahrer Macher!**\n"
         report += "   ✓ Übernimmt Verantwortung und gestaltet aktiv\n"
@@ -562,7 +577,13 @@ def generate_comprehensive_smart_report(data):
         report += "   - Entscheidungsfreiheit und Gestaltungsspielraum\n"
         report += "   - Kontrolle über deine Arbeit und Prozesse\n"
         report += "   - Anerkennung deiner Kompetenz und Selbstwirksamkeit\n\n"
+    else:
+        report += "💪 **Dein Autonomie-Mitarbeiter sucht mehr Einfluss:**\n"
+        report += "   - Mehr Mitsprache bei Entscheidungen\n"
+        report += "   - Klare Verantwortungsbereiche\n"
+        report += "   - Raum für eigene Gestaltung\n\n"
 
+    # Explorationssystem
     if systems["Exploration"] >= 0.7:
         report += "🔍 **Dein Explorations-Mitarbeiter ist ein echter Innovator!**\n"
         report += "   ✓ Entdeckt ständig neue Möglichkeiten\n"
@@ -574,6 +595,11 @@ def generate_comprehensive_smart_report(data):
         report += "   - Neue Herausforderungen und Lernfelder\n"
         report += "   - Raum für Kreativität und Entdeckung\n"
         report += "   - Möglichkeiten zum Wachsen und Dazulernen\n\n"
+    else:
+        report += "🔍 **Dein Explorations-Mitarbeiter braucht neue Impulse:**\n"
+        report += "   - Frische Lernanreize und Herausforderungen\n"
+        report += "   - Raum für Kreativität und Experimente\n"
+        report += "   - Abwechslung im Arbeitsalltag\n\n"
 
     # Besondere Stärken hervorheben
     if len(active_systems) >= 2:
@@ -602,6 +628,7 @@ def generate_comprehensive_smart_report(data):
     report += "in denen sich Passung und Herausforderungen verändern. Wichtig ist, dass du:\n\n"
     report += "• Auf dein Bauchgefühl hörst\n"
     report += "• Dir Unterstützung holst, wenn du sie brauchst\n"
+    
     return report
 
 def get_all_data():
