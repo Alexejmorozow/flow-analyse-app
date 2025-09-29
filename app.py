@@ -574,7 +574,7 @@ def generate_comprehensive_smart_report(data):
         report += "Diese Ressourcen stehen dir zur Verfügung:\n"
         report += "\n".join(resources) + "\n\n"
 
-    # ====== NEU: SYSTEMISCHE PERSPEKTIVE NACH BISCHOF ======
+    # ====== VERBESSERTE SYSTEMISCHE PERSPEKTIVE ======
     
     # System-Aktivität berechnen
     def calculate_system_activity(data):
@@ -610,85 +610,102 @@ def generate_comprehensive_smart_report(data):
 
     systems = calculate_system_activity(data)
     
-    # NEUER ABSCHNITT: SYSTEMISCHE PERSPEKTIVE
+    # NEUER ABSCHNITT: SYSTEMISCHE PERSPEKTIVE - VERBESSERT
     report += "=" * 60 + "\n"
-    report += "DEINE NÄCHSTEN SCHRITTE AUS SYSTEMISCHER SICHT\n"  
+    report += "DIE DREI MOTOREN DEINER MOTIVATION\n"  
     report += "=" * 60 + "\n\n"
 
-    report += "Stell dir deine drei Motivsysteme wie innere Mitarbeiter vor:\n\n"
+    report += "Nach dem Zürcher Modell wirken drei Systeme in dir:\n\n"
 
-    # Positive Verstärkung für jedes System
-    active_systems = []
-    
-    # Bindungssystem
+    # 🌱 BINDUNGSSYSTEM - DREI ZUSTÄNDE
+    report += "🌱 **Dein Bindungssystem** sucht Sicherheit und Vertrautheit\n"
     if systems["Bindung"] >= 0.7:
-        report += "🌱 **Dein Sicherheits-Mitarbeiter leistet hervorragende Arbeit!**\n"
-        report += "   ✓ Schafft stabile Beziehungen und Vertrauen\n"
-        report += "   ✓ Baut ein sicheres Fundament für deine Arbeit\n"
-        report += "   → Gib ihm bewusst Anerkennung für diese wichtige Basis!\n\n"
-        active_systems.append("Sicherheit")
+        report += "   🟢 **OPTIMALE SICHERHEIT** - Du fühlst dich gut aufgehoben\n"
+        report += "   ✓ Stabile Beziehungen geben dir Halt\n"
+        report += "   ✓ Vertraute Abläufe schaffen Verlässlichkeit\n"
+        report += "   ✓ Du kannst dich auf dein Team verlassen\n"
+        report += "   → Nutze diese Basis, um andere zu unterstützen!\n\n"
     elif systems["Bindung"] >= 0.4:
-        report += "🌱 **Dein Sicherheits-Mitarbeiter ist gut im Einsatz:**\n"
-        report += "   - Klarheit und Vorhersehbarkeit\n" 
-        report += "   - Vertraute Menschen und Routinen\n"
-        report += "   - Das Gefühl, geschützt und aufgehoben zu sein\n\n"
+        report += "   🟡 **AUSGEGLICHENE SICHERHEIT** - Balance zwischen Vertrautem und Neuem\n"
+        report += "   ✓ Du findest Halt in bekannten Strukturen\n"
+        report += "   ✓ Gleichzeitig bist du offen für neue Kontakte\n"
+        report += "   ✓ Veränderungen fordern dich, ohne zu überfordern\n"
+        report += "   → Achte auf regelmäßige Team-Pflege!\n\n"
     else:
-        report += "🌱 **Dein Sicherheits-Mitarbeiter braucht mehr Aufmerksamkeit:**\n"
-        report += "   - Mehr Stabilität und vertraute Abläufe\n"
-        report += "   - Zeit für Beziehungspflege im Team\n"
-        report += "   - Klare Rückmeldungen und Sicherheit\n\n"
+        report += "   🔴 **SICHERHEIT GESUCHT** - Dein Fundament braucht Stärkung\n"
+        report += "   • Nimm dir Zeit für vertraute Routinen\n"
+        report += "   • Pflege bewährte Beziehungen im Team\n"
+        report += "   • Schaffe dir klare Rückzugsräume\n"
+        report += "   → Stabilität gibt dir Energie für Neues!\n\n"
 
-    # Autonomiesystem
+    # 💪 AUTONOMIESYSTEM - DREI ZUSTÄNDE
+    report += "💪 **Dein Autonomiesystem** strebt nach Einfluss und Selbstwirksamkeit\n"
     if systems["Autonomie"] >= 0.7:
-        report += "💪 **Dein Autonomie-Mitarbeiter ist ein wahrer Macher!**\n"
-        report += "   ✓ Übernimmt Verantwortung und gestaltet aktiv\n"
-        report += "   ✓ Setzt deine Kompetenzen effektiv ein\n"
-        report += "   → Nutze diese Stärke, um andere zu inspirieren!\n\n"
-        active_systems.append("Autonomie")
+        report += "   🟢 **VOLLE GESTALTUNGSKRAFT** - Du bestimmst mit\n"
+        report += "   ✓ Du hast klare Entscheidungsspielräume\n"
+        report += "   ✓ Deine Kompetenz wird wertgeschätzt\n"
+        report += "   ✓ Du kannst Prozesse aktiv mitgestalten\n"
+        report += "   → Setze deine Gestaltungskraft ein!\n\n"
     elif systems["Autonomie"] >= 0.4:
-        report += "💪 **Dein Autonomie-Mitarbeiter ist aktiv:**\n"
-        report += "   - Entscheidungsfreiheit und Gestaltungsspielraum\n"
-        report += "   - Kontrolle über deine Arbeit und Prozesse\n"
-        report += "   - Anerkennung deiner Kompetenz und Selbstwirksamkeit\n\n"
+        report += "   🟡 **BALANCIERTE EIGENSTÄNDIGKEIT** - Zwischen Vorgabe und Freiheit\n"
+        report += "   ✓ Du hast ausreichend Handlungsspielraum\n"
+        report += "   ✓ Gleichzeitig gibt es klare Leitplanken\n"
+        report += "   ✓ Deine Expertise wird gesehen und genutzt\n"
+        report += "   → Suche dir gezielt Gestaltungsfelder!\n\n"
     else:
-        report += "💪 **Dein Autonomie-Mitarbeiter sucht mehr Einfluss:**\n"
-        report += "   - Mehr Mitsprache bei Entscheidungen\n"
-        report += "   - Klare Verantwortungsbereiche\n"
-        report += "   - Raum für eigene Gestaltung\n\n"
+        report += "   🔴 **MEHR EIGENSTIMMUNG** - Dein Gestaltungswille sucht Raum\n"
+        report += "   • Sprich konkrete Entscheidungswünsche an\n"
+        report += "   • Zeige deine Kompetenz proaktiv\n"
+        report += "   • Suche dir Bereiche mit mehr Verantwortung\n"
+        report += "   → Deine Ideen verdienen Gehör!\n\n"
 
-    # Explorationssystem
+    # 🔍 EXPLORATIONSSYSTEM - DREI ZUSTÄNDE
+    report += "🔍 **Dein Explorationssystem** will wachsen und entdecken\n"
     if systems["Exploration"] >= 0.7:
-        report += "🔍 **Dein Explorations-Mitarbeiter ist ein echter Innovator!**\n"
-        report += "   ✓ Entdeckt ständig neue Möglichkeiten\n"
-        report += "   ✓ Hält dich wachsam und lernbereit\n"
-        report += "   → Diese Neugier ist dein Motor für Entwicklung!\n\n"
-        active_systems.append("Exploration")
+        report += "   🟢 **VOLLE ENTDECKERFREUDE** - Du lernst und wächst\n"
+        report += "   ✓ Neue Herausforderungen begeistern dich\n"
+        report += "   ✓ Du hast Raum für Kreativität und Ideen\n"
+        report += "   ✓ Deine Neugier wird täglich gefüttert\n"
+        report += "   → Diese Energie ist dein Wachstumsmotor!\n\n"
     elif systems["Exploration"] >= 0.4:
-        report += "🔍 **Dein Explorations-Mitarbeiter ist neugierig:**\n"  
-        report += "   - Neue Herausforderungen und Lernfelder\n"
-        report += "   - Raum für Kreativität und Entdeckung\n"
-        report += "   - Möglichkeiten zum Wachsen und Dazulernen\n\n"
+        report += "   🟡 **AUSGEGLICHENE NEUGIER** - Zwischen Vertrautem und Neuem\n"
+        report += "   ✓ Routinen geben dir Sicherheit\n"
+        report += "   ✓ Gleichzeitig locken neue Lernfelder\n"
+        report += "   ✓ Du bleibst wachsam für frische Impulse\n"
+        report += "   → Halte die Balance zwischen Stabilität und Wachstum!\n\n"
     else:
-        report += "🔍 **Dein Explorations-Mitarbeiter braucht neue Impulse:**\n"
-        report += "   - Frische Lernanreize und Herausforderungen\n"
-        report += "   - Raum für Kreativität und Experimente\n"
-        report += "   - Abwechslung im Arbeitsalltag\n\n"
+        report += "   🔴 **FRISCHE IMPULSE GESUCHT** - Deine Neugier wartet\n"
+        report += "   • Suche dir bewusst neue Lernanreize\n"
+        report += "   • Probiere in sicherem Rahmen Neues aus\n"
+        report += "   • Tausche dich mit inspirierenden Kollegen aus\n"
+        report += "   → Wachstum macht deine Arbeit lebendig!\n\n"
 
-    # Besondere Stärken hervorheben
-    if len(active_systems) >= 2:
-        report += f"🌟 **Besonders stark im Team:** {', '.join(active_systems)}\n"
-        report += "   Diese Kombination gibt dir eine solide Basis für deine Arbeit!\n\n"
-
-    # Balance-Check
+    # GESAMTBILDER FÜR VERSCHIEDENE KOMBINATIONEN
     report += "---\n"
-    report += "🔄 **Dein nächstes inneres Team-Meeting:**\n"
-    report += "Frag dich bewusst:\n"
-    report += "• **Welcher Mitarbeiter leistet heute herausragende Arbeit?** → Danke ihm!\n"
-    report += "• **Welcher fühlt sich übergangen oder überfordert?** → Höre ihm zu!\n"
-    report += "• **Wie können sie sich gegenseitig unterstützen?** → Vermittle!\n\n"
+    report += "🎭 **Dein persönliches Motivations-Profil:**\n"
+    
+    # Verschiedene Profile basierend auf der Kombination
+    high_count = sum(1 for score in systems.values() if score >= 0.7)
+    low_count = sum(1 for score in systems.values() if score < 0.4)
+    
+    if high_count >= 2:
+        report += "🌟 **DER GESTALTER** - Du bist in deiner Kraft!\n"
+        report += "Mehrere deiner Motivationssysteme laufen optimal. Nutze diese Energie,\n"
+        report += "um nicht nur für dich, sondern auch für dein Team wirksam zu sein.\n\n"
+    elif low_count >= 2:
+        report += "💫 **DER SUCHENDE** - Deine Motive warten auf Entfaltung\n"
+        report += "Verschiedene Bereiche deiner Motivation brauchen mehr Raum.\n"
+        report += "Beginne mit kleinen Schritten in einem Bereich, der dir besonders wichtig ist.\n\n"
+    else:
+        report += "⚖️ **DER AUSGEGLICHENE** - Gute Basis mit Entwicklungspotenzial\n"
+        report += "Deine Systeme sind im grundlegenden Gleichgewicht. Überlege,\n"
+        report += "welches Motiv dir aktuell am wichtigsten ist und gib ihm etwas mehr Raum.\n\n"
 
-    report += "Denk daran: Diese drei arbeiten immer im Verbund.\n"
-    report += "Ein guter Tag bedeutet nicht, dass alle gleichlaut - sondern dass sie sich ergänzen!\n\n"
+    # POSITIVE ABSCHLUSSBOTSCHAFT
+    report += "---\n"
+    report += "💡 **Erfolgreiche Motivation bedeutet nicht Perfektion,**\n"
+    report += "sondern die bewusste Pflege aller drei Systeme.\n"
+    report += "Jedes hat seine Berechtigung und stärkt dich auf seine Weise!\n\n"
 
     # ====== ENDE DES NEUEN ABSCHNITTS ======
 
