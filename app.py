@@ -411,49 +411,93 @@ def generate_time_based_recommendation(time_val, skill, challenge, domain):
     return "\n".join([f"• {rec}" for rec in personalized_recs])
 
 def generate_domain_interpretation(domain, skill, challenge, time_val, flow_index, zone):
-    time_info = TIME_PERCEPTION_SCALE[time_val]
+    # Berechne die detaillierten Werte
+    diff = skill - challenge
+    mean_level = (skill + challenge) / 2
+    proximity = 1 - (abs(diff) / 6)
     
     report = f"{domain}\n"
-    report += f"Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7 | "
-    report += f"Zeitgefühl: {time_info['label']}\n\n"
+    report += f"Selbsteinschätzung - Fähigkeiten: {skill}/7 | Herausforderungen: {challenge}/7\n"
+    report += f"Zeiterleben: {TIME_PERCEPTION_SCALE[time_val]['label']}\n\n"
     
-    report += "Was das bedeutet:\n"
+    report += "Was deine Einschätzung zeigen könnte:\n"
     
-    # Domänenspezifische Textbausteine verwenden
+    # 🔥 NEUE RESPEKTVOLLE ANALYSE
+    if abs(diff) <= 1:
+        report += f"🎯 **Gute Passung** - Deine Kompetenzwahrnehmung und die empfundenen Anforderungen scheinen gut zusammenzupassen\n"
+    elif diff > 1:
+        report += f"🟡 **Mögliches Entwicklungspotenzial** - Deine Selbsteinschätzung zeigt höhere Kompetenzen als aktuelle Herausforderungen\n"
+        report += f"   - Kompetenzwahrnehmung: {skill}/7\n"
+        report += f"   - Empfundene Herausforderungen: {challenge}/7\n"
+        report += f"   - Diese Diskrepanz könnte darauf hinweisen, dass Raum für anspruchsvollere Aufgaben besteht\n"
+    else:
+        report += f"🔴 **Hohe Anforderungen** - Die empfundenen Herausforderungen übersteigen momentan deine Kompetenzwahrnehmung\n"
+        report += f"   - Kompetenzwahrnehmung: {skill}/7\n"
+        report += f"   - Empfundene Herausforderungen: {challenge}/7\n"
+        report += f"   - Diese Situation könnte nach gezielter Unterstützung oder Weiterentwicklung rufen\n"
+    
+    # Aktivitäts-Level - respektvoll formuliert
+    engagement_level = ""
+    if mean_level >= 6:
+        engagement_level = "**Intensives Engagement** - Deine Werte deuten auf hohe Involviertheit hin"
+    elif mean_level >= 4:
+        engagement_level = "**Stabiles Engagement** - Deine Einschätzung zeigt solide Beteiligung"
+    else:
+        engagement_level = "**Zurückhaltende Beteiligung** - Deine Werte könnten auf Distanz oder Vorsicht hinweisen"
+    
+    report += f"⚡ {engagement_level}\n"
+    
+    # Spezifische Interpretationen - explorativ formuliert
+    if skill >= 6 and challenge <= 3:
+        report += f"\n💡 **Interessante Kombination:** Deine hohe Kompetenzwahrnehmung trifft auf moderate Anforderungen\n"
+        report += f"Für manche Menschen wirft diese Konstellation Fragen auf:\n"
+        report += f"- Könnten anspruchsvollere Projekte deine Stärken besser nutzen?\n"
+        report += f"- Würde eine Mentor-Role deine Expertise fordern?\n"
+        report += f"- Gibt es Bereiche, wo deine Kompetenzen noch stärker einfließen könnten?\n"
+    
+    elif skill <= 3 and challenge >= 6:
+        report += f"\n💡 **Besondere Situation:** Hohe Anforderungen bei sich entwickelnden Kompetenzen\n"
+        report += f"Diese Konstellation könnte folgende Überlegungen nahelegen:\n"
+        report += f"- Welche Unterstützung könnte beim Kompetenzaufbau helfen?\n"
+        report += f"- Würde Schritt-für-Schritt-Herangehen die Bewältigung erleichtern?\n"
+        report += f"- Welche Lernmöglichkeiten bieten sich in dieser Herausforderung?\n"
+    
+    elif skill >= 5 and challenge >= 5 and abs(diff) <= 1:
+        report += f"\n💡 **Ausgeglichenes Profil** - Kompetenzen und Herausforderungen im Einklang\n"
+        report += f"Deine Einschätzung deutet auf eine gute Passung hin. Vielleicht fragst du dich:\n"
+        report += f"- Was genau macht diese Balance für dich aus?\n"
+        report += f"- Wie könntest du diese gelungene Passung auf andere Bereiche übertragen?\n"
+        report += f"- Welche Faktoren tragen zu diesem Gleichgewicht bei?\n"
+    
+    # Domänenspezifische Textbausteine anpassen
     domain_config = DOMAINS[domain]
     
-    # 🔴 AKUTE UNTERFORDERUNG (z.B. 7/1)
     if zone == "Akute Unterforderung" or (skill - challenge >= 3):
-        report += domain_config["textbausteine"]["Unterforderung"] + "\n\n"
+        report += domain_config["textbausteine"]["Unterforderung"].replace("Du ", "Deine Einschätzung könnte darauf hinweisen, dass du ") + "\n\n"
     
-    # 🔴 AKUTE ÜBERFORDERUNG (z.B. 2/7)  
     elif zone == "Akute Überforderung" or (challenge - skill >= 3):
-        report += domain_config["textbausteine"]["Überforderung"] + "\n\n"
+        report += domain_config["textbausteine"]["Überforderung"].replace("Du ", "Deine Werte deuten darauf hin, dass du ") + "\n\n"
     
-    # 🟢 FLOW (optimale Passung)
     elif zone == "Flow - Optimale Passung":
-        report += domain_config["textbausteine"]["Ideale Passung"] + "\n\n"
+        report += domain_config["textbausteine"]["Ideale Passung"].replace("Du ", "Deine Selbsteinschätzung zeigt, dass du ") + "\n\n"
     
-    # 🟡 UNTERFORDERUNG (z.B. 6/3)
     elif zone == "Unterforderung" or (skill - challenge >= 2):
-        report += domain_config["textbausteine"]["Unterforderung"] + "\n\n"
+        report += domain_config["textbausteine"]["Unterforderung"].replace("Du ", "Deine Wahrnehmung könnte bedeuten, dass du ") + "\n\n"
     
-    # 🟡 ÜBERFORDERUNG (z.B. 4/6)  
     elif zone == "Überforderung" or (challenge - skill >= 2):
-        report += domain_config["textbausteine"]["Überforderung"] + "\n\n"
+        report += domain_config["textbausteine"]["Überforderung"].replace("Du ", "Deine Einschätzung lässt vermuten, dass du ") + "\n\n"
     
-    # 🟢 STABILE PASSUNG (z.B. 5/3, 4/4)
     else:
-        report += domain_config["textbausteine"]["Ideale Passung"] + "\n\n"
+        report += domain_config["textbausteine"]["Ideale Passung"].replace("Du ", "Deine Werte deuten darauf hin, dass du ") + "\n\n"
     
     # Theorie leicht verständlich eingewoben
-    report += f"Was dahinter steckt:\n"
+    report += f"Psychologische Perspektive:\n"
     report += f"• {DOMAINS[domain]['flow'].replace('Balance zwischen', 'Ausgleich von')}\n"
-    report += f"• {DOMAINS[domain]['grawe'].replace('Bedürfnisse:', 'Hier geht es um dein Bedürfnis nach')}\n"
-    report += f"• {DOMAINS[domain]['bischof'].replace('Bindungssystem -', 'Dein Wunsch nach')}\n"
+    report += f"• {DOMAINS[domain]['grawe'].replace('Bedürfnisse:', 'Hier geht es um das Bedürfnis nach')}\n"
+    report += f"• {DOMAINS[domain]['bischof'].replace('Bindungssystem -', 'Das Bedürfnis nach')}\n"
     
     # Handlungsempfehlungen persönlich formuliert
-    report += f"\nWas dir helfen könnte:\n"
+    report += f"\nMögliche nächste Schritte:\n"
     recommendations = generate_time_based_recommendation(time_val, skill, challenge, domain)
     for rec in recommendations.split('\n'):
         if rec.strip():
