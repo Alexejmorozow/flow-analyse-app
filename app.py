@@ -445,25 +445,25 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
     else:
         engagement_level = "Zurückhaltende Beteiligung - Deine Werte könnten auf Distanz oder Vorsicht hinweisen"
     
-    report += f"⚡ {engagement_level}\n"
+    report += f" {engagement_level}\n"
     
     # Spezifische Interpretationen - explorativ formuliert
     if skill >= 6 and challenge <= 3:
-        report += f"\n💡 Interessante Kombination: Deine hohe Kompetenzwahrnehmung trifft auf moderate Anforderungen\n"
+        report += f"\n Interessante Kombination: Deine hohe Kompetenzwahrnehmung trifft auf moderate Anforderungen\n"
         report += f"Für manche Menschen wirft diese Konstellation Fragen auf:\n"
         report += f"- Könnten anspruchsvollere Projekte deine Stärken besser nutzen?\n"
         report += f"- Würde eine Mentor-Role deine Expertise fordern?\n"
         report += f"- Gibt es Bereiche, wo deine Kompetenzen noch stärker einfließen könnten?\n"
     
     elif skill <= 3 and challenge >= 6:
-        report += f"\n💡 Besondere Situation: Hohe Anforderungen bei sich entwickelnden Kompetenzen\n"
+        report += f"\n Besondere Situation: Hohe Anforderungen bei sich entwickelnden Kompetenzen\n"
         report += f"Diese Konstellation könnte folgende Überlegungen nahelegen:\n"
         report += f"- Welche Unterstützung könnte beim Kompetenzaufbau helfen?\n"
         report += f"- Würde Schritt-für-Schritt-Herangehen die Bewältigung erleichtern?\n"
         report += f"- Welche Lernmöglichkeiten bieten sich in dieser Herausforderung?\n"
     
     elif skill >= 5 and challenge >= 5 and abs(diff) <= 1:
-        report += f"\n💡 Ausgeglichenes Profil - Kompetenzen und Herausforderungen im Einklang\n"
+        report += f"\n Ausgeglichenes Profil - Kompetenzen und Herausforderungen im Einklang\n"
         report += f"Deine Einschätzung deutet auf eine gute Passung hin. Vielleicht fragst du dich:\n"
         report += f"- Was genau macht diese Balance für dich aus?\n"
         report += f"- Wie könntest du diese gelungene Passung auf andere Bereiche übertragen?\n"
