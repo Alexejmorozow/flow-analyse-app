@@ -460,7 +460,6 @@ def generate_domain_interpretation(domain, skill, challenge, time_val, flow_inde
             report += f"{rec.strip()}\n"
     
     return report
-
 def generate_comprehensive_smart_report(data):
     """Erstellt einen persönlichen, emotional intelligenten Bericht"""
     
@@ -468,8 +467,83 @@ def generate_comprehensive_smart_report(data):
     report += "🌊 DEINE PERSÖNLICHE FLOW-ANALYSE\n"
     report += "=" * 80 + "\n\n"
     
-    # ... [der gesamte existierende Code bis zu den Stärken] ...
+    # Persönliche Ansprache
+    name = data.get('Name', "") if data.get('Name', "") else "Du"
+    report += f"Hallo {name}!\n\n"
+    report += "Dies ist deine persönliche Auswertung. Sie zeigt, wie du dich aktuell in deiner Arbeit fühlst\n"
+    report += "Bedenke, dass dies nur eine Momentaufnahme ist\n"
+    report += "Menschen und Situationen verändern sich fortlaufend\n"
+    report += "Dieser kleine Bericht kann dir zeigen, wo du im Moment im Alltag Erfolge feierst\n"
+    report += "und wo du vielleicht Entlastung oder neue Herausforderungen brauchst.\n\n"
+    
+    report += "GEMEINSAM GESCHAUT: DREI BLICKE AUF DEINE ARBEITSSITUATION\n"
+    report += "-" * 80 + "\n\n"
+    
+    report += "Wir schauen gemeinsam auf drei Ebenen:\n"
+    report += "• Flow-Ebene: Wie gut passen deine Fähigkeiten zu den Aufgaben?\n"
+    report += "• Bedürfnis-Ebene: Was brauchst du, um dich wohlzufühlen?\n"
+    report += "• Balance-Ebene: Wie gelingt dir der Ausgleich zwischen Sicherheit und Neuem?\n\n"
+    
+    # Gesamtbewertung persönlich und emotional
+    total_flow = sum(calculate_flow(data[f"Skill_{d}"], data[f"Challenge_{d}"])[0] for d in DOMAINS)
+    avg_flow = total_flow / len(DOMAINS)
+    
+    report += "WIE ES DIR GEHT: DEIN GESAMTBILD\n"
+    report += "-" * 80 + "\n\n"
+    
+    if avg_flow >= 0.7:
+        report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig gut! 🎉\n\n"
+        report += "Du findest offenbar eine gute Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
+        report += "Das ist etwas Besonderes. Nimm dir einen Moment, dieses Gefühl wahrzunehmen und wertzuschätzen.\n\n"
+        
+    elif avg_flow >= 0.5:
+        report += f"Dein Wert von {avg_flow:.2f} zeigt: Du gehst die meisten Herausforderungen bereits sehr gut an und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
+        report += "An manchen Tagen fühlst du dich sicher und im Fluss, an anderen merkst du vielleicht kleine Stolpersteine.\n"
+        report += "Das ist völlig normal - schauen wir gemeinsam, wo genau du ansetzen kannst.\n\n"
+        
+    else:
+        report += f"Dein Wert von {avg_flow:.2f} sagt: Momentan ist vieles ziemlich anstrengend für dich. 💭\n\n"
+        report += "Vielleicht fühlst du dich oft gestresst oder fragst dich, ob alles so bleiben soll.\n"
+        report += "Es zeigt aber auch, dass du sensibel wahrnimmst, was dich beansprucht. Wichtig ist: Dieser Zustand sollte kein Dauerzustand sein.\n"
+        report += "Wichtig ist, dass wir genau hinschauen, wo aktuell Belastungen in deinem Berufsleben liegen.\n\n"
+    
+    # Detaillierte Domain-Analysen
+    report += "WO DU STEHST: BEREICH FÜR BEREICH\n"
+    report += "-" * 80 + "\n\n"
+    
+    for domain in DOMAINS:
+        skill = data[f"Skill_{domain}"]
+        challenge = data[f"Challenge_{domain}"]
+        time_val = data[f"Time_{domain}"]
+        flow_index, zone, _ = calculate_flow(skill, challenge)
+        
+        domain_report = generate_domain_interpretation(domain, skill, challenge, time_val, flow_index, zone)
+        report += domain_report + "\n" + "-" * 50 + "\n\n"
+    
+    # Integrierte Handlungsstrategie
+    report += "WAS JETZT FÜR DICH DRAN IST\n"
+    report += "-" * 80 + "\n\n"
 
+    report += "Deine Werte zeigen dir auf wo du momentan gut im Fluss und wo du vielleicht Unterstützung brauchst.\n"
+    report += "Diese Phase bietet dir die Chance, bewusst wahrzunehmen, was dir besonders gelingt und Energie gibt.\n\n"
+    
+    report += "Basierend auf deinen Werte könntest du:\n\n"
+    
+    report += "HEUTE:\n"
+    report += "• Dir einen Bereich aussuchen, in dem du besonders erfolgreich bist, und ihn bewusst geniessen\n"
+    report += "• Überlege, welche kleine Handlung dir in herausfordernden Bereichen rasch Erleichterung und Klarheit verschaffen kann\n"
+    report += "• Manchmal kann es bereichernd sein, Gedanken oder Erfahrungen mit jemandem zu teilen, dem du vertraust.\n\n"
+    
+    report += "KURZFRISTIG (nächste 4 Wochen):\n"
+    report += "• Schau dir die konkreten Tipps für deine kritischen Bereiche an\n"
+    report += "• Such dir Unterstützung, wo du sie brauchst\n"
+    report += "• Vielleicht bemerkst du, wie die kleinen Momente des Gelingens aufleuchten, und je mehr du sie wahrnimmst, desto leichter wird es, ihnen Raum zu geben.\n\n"
+    
+    report += "LANGFRISTIG (ab 3 Monaten):\n"
+    report += "• Entwickle deine Stärken weiter\n"
+    report += "• Sorge für mehr Ausgleich in anstrengenden Bereichen\n"
+    report += "• Behalte dein Wohlbefinden im Blick\n\n"
+    
     # Stärken und Ressourcen am Ende
     report += "=" * 60 + "\n"
     report += "DEINE STÄRKEN UND RESSOURCEN\n"
@@ -500,9 +574,9 @@ def generate_comprehensive_smart_report(data):
         report += "Diese Ressourcen stehen dir zur Verfügung:\n"
         report += "\n".join(resources) + "\n\n"
 
-    # ====== NEUER CODE - KORRIGIERTE VERSION ======
+    # ====== NEU: SYSTEMISCHE PERSPEKTIVE NACH BISCHOF ======
     
-    # System-Aktivität berechnen (als separate Funktion außerhalb)
+    # System-Aktivität berechnen
     def calculate_system_activity(data):
         systems = {
             "Bindung": 0,      # Team + Interpersonelle Veränderungen
@@ -534,7 +608,6 @@ def generate_comprehensive_smart_report(data):
         
         return systems
 
-    # System-Aktivität berechnen (AUF DIESER EBENE)
     systems = calculate_system_activity(data)
     
     # NEUER ABSCHNITT: SYSTEMISCHE PERSPEKTIVE
@@ -617,7 +690,7 @@ def generate_comprehensive_smart_report(data):
     report += "Denk daran: Diese drei arbeiten immer im Verbund.\n"
     report += "Ein guter Tag bedeutet nicht, dass alle gleichlaut - sondern dass sie sich ergänzen!\n\n"
 
-    # ====== ENDE DES NEUEN CODES ======
+    # ====== ENDE DES NEUEN ABSCHNITTS ======
 
     # Abschluss mit empowernder Botschaft
     report += "=" * 60 + "\n"
