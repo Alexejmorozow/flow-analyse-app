@@ -31,7 +31,7 @@ Positiv erlebt: Du bleibst ruhig, weil du Erfahrung hast und vertraust, dass Auf
 Negativ erlebt: Du fühlst dich gestresst und ängstlich, selbst wenn sich später herausstellt, dass alles in Ordnung ist.""",
         "textbausteine": {
             "Überforderung": "Veränderungen im Team können dein Gefühl nach Sicherheit und Vertrautem stark erschüttern, weil gewohnte Abläufe und Rollen ins Wanken geraten. Gerade jetzt ist es wichtig, deine eigenen Grenzen wahrzunehmen und offen zu kommunizieren. Vereinbare mit Kolleg:innen kleine, machbare Schritte und nutze den Austausch, um gemeinsam wieder Stabilität zu gewinnen.",
-            "Ideale Passung": "Im Moment scheinen dein Neugier-System und dein Gefühl nach Sicherheit und Vertrautem good im Gleichgewicht zu sein: Veränderungen bringen frischen Wind, ohne dich zu überfordern. Diese Phase eignet sich perfekt, um deine Stärken einzubringen und anderen Sicherheit zu vermitteln – so kann im Team ein Flow-Zustand entstehen.",
+            "Ideale Passung": "Im Moment scheinen dein Neugier-System und dein Gefühl nach Sicherheit und Vertrautem gut im Gleichgewicht zu sein: Veränderungen bringen frischen Wind, ohne dich zu überfordern. Diese Phase eignet sich perfekt, um deine Stärken einzubringen und anderen Sicherheit zu vermitteln – so kann im Team ein Flow-Zustand entstehen.",
             "Unterforderung": "Wenn sich im Team wenig bewegt, kann dein Neugier-System unterfordert sein. Überlege, ob du neue Aufgaben übernehmen kannst, wie z.B. die Moderation einer Teamsitzung oder das Einarbeiten neuer Kolleg:innen. So bringst du neue Energie ins Team und bleibst selbst motiviert."
         }
     },
@@ -50,7 +50,7 @@ Positiv erlebt: Du spürst, dass du die Situation gut einschätzen kannst, weil 
 Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränderung löst Stress aus, weil du Angst hast, etwas falsch zu machen.""",
         "textbausteine": {
             "Überforderung": "Wenn sich der Betreuungsbedarf stark verändert, kann das Gefühl entstehen, nicht mehr allen Anforderungen gerecht zu werden. Dein Gefühl nach Sicherheit und Vertrautem sucht in solchen Momenten nach Halt und klaren Strukturen. Nimm dir Zeit, dich Schritt für Schritt einzuarbeiten, und kläre frühzeitig Zuständigkeiten im Team, um Sicherheit zu gewinnen.",
-            "Ideale Passung": "Aktuell scheinen deine Kompetenzen good zu den Bedürfnissen der Klient:innen zu passen. Dein Neugier-System ist aktiviert und motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Balance ermöglicht dir, sowohl Sicherheit als auch kreative Impulse weiterzugeben.",
+            "Ideale Passung": "Aktuell scheinen deine Kompetenzen gut zu den Bedürfnissen der Klient:innen zu passen. Dein Neugier-System ist aktiviert und motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Balance ermöglicht dir, sowohl Sicherheit als auch kreative Impulse weiterzugeben.",
             "Unterforderung": "Wenn sich die Betreuungssituation sehr routiniert anfühlt, kann dein Neugier-System unbefriedigt bleiben. Vielleicht kannst du neue Angebote oder kreative Projekte einbringen, um sowohl dich selbst als auch die Klient:innen zu inspirieren."
         }
     },
@@ -69,7 +69,7 @@ Positiv erlebt: Du begegnest der Umstellung mit Gelassenheit, weil du auf deine 
 Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt.""",
         "textbausteine": {
             "Überforderung": "Neue Prozesse können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil bekannte Strukturen wegfallen. Versuche, dich auf die wichtigsten Schritte zu konzentrieren und priorisiere gemeinsam mit deinem Team, was zuerst umgesetzt werden soll. Klare Checklisten oder kurze Schulungen können dir helfen, wieder Stabilität zu spüren.",
-            "Ideale Passung": "Du hast die neuen Abläufe good integriert. Dein Gefühl nach Sicherheit und Vertrautem gibt dir Halt, während dein Neugier-System offen für Neues bleibt. Nutze diese Stärke, um Kolleg:innen zu unterstützen, die sich noch unsicher fühlen – so profitiert das ganze Team.",
+            "Ideale Passung": "Du hast die neuen Abläufe gut integriert. Dein Gefühl nach Sicherheit und Vertrautem gibt dir Halt, während dein Neugier-System offen für Neues bleibt. Nutze diese Stärke, um Kolleg:innen zu unterstützen, die sich noch unsicher fühlen – so profitiert das ganze Team.",
             "Unterforderung": "Wenn dir aktuelle Prozesse sehr leichtfallen, kann dein Neugier-System nach zusätzlichen Impulsen verlangen. Vielleicht kannst du dich aktiv an Optimierungsprojekten beteiligen oder neue Ideen für Abläufe entwickeln, die das Team voranbringen."
         }
     },
@@ -85,7 +85,7 @@ Beispiel: Du sollst eine neue Aufgabe übernehmen, z. B. eine Schulung für Koll
 
 Positiv erlebt: Du fühlst dich sicher und neugierig, weil du ähnliche Aufgaben bereits gemeistert hast und dein Wissen anwenden kannst.
 
-Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforderungen nicht gerecht zu werden, selbst wenn du später die Aufgabe good bewältigst.""",
+Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforderungen nicht gerecht zu werden, selbst wenn du später die Aufgabe gut bewältigst.""",
         "textbausteine": {
             "Überforderung": "Wenn die Anforderungen deine aktuellen Fähigkeiten übersteigen, reagiert dein Gefühl nach Sicherheit und Vertrautem oft mit Stress. Plane dein Lernen in kleinen, machbaren Etappen und suche dir Unterstützung – zum Beispiel durch Supervision oder Lernpartnerschaften. So kann dein Neugier-System schrittweise aktiv werden, anstatt in Überforderung zu erstarren.",
             "Ideale Passung": "Im Moment passt dein Können optimal zu den Anforderungen. Dein Neugier-System ist motiviert, während dein Gefühl nach Sicherheit und Vertrautem dir Stabilität gibt. Diese Phase ist ideal, um dein Wissen bewusst auszubauen und es mit Kolleg:innen zu teilen.",
@@ -102,7 +102,7 @@ Negativ erlebt: Du bist unsicher und gestresst, weil du Angst hast, den Anforder
 
 Beispiel: Ein Konflikt zwischen Kollegen entsteht oder eine neue Leitungskraft übernimmt.
 
-Positiv erlebt: Du spürst, dass du good damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weisst, wie man Spannungen aushält.
+Positiv erlebt: Du spürst, dass du gut damit umgehen kannst, weil du Erfahrung im Umgang mit Konflikten hast und weisst, wie man Spannungen aushält.
 
 Negativ erlebt: Du fühlst dich verunsichert und gestresst, weil du befürchtest, dass Konflikte auf dich zurückfallen, selbst wenn später alles ruhig bleibt.""",
         "textbausteine": {
@@ -493,12 +493,12 @@ def generate_comprehensive_smart_report(data):
     report += "-" * 80 + "\n\n"
     
     if avg_flow >= 0.7:
-        report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig good! 🎉\n\n"
-        report += "Du findest offenbar eine goode Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
+        report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig gut! 🎉\n\n"
+        report += "Du findest offenbar eine gute Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
         report += "Das ist etwas Besonderes. Nimm dir einen Moment, dieses Gefühl wahrzunehmen und wertzuschätzen.\n\n"
         
     elif avg_flow >= 0.5:
-        report += f"Dein Wert von {avg_flow:.2f} zeigt: Du gehst die meisten Herausforderungen bereits sehr good an und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
+        report += f"Dein Wert von {avg_flow:.2f} zeigt: Du gehst die meisten Herausforderungen bereits sehr gut an und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
         report += "An manchen Tagen fühlst du dich sicher und im Fluss, an anderen merkst du vielleicht kleine Stolpersteine.\n"
         report += "Das ist völlig normal - schauen wir gemeinsam, wo genau du ansetzen kannst.\n\n"
         
@@ -525,7 +525,7 @@ def generate_comprehensive_smart_report(data):
     report += "WAS JETZT FÜR DICH DRAN IST\n"
     report += "-" * 80 + "\n\n"
 
-    report += "Deine Werte zeigen dir auf wo du momentan good im Fluss und wo du vielleicht Unterstützung brauchst.\n"
+    report += "Deine Werte zeigen dir auf wo du momentan gut im Fluss und wo du vielleicht Unterstützung brauchst.\n"
     report += "Diese Phase bietet dir die Chance, bewusst wahrzunehmen, was dir besonders gelingt und Energie gibt.\n\n"
     
     report += "Basierend auf deinen Werte könntest du:\n\n"
