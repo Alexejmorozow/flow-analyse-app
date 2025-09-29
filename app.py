@@ -482,7 +482,7 @@ def generate_comprehensive_smart_report(data):
     
     report += "Wir schauen gemeinsam auf drei Ebenen:\n"
     report += "• Flow-Ebene: Wie gut passen deine Fähigkeiten zu den Aufgaben?\n"
-    report += "• Bedürfnis-Ebene: What brauchst du, um dich wohlzufühlen?\n"
+    report += "• Bedürfnis-Ebene: Was brauchst du, um dich wohlzufühlen?\n"
     report += "• Balance-Ebene: Wie gelingt dir der Ausgleich zwischen Sicherheit und Neuem?\n\n"
     
     # Gesamtbewertung persönlich und emotional
