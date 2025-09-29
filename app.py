@@ -57,7 +57,7 @@ Negativ erlebt: Du fühlst dich überfordert und unsicher, jede kleine Veränder
     "Prozess- oder Verfahrensänderungen": {
         "examples": "Anpassung bei Dienstübergaben, Dokumentation, interne Abläufe, neue Software",
         "color": "#FFD166",
-        "bischof": "Orientierungssystem - Umgang mit veränderter Struktur",
+        "bischof": "Autonomiesystem - Kontrolle und Selbstwirksamkeit in Veränderungsprozessen",
         "grawe": "Bedürfnisse: Orientierung, Kontrolle, Selbstwert (durch Routine)",
         "flow": "Balance zwischen Routinesicherheit und Lernherausforderungen",
         "explanation": """Interne Abläufe ändern sich regelmässig, z. B. bei Dienstübergaben, Dokumentationen oder neuer Software.
@@ -1116,7 +1116,7 @@ if page == "Einzelanalyse":
         Drei Motivsysteme wirken zusammen:
         - **Bindungssystem**: Sicherheit durch Vertrautheit
         - **Explorationssystem**: Neugier und Wachstum  
-        - **Orientierungssystem**: Struktur und Kontrolle
+        - **Autonomiesystem**: Selbstwirksamkeit und Einfluss
 
         **🌊 Csíkszentmihályis Flow-Theorie**
         Optimales Erleben entsteht, wenn:
