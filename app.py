@@ -905,7 +905,7 @@ def aggregate_uploaded_files_to_df(uploaded_files):
 def calculate_team_cbi_analysis(df):
     """
     Führt eine tiefgehende Analyse der Team-Daten durch und berechnet den
-    Changebereitschafts-Index (CBI) nach der exakten Formel:
+    Changebereitschafts-Indikator (CBI) nach der exakten Formel:
     CBI = (Anzahl Flow-Zustände + Anzahl Unterforderung) / Gesamtanzahl - Anteil Überforderung
     """
     if df.empty:
@@ -955,7 +955,7 @@ def calculate_team_cbi_analysis(df):
         elif "Apathie" in zone:
             analysis_results['flow_states']['apathy'] += 1
     
-    # Berechne den Changebereitschafts-Index (CBI) nach der exakten Formel
+    # Berechne den Changebereitschafts-Indikator (CBI) nach der exakten Formel
     total_observations = len(df)
     flow_count = analysis_results['flow_states']['flow']
     underchallenge_count = analysis_results['flow_states']['underchallenge']
@@ -1016,9 +1016,9 @@ def display_cbi_details(analysis_results):
 # ===== MODIFIZIERTE ERWEITERTE TEAM-ANALYSE =====
 def create_enhanced_team_analysis(df):
     """
-    Erstellt eine erweiterte Team-Analyse mit Changebereitschafts-Index (CBI)
+    Erstellt eine erweiterte Team-Analyse mit Changebereitschafts-Indikator (CBI)
     """
-    st.subheader("🧠 Erweiterte Team-Analyse: Changebereitschafts-Index (CBI)")
+    st.subheader("🧠 Erweiterte Team-Analyse: Changebereitschafts-Indikator (CBI)")
     
     if df.empty:
         st.info("Keine Daten für die erweiterte Analyse verfügbar.")
@@ -1031,8 +1031,8 @@ def create_enhanced_team_analysis(df):
         st.error("Analyse konnte nicht durchgeführt werden.")
         return False
     
-    # Zeige den Changebereitschafts-Index an
-    st.metric("Changebereitschafts-Index (CBI)", 
+    # Zeige den Changebereitschafts-Indikator an
+    st.metric("Changebereitschafts-Indikator (CBI)", 
               f"{analysis_results['cbi_score']}",
               help="CBI = (Flow + Unterforderung)/Gesamt - Überforderung/Gesamt")
     
