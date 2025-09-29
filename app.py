@@ -73,7 +73,7 @@ Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu 
             "Unterforderung": "Wenn dir Prozesse zu starr vorgegeben sind, kann dein Autonomiesystem unterfordert sein. Vielleicht kannst du Gestaltungsspielräume suchen oder Optimierungsvorschläge einbringen."
         }
     },
-    "Kompetenzanforderungen / Weiterbildung": {
+    "Kompetenzanforderungen / neue Aufgaben": {
         "examples": "neue Aufgabenfelder, zusätzliche Qualifikationen, Schulungen, Zertifizierations",
         "color": "#06D6A0",
         "bischof": "Explorationssystem - Kompetenzerweiterung und Wachstum",
@@ -394,7 +394,7 @@ def generate_time_based_recommendation(time_val, skill, challenge, domain):
             "Feedback-Prozesse etablieren",
             "Pilotphasen einplanen"
         ],
-        "Kompetenzanforderungen / Weiterbildung": [
+        "Kompetenzanforderungen / neue Aufgaben": [
             "Lernziele klar definieren",
             "Lernpartnerschaften bilden",
             "Praxistransfer sicherstellen"
@@ -630,7 +630,7 @@ def generate_comprehensive_smart_report(data):
         # Gewichtung nach Domänen-Zuordnung
         binding_domains = ["Team-Veränderungen", "Interpersonelle Veränderungen"]
         autonomy_domains = ["Prozess- oder Verfahrensänderungen"]
-        exploration_domains = ["Kompetenzanforderungen / Weiterbildung", "Veränderungen im Betreuungsbedarf der Klient:innen"]
+        exploration_domains = ["Kompetenzanforderungen / neue Aufgaben", "Veränderungen im Betreuungsbedarf der Klient:innen"]
         
         for domain in DOMAINS:
             skill = data[f"Skill_{domain}"]
