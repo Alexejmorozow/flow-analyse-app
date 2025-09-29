@@ -708,7 +708,6 @@ def generate_comprehensive_smart_report(data):
         report += "kleinen Schritten in einem Bereich, der dir am Herzen liegt.\n\n"
 
     # ABSCHLUSS
-    report += "Zum Abschluss\n"
     report += "Erfolgreiche Motivation bedeutet nicht, dass alle Systeme stets\n"
     report += "maximal aktiv sein müssen. Vielmehr geht es darum, eine bewusste\n"
     report += "Balance zu finden und jedes System in seiner Eigenart wertzuschätzen.\n"
