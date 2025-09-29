@@ -79,9 +79,9 @@ Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu 
         "bischof": "Explorationssystem - Kompetenzerweiterung und Wachstum",
         "grawe": "Bedürfnisse: Selbstwerterhöhung, Kompetenzerleben, Kontrolle",
         "flow": "Optimale Lernherausforderung ohne Überforderung",
-        "explanation": """Manchmal kommen neue Aufgaben oder zusätzliche Qualifikationen auf dich zu.
+        "explanation": """Manchmal ergeben sich neue Herausforderungen, die deinen Aufgabenbereich erweitern.
 
-Beispiel: Du sollst eine neue Aufgabe übernehmen, z. B. eine Schulung für Kollegen leiten.
+Beispiel: Du sollst eine neue Aufgabe übernehmen, etwa eine neue Mitarbeiterin in den Arbeitsablauf einführen.
 
 Positiv erlebt: Du fühlst dich sicher und neugierig, weil du ähnliche Aufgaben bereits gemeistert hast und dein Wissen anwenden kannst.
 
