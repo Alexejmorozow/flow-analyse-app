@@ -68,9 +68,9 @@ Positiv erlebt: Du begegnest der Umstellung mit Gelassenheit, weil du auf deine 
 
 Negativ erlebt: Du fühlst dich gestresst bei jedem Versuch, das neue System zu benutzen, weil du Angst hast, Fehler zu machen, auch wenn sich später alles als unkompliziert herausstellt.""",
         "textbausteine": {
-            "Überforderung": "Neue Prozesse können dein Gefühl nach Sicherheit und Vertrautem stark belasten, weil bekannte Strukturen wegfallen. Versuche, dich auf die wichtigsten Schritte zu konzentrieren und priorisiere gemeinsam mit deinem Team, was zuerst umgesetzt werden soll. Klare Checklisten oder kurze Schulungen können dir helfen, wieder Stabilität zu spüren.",
-            "Ideale Passung": "Du hast die neuen Abläufe gut integriert. Dein Gefühl nach Sicherheit und Vertrautem gibt dir Halt, während dein Neugier-System offen für Neues bleibt. Nutze diese Stärke, um Kolleg:innen zu unterstützen, die sich noch unsicher fühlen – so profitiert das ganze Team.",
-            "Unterforderung": "Wenn dir aktuelle Prozesse sehr leichtfallen, kann dein Neugier-System nach zusätzlichen Impulsen verlangen. Vielleicht kannst du dich aktiv an Optimierungsprojekten beteiligen oder neue Ideen für Abläufe entwickeln, die das Team voranbringen."
+            "Überforderung": "Neue Prozesse können dein Gefühl nach Kontrolle und Selbstwirksamkeit stark beeinträchtigen, weil vertraute Handlungsspielräume wegfallen. Versuche, aktiv Einfluss auf die Gestaltung zu nehmen und kläre frühzeitig, wo du Entscheidungsmöglichkeiten hast.",
+            "Ideale Passung": "Du behältst in Prozessänderungen das Gefühl der Selbstwirksamkeit. Dein Autonomiesystem gibt dir Sicherheit, während du gleichzeitig offen für neue Strukturen bleibst. Nutze diese Stärke, um Kolleg:innen zu unterstützen, die sich noch unsicher fühlen – so profitiert das ganze Team.",
+            "Unterforderung": "Wenn dir Prozesse zu starr vorgegeben sind, kann dein Autonomiesystem unterfordert sein. Vielleicht kannst du Gestaltungsspielräume suchen oder Optimierungsvorschläge einbringen."
         }
     },
     "Kompetenzanforderungen / Weiterbildung": {
