@@ -574,14 +574,13 @@ def generate_comprehensive_smart_report(data):
         report += "Diese Ressourcen stehen dir zur Verfügung:\n"
         report += "\n".join(resources) + "\n\n"
 
-    # ====== VERBESSERTE SYSTEMISCHE PERSPEKTIVE ======
+    # ====== KORRIGIERTE SYSTEM-BERECHNUNG ======
     
-    # System-Aktivität berechnen
     def calculate_system_activity(data):
         systems = {
-            "Bindung": 0,      # Team + Interpersonelle Veränderungen
-            "Autonomie": 0,    # Prozessänderungen  
-            "Exploration": 0   # Kompetenz + Betreuungsänderungen
+            "Bindung": [],      # Liste der Flow-Werte pro Domain
+            "Autonomie": [],  
+            "Exploration": []
         }
         
         # Gewichtung nach Domänen-Zuordnung
@@ -595,37 +594,40 @@ def generate_comprehensive_smart_report(data):
             flow_index, zone, _ = calculate_flow(skill, challenge)
             
             if domain in binding_domains:
-                systems["Bindung"] += flow_index
+                systems["Bindung"].append(flow_index)
             elif domain in autonomy_domains:
-                systems["Autonomie"] += flow_index
+                systems["Autonomie"].append(flow_index)
             elif domain in exploration_domains:
-                systems["Exploration"] += flow_index
+                systems["Exploration"].append(flow_index)
         
-        # Normalisieren auf 0-1 Skala
-        total_domains = len(DOMAINS)
-        for system in systems:
-            systems[system] = round(systems[system] / total_domains, 2)
+        # DURCHSCHNITT pro System berechnen (nicht Summe!)
+        system_scores = {}
+        for system, values in systems.items():
+            if values:  # Falls Liste nicht leer
+                system_scores[system] = round(sum(values) / len(values), 2)
+            else:
+                system_scores[system] = 0.0
         
-        return systems
+        return system_scores
 
     systems = calculate_system_activity(data)
     
-    # NEUER ABSCHNITT: SYSTEMISCHE PERSPEKTIVE - VERBESSERT
+    # NEUER ABSCHNITT: SYSTEMISCHE PERSPEKTIVE - KORRIGIERT
     report += "=" * 60 + "\n"
     report += "DIE DREI MOTOREN DEINER MOTIVATION\n"  
     report += "=" * 60 + "\n\n"
 
     report += "Nach dem Zürcher Modell wirken drei Systeme in dir:\n\n"
 
-    # 🌱 BINDUNGSSYSTEM - DREI ZUSTÄNDE
-    report += "🌱 **Dein Bindungssystem** sucht Sicherheit und Vertrautheit\n"
+    # 🌱 BINDUNGSSYSTEM - MIT KONKRETEN WERTEN
+    report += f"🌱 **Dein Bindungssystem** sucht Sicherheit und Vertrautheit (Wert: {systems['Bindung']})\n"
     if systems["Bindung"] >= 0.7:
         report += "   🟢 **OPTIMALE SICHERHEIT** - Du fühlst dich gut aufgehoben\n"
         report += "   ✓ Stabile Beziehungen geben dir Halt\n"
         report += "   ✓ Vertraute Abläufe schaffen Verlässlichkeit\n"
         report += "   ✓ Du kannst dich auf dein Team verlassen\n"
         report += "   → Nutze diese Basis, um andere zu unterstützen!\n\n"
-    elif systems["Bindung"] >= 0.4:
+    elif systems["Bindung"] >= 0.5:
         report += "   🟡 **AUSGEGLICHENE SICHERHEIT** - Balance zwischen Vertrautem und Neuem\n"
         report += "   ✓ Du findest Halt in bekannten Strukturen\n"
         report += "   ✓ Gleichzeitig bist du offen für neue Kontakte\n"
@@ -638,15 +640,15 @@ def generate_comprehensive_smart_report(data):
         report += "   • Schaffe dir klare Rückzugsräume\n"
         report += "   → Stabilität gibt dir Energie für Neues!\n\n"
 
-    # 💪 AUTONOMIESYSTEM - DREI ZUSTÄNDE
-    report += "💪 **Dein Autonomiesystem** strebt nach Einfluss und Selbstwirksamkeit\n"
+    # 💪 AUTONOMIESYSTEM - MIT KONKRETEN WERTEN
+    report += f"💪 **Dein Autonomiesystem** strebt nach Einfluss und Selbstwirksamkeit (Wert: {systems['Autonomie']})\n"
     if systems["Autonomie"] >= 0.7:
         report += "   🟢 **VOLLE GESTALTUNGSKRAFT** - Du bestimmst mit\n"
         report += "   ✓ Du hast klare Entscheidungsspielräume\n"
         report += "   ✓ Deine Kompetenz wird wertgeschätzt\n"
         report += "   ✓ Du kannst Prozesse aktiv mitgestalten\n"
         report += "   → Setze deine Gestaltungskraft ein!\n\n"
-    elif systems["Autonomie"] >= 0.4:
+    elif systems["Autonomie"] >= 0.5:
         report += "   🟡 **BALANCIERTE EIGENSTÄNDIGKEIT** - Zwischen Vorgabe und Freiheit\n"
         report += "   ✓ Du hast ausreichend Handlungsspielraum\n"
         report += "   ✓ Gleichzeitig gibt es klare Leitplanken\n"
@@ -659,15 +661,15 @@ def generate_comprehensive_smart_report(data):
         report += "   • Suche dir Bereiche mit mehr Verantwortung\n"
         report += "   → Deine Ideen verdienen Gehör!\n\n"
 
-    # 🔍 EXPLORATIONSSYSTEM - DREI ZUSTÄNDE
-    report += "🔍 **Dein Explorationssystem** will wachsen und entdecken\n"
+    # 🔍 EXPLORATIONSSYSTEM - MIT KONKRETEN WERTEN
+    report += f"🔍 **Dein Explorationssystem** will wachsen und entdecken (Wert: {systems['Exploration']})\n"
     if systems["Exploration"] >= 0.7:
         report += "   🟢 **VOLLE ENTDECKERFREUDE** - Du lernst und wächst\n"
         report += "   ✓ Neue Herausforderungen begeistern dich\n"
         report += "   ✓ Du hast Raum für Kreativität und Ideen\n"
         report += "   ✓ Deine Neugier wird täglich gefüttert\n"
         report += "   → Diese Energie ist dein Wachstumsmotor!\n\n"
-    elif systems["Exploration"] >= 0.4:
+    elif systems["Exploration"] >= 0.5:
         report += "   🟡 **AUSGEGLICHENE NEUGIER** - Zwischen Vertrautem und Neuem\n"
         report += "   ✓ Routinen geben dir Sicherheit\n"
         report += "   ✓ Gleichzeitig locken neue Lernfelder\n"
@@ -680,26 +682,31 @@ def generate_comprehensive_smart_report(data):
         report += "   • Tausche dich mit inspirierenden Kollegen aus\n"
         report += "   → Wachstum macht deine Arbeit lebendig!\n\n"
 
-    # GESAMTBILDER FÜR VERSCHIEDENE KOMBINATIONEN
+    # DEBUG-INFO (kann später entfernt werden)
     report += "---\n"
+    report += "🔍 **Zur Info:** Diese Werte basieren auf dem durchschnittlichen Flow-Index\n"
+    report += "in den jeweiligen Domänen. Bei ausgeglichenen Eingaben (z.B. 4-4-0)\n"
+    report += "solltest du Werte um 0.5 sehen, die eine gute Balance anzeigen.\n\n"
+
+    # GESAMTBILDER FÜR VERSCHIEDENE KOMBINATIONEN
     report += "🎭 **Dein persönliches Motivations-Profil:**\n"
     
-    # Verschiedene Profile basierend auf der Kombination
     high_count = sum(1 for score in systems.values() if score >= 0.7)
-    low_count = sum(1 for score in systems.values() if score < 0.4)
+    medium_count = sum(1 for score in systems.values() if 0.5 <= score < 0.7)
+    low_count = sum(1 for score in systems.values() if score < 0.5)
     
     if high_count >= 2:
         report += "🌟 **DER GESTALTER** - Du bist in deiner Kraft!\n"
         report += "Mehrere deiner Motivationssysteme laufen optimal. Nutze diese Energie,\n"
         report += "um nicht nur für dich, sondern auch für dein Team wirksam zu sein.\n\n"
-    elif low_count >= 2:
+    elif medium_count >= 2 or (high_count == 1 and medium_count == 1):
+        report += "⚖️ **DER AUSGEGLICHENE** - Gute Basis mit Entwicklungspotenzial\n"
+        report += "Deine Systeme sind im grundlegenden Gleichgewicht. Du findest eine\n"
+        report += "gesunde Balance zwischen Stabilität und Wachstum.\n\n"
+    else:
         report += "💫 **DER SUCHENDE** - Deine Motive warten auf Entfaltung\n"
         report += "Verschiedene Bereiche deiner Motivation brauchen mehr Raum.\n"
         report += "Beginne mit kleinen Schritten in einem Bereich, der dir besonders wichtig ist.\n\n"
-    else:
-        report += "⚖️ **DER AUSGEGLICHENE** - Gute Basis mit Entwicklungspotenzial\n"
-        report += "Deine Systeme sind im grundlegenden Gleichgewicht. Überlege,\n"
-        report += "welches Motiv dir aktuell am wichtigsten ist und gib ihm etwas mehr Raum.\n\n"
 
     # POSITIVE ABSCHLUSSBOTSCHAFT
     report += "---\n"
