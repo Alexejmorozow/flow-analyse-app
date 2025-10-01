@@ -535,13 +535,13 @@ def generate_comprehensive_smart_report(data):
     report += "WIE ES DIR GEHT: DEIN GESAMTBILD\n"
     report += "-" * 80 + "\n\n"
     
-    if avg_flow >= 0.7:
+    if avg_flow >= 0.6:
         report += f"Wow! Dein Gesamtwert von {avg_flow:.2f} zeigt: Dir gelingt deine Arbeit richtig gut! 🎉\n\n"
         report += "Du findest offenbar eine gute Balance zwischen dem, was du kannst und was von dir gefordert wird.\n"
         report += "Das ist etwas Besonderes. Nimm dir einen Moment, dieses Gefühl wahrzunehmen und wertzuschätzen.\n\n"
         
-    elif avg_flow >= 0.5:
-        report += f"Dein Wert von {avg_flow:.2f} zeigt: Du gehst die meisten Herausforderungen bereits sehr gut an und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
+    elif avg_flow >= 0.4:
+        report += f"Dein Wert von {avg_flow:.2f} zeigt: Insgesamt bewältigst du deine Aufgaben gut und nutzt deine Fähigkeiten effektiv. 🔄\n\n"
         report += "An manchen Tagen fühlst du dich sicher und im Fluss, an anderen merkst du vielleicht kleine Stolpersteine.\n"
         report += "Das ist völlig normal - schauen wir gemeinsam, wo genau du ansetzen kannst.\n\n"
         
