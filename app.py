@@ -845,7 +845,7 @@ def create_team_analysis_from_df(df):
     ax.fill_between(x_vals, 1, flow_channel_lower, 
                    color='lightgray', alpha=0.3, label='Apathie')
     ax.fill_between(x_vals, flow_channel_upper, 7, 
-                   color='lightcoral', alpha: 0.3, label='Angst/Überlastung')
+                   color='lightcoral', alpha=0.3, label='Angst/Überlastung')  # HIER KORRIGIERT: = statt :
 
     # Punkte für jede VORHANDENE Domäne zeichnen
     for domain in available_domains:
