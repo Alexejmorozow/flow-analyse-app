@@ -805,29 +805,25 @@ def create_team_analysis_from_df(df):
     num_participants = df['name'].nunique()
     st.write(f"Anzahl der Teilnehmer: {num_participants}")
 
-    # Durchschnittswerte pro Domäne berechnen
+    # Durchschnittswerte pro Domäne berechnen - NUR FÜR VORHANDENE DOMAINS
+    available_domains = df['domain'].unique()
     domain_stats = df.groupby('domain').agg({
         'skill': 'mean',
         'challenge': 'mean',
         'time_perception': 'mean'
     }).round(2)
 
-    # Flow-Index für jede Domäne berechnen - KORREKTUR HIER
+    # Flow-Index für jede VORHANDENE Domäne berechnen
     flow_indices = []
     zones = []
-    for domain in DOMAINS.keys():
-        if domain in domain_stats.index:
-            skill = domain_stats.loc[domain, 'skill']
-            challenge = domain_stats.loc[domain, 'challenge']
-            flow_index, zone, _ = calculate_flow(skill, challenge)
-            flow_indices.append(flow_index)
-            zones.append(zone)
-        else:
-            # Wenn Domain nicht in Daten vorhanden, füge NaN hinzu
-            flow_indices.append(float('nan'))
-            zones.append("Keine Daten")
+    for domain in available_domains:
+        skill = domain_stats.loc[domain, 'skill']
+        challenge = domain_stats.loc[domain, 'challenge']
+        flow_index, zone, _ = calculate_flow(skill, challenge)
+        flow_indices.append(flow_index)
+        zones.append(zone)
 
-    # Nur die Zeilen in domain_stats haben, für die wir Flow-Indizes berechnet haben
+    # Jetzt die Spalten direkt dem domain_stats DataFrame hinzufügen
     domain_stats = domain_stats.copy()
     domain_stats['flow_index'] = flow_indices
     domain_stats['zone'] = zones
@@ -849,20 +845,19 @@ def create_team_analysis_from_df(df):
     ax.fill_between(x_vals, 1, flow_channel_lower, 
                    color='lightgray', alpha=0.3, label='Apathie')
     ax.fill_between(x_vals, flow_channel_upper, 7, 
-                   color='lightcoral', alpha=0.3, label='Angst/Überlastung')
+                   color='lightcoral', alpha: 0.3, label='Angst/Überlastung')
 
-    # Punkte für jede Domäne zeichnen - KORREKTUR HIER
-    for domain in DOMAINS.keys():
-        if domain in domain_stats.index:
-            skill = domain_stats.loc[domain, 'skill']
-            challenge = domain_stats.loc[domain, 'challenge']
-            time_perception = domain_stats.loc[domain, 'time_perception']
-            color = DOMAINS[domain]['color']
+    # Punkte für jede VORHANDENE Domäne zeichnen
+    for domain in available_domains:
+        skill = domain_stats.loc[domain, 'skill']
+        challenge = domain_stats.loc[domain, 'challenge']
+        time_perception = domain_stats.loc[domain, 'time_perception']
+        color = DOMAINS[domain]['color']
 
-            ax.scatter(skill, challenge, c=color, s=200, alpha=0.9, 
-                      edgecolors='white', linewidths=1.5, label=domain)
-            ax.annotate(f"{time_perception:.1f}", (skill+0.1, challenge+0.1), 
-                       fontsize=9, fontweight='bold')
+        ax.scatter(skill, challenge, c=color, s=200, alpha=0.9, 
+                  edgecolors='white', linewidths=1.5, label=domain)
+        ax.annotate(f"{time_perception:.1f}", (skill+0.1, challenge+0.1), 
+                   fontsize=9, fontweight='bold')
 
     ax.set_xlim(0.5, 7.5)
     ax.set_ylim(0.5, 7.5)
@@ -882,13 +877,12 @@ def create_team_analysis_from_df(df):
     strengths = []
     development_areas = []
 
-    for domain in DOMAINS.keys():
-        if domain in domain_stats.index:
-            flow_index = domain_stats.loc[domain, 'flow_index']
-            if not np.isnan(flow_index) and flow_index >= 0.7:
-                strengths.append(domain)
-            elif not np.isnan(flow_index) and flow_index <= 0.4:
-                development_areas.append(domain)
+    for domain in available_domains:
+        flow_index = domain_stats.loc[domain, 'flow_index']
+        if flow_index >= 0.7:
+            strengths.append(domain)
+        elif flow_index <= 0.4:
+            development_areas.append(domain)
 
     if strengths:
         st.write("🏆 Team-Stärken:")
@@ -904,22 +898,21 @@ def create_team_analysis_from_df(df):
     st.subheader("💡 Empfehlungen für das Team")
 
     for domain in development_areas:
-        if domain in domain_stats.index:
-            skill = domain_stats.loc[domain, 'skill']
-            challenge = domain_stats.loc[domain, 'challenge']
+        skill = domain_stats.loc[domain, 'skill']
+        challenge = domain_stats.loc[domain, 'challenge']
 
-            if challenge > skill:
-                st.write(f"{domain}: Das Team fühlt sich überfordert. Empfohlene Massnahmen:")
-                st.write(f"- Gezielte Schulungen und Training für das gesamte Team")
-                st.write(f"- Klärung von Erwartungen und Prioritäten")
-                st.write(f"- Gegenseitige Unterstützung und Erfahrungsaustausch fördern")
-            else:
-                st.write(f"{domain}: Das Team ist unterfordert. Empfohlene Massnahmen:")
-                st.write(f"- Neue, anspruchsvollere Aufgaben suchen")
-                st.write(f"- Verantwortungsbereiche erweitern")
-                st.write(f"- Innovative Projekte initiieren")
+        if challenge > skill:
+            st.write(f"{domain}: Das Team fühlt sich überfordert. Empfohlene Massnahmen:")
+            st.write(f"- Gezielte Schulungen und Training für das gesamte Team")
+            st.write(f"- Klärung von Erwartungen und Prioritäten")
+            st.write(f"- Gegenseitige Unterstützung und Erfahrungsaustausch fördern")
+        else:
+            st.write(f"{domain}: Das Team ist unterfordert. Empfohlene Massnahmen:")
+            st.write(f"- Neue, anspruchsvollere Aufgaben suchen")
+            st.write(f"- Verantwortungsbereiche erweitern")
+            st.write(f"- Innovative Projekte initiieren")
 
-            st.write("")
+        st.write("")
 
     return True
 
